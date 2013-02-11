@@ -36,7 +36,11 @@
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openFileDialogRom = new System.Windows.Forms.OpenFileDialog();
             this.emulatorTimer = new System.Windows.Forms.Timer(this.components);
+            this.emulatorStatusStrip = new System.Windows.Forms.StatusStrip();
+            this.labelStatusEmulator = new System.Windows.Forms.ToolStripStatusLabel();
+            this.labelFps = new System.Windows.Forms.ToolStripStatusLabel();
             this.menuStripMainWindow.SuspendLayout();
+            this.emulatorStatusStrip.SuspendLayout();
             this.SuspendLayout();
             // 
             // menuStripMainWindow
@@ -46,7 +50,7 @@
             this.aboutToolStripMenuItem});
             this.menuStripMainWindow.Location = new System.Drawing.Point(0, 0);
             this.menuStripMainWindow.Name = "menuStripMainWindow";
-            this.menuStripMainWindow.Size = new System.Drawing.Size(624, 24);
+            this.menuStripMainWindow.Size = new System.Drawing.Size(630, 24);
             this.menuStripMainWindow.TabIndex = 0;
             this.menuStripMainWindow.Text = "menuStripMainWindow";
             // 
@@ -83,18 +87,49 @@
             // 
             this.openFileDialogRom.Title = "Open Rom";
             // 
+            // emulatorStatusStrip
+            // 
+            this.emulatorStatusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.labelFps,
+            this.labelStatusEmulator});
+            this.emulatorStatusStrip.Location = new System.Drawing.Point(0, 290);
+            this.emulatorStatusStrip.Name = "emulatorStatusStrip";
+            this.emulatorStatusStrip.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            this.emulatorStatusStrip.Size = new System.Drawing.Size(630, 22);
+            this.emulatorStatusStrip.SizingGrip = false;
+            this.emulatorStatusStrip.TabIndex = 1;
+            this.emulatorStatusStrip.Text = "statusStrip1";
+            // 
+            // labelStatusEmulator
+            // 
+            this.labelStatusEmulator.Name = "labelStatusEmulator";
+            this.labelStatusEmulator.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.labelStatusEmulator.Size = new System.Drawing.Size(42, 17);
+            this.labelStatusEmulator.Text = "Status:";
+            // 
+            // labelFps
+            // 
+            this.labelFps.Name = "labelFps";
+            this.labelFps.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.labelFps.Size = new System.Drawing.Size(30, 17);
+            this.labelFps.Text = "IDLE";
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(624, 282);
+            this.ClientSize = new System.Drawing.Size(630, 312);
+            this.Controls.Add(this.emulatorStatusStrip);
             this.Controls.Add(this.menuStripMainWindow);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
             this.MainMenuStrip = this.menuStripMainWindow;
+            this.MaximizeBox = false;
             this.Name = "MainForm";
             this.Text = "Chip8 Proof Of Concept";
             this.menuStripMainWindow.ResumeLayout(false);
             this.menuStripMainWindow.PerformLayout();
+            this.emulatorStatusStrip.ResumeLayout(false);
+            this.emulatorStatusStrip.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -109,6 +144,9 @@
         private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
         private System.Windows.Forms.OpenFileDialog openFileDialogRom;
         private System.Windows.Forms.Timer emulatorTimer;
+        private System.Windows.Forms.StatusStrip emulatorStatusStrip;
+        private System.Windows.Forms.ToolStripStatusLabel labelFps;
+        private System.Windows.Forms.ToolStripStatusLabel labelStatusEmulator;
 
     }
 }
