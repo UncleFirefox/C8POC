@@ -5,6 +5,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "C8POC", "C8POC\C8POC.csproj
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "C8POC.WinFormsUI", "C8POC.WinFormsUI\C8POC.WinFormsUI.csproj", "{97F1A082-9035-4501-BBE1-BCCD0B02B30B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "C8POC.ConsoleUI", "C8POC.ConsoleUI\C8POC.ConsoleUI.csproj", "{8E303761-F087-435D-839C-5C304F9039BD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -35,6 +37,16 @@ Global
 		{97F1A082-9035-4501-BBE1-BCCD0B02B30B}.Release|Mixed Platforms.Build.0 = Release|x86
 		{97F1A082-9035-4501-BBE1-BCCD0B02B30B}.Release|x86.ActiveCfg = Release|x86
 		{97F1A082-9035-4501-BBE1-BCCD0B02B30B}.Release|x86.Build.0 = Release|x86
+		{8E303761-F087-435D-839C-5C304F9039BD}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{8E303761-F087-435D-839C-5C304F9039BD}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{8E303761-F087-435D-839C-5C304F9039BD}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{8E303761-F087-435D-839C-5C304F9039BD}.Debug|x86.ActiveCfg = Debug|x86
+		{8E303761-F087-435D-839C-5C304F9039BD}.Debug|x86.Build.0 = Debug|x86
+		{8E303761-F087-435D-839C-5C304F9039BD}.Release|Any CPU.ActiveCfg = Release|x86
+		{8E303761-F087-435D-839C-5C304F9039BD}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{8E303761-F087-435D-839C-5C304F9039BD}.Release|Mixed Platforms.Build.0 = Release|x86
+		{8E303761-F087-435D-839C-5C304F9039BD}.Release|x86.ActiveCfg = Release|x86
+		{8E303761-F087-435D-839C-5C304F9039BD}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

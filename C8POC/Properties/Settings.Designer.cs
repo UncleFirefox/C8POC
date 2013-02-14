@@ -26,18 +26,18 @@ namespace C8POC.Properties {
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("60")]
-        public int FramesPerSecond {
+        public long FramesPerSecond {
             get {
-                return ((int)(this["FramesPerSecond"]));
+                return ((long)(this["FramesPerSecond"]));
             }
         }
         
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("600")]
-        public int OperationsPerFrame {
+        [global::System.Configuration.DefaultSettingValueAttribute("10")]
+        public long OperationsPerFrame {
             get {
-                return ((int)(this["OperationsPerFrame"]));
+                return ((long)(this["OperationsPerFrame"]));
             }
         }
     }

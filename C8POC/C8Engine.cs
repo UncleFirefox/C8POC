@@ -2,6 +2,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
+using C8POC.Properties;
+using MicroLibrary;
 
 namespace C8POC
 {
@@ -112,6 +115,19 @@ namespace C8POC
         /// </summary>
         public event SoundGenerateEventHandler SoundGenerated;
 
+        /// <summary>
+        /// Timer in charge of handling the number of cycles per second
+        /// </summary>
+        private MicroTimer MicroTimer { get; set; }
+
+        /// <summary>
+        /// Determines if it has an executable ROM
+        /// </summary>
+        private bool HasRomLoaded()
+        {
+            return memory.Skip(0x200).Any(x => x != 0);
+        }
+
         #endregion
 
         #region Engine constructor
@@ -120,6 +136,9 @@ namespace C8POC
         {
             //The InstructionMap is loaded once!!
             SetUpInstructionMap();
+
+            //Configure the timer
+            InitializeTimer();
 
             // Load fontset should be loaded just once
             LoadFontSet();
@@ -135,7 +154,23 @@ namespace C8POC
             LoadGame(filePath);
         }
 
-        public void EmulateCycle()
+        public void StartEmulator()
+        {
+            if (HasRomLoaded())
+            {
+                MicroTimer.Start();
+            }
+        }
+
+        public void StopEmulator()
+        {
+            if (MicroTimer.Enabled)
+            {
+                MicroTimer.Stop();
+            }
+        }
+
+        private void EmulateCycle()
         {
             //Get Opcode located at program counter
             FetchOpcode();
@@ -337,6 +372,28 @@ namespace C8POC
         private void IncreaseProgramCounter()
         {
             programCounter += 2;
+        }
+
+        private void InitializeTimer()
+        {
+            MicroTimer = new MicroTimer
+                             {Interval = (long)((1.0/Settings.Default.FramesPerSecond)*1000.0*1000.0)};
+            
+            MicroTimer.MicroTimerElapsed += TimerTick;
+        }
+
+        private void TimerTick(object sender, MicroTimerEventArgs timerEventArgs)
+        {
+            for (int operationNum = 0; operationNum < Settings.Default.OperationsPerFrame; operationNum++)
+            {
+                EmulateCycle();
+            }
+
+            if (IsDrawFlagSet)
+            {
+                DrawGraphics();
+                IsDrawFlagSet = false;
+            }
         }
 
         #endregion
@@ -708,7 +765,8 @@ namespace C8POC
                 {
                     if ((currentpixel & (0x80 >> colNum)) != 0)
                     {
-                        int positioninGraphics = positionX + colNum + ((positionY + rowNum)*ResolutionWidth);
+                        int positioninGraphics = (positionX + colNum + ((positionY + rowNum)*ResolutionWidth))
+                            %(ResolutionWidth*ResolutionHeight); // Make sure we get a value inside boundaries
 
                         if (graphics[positioninGraphics])
                         {
