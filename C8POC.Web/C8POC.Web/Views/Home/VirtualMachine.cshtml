@@ -1,0 +1,207 @@
+﻿@{
+    ViewBag.Title = "VirtualMachine";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h3 id="memory">Memory</h3>
+<p>
+CHIP-8's memory addresses range from 200h to FFFh, making for 3,584 bytes. The reason for the memory starting at 200h is that on the Cosmac VIP and Telmac 1800, the first 512 bytes are reserved for the interpreter. On those machines, the uppermost 256 bytes (F00h-FFFh on a 4K machine) were reserved for display refresh, and the 96 bytes below that (EA0h-EFFh) were reserved for the call stack, internal use, and the variables.
+</p>
+<h3 id="registers">Registers</h3>
+<p>
+CHIP-8 has 16 8-bit data registers named from V0 to VF. The VF register doubles as a carry flag.
+The address register, which is named I, is 16 bits wide and is used with several opcodes that involve memory operations.
+</p>
+<h3 id="thestack">The stack</h3>
+<p>
+The stack is only used to store return addresses when subroutines are called. The original 1802 version allocated 48 bytes for up to 12 levels of nesting; modern implementations normally have at least 16 levels.
+</p>
+<h3 id="timers">Timers</h3>
+<p>
+CHIP-8 has two timers. They both count down at 60 hertz, until they reach 0.
+Delay timer: This timer is intended to be used for timing the events of games. Its value can be set and read.
+Sound timer: This timer is used for sound effects. When its value is nonzero, a beeping sound is made.
+</p>
+<h3 id="input">Input</h3>
+<p>
+Input is done with a hex keyboard that has 16 keys which range from 0 to F. The '8', '4', '6', and '2' keys are typically used for directional input. Three opcodes are used to detect input. One skips an instruction if a specific key is pressed, while another does the same if a specific key is not pressed. The third waits for a key press, and then stores it in one of the data registers.
+</p>
+<h3 id="graphicssounds">Graphics and sound</h3>
+<p>
+Display resolution is 64×32 pixels, and color is monochrome. Graphics are drawn to the screen solely by drawing sprites, which are 8 pixels wide and may be from 1 to 15 pixels in height. Sprite pixels that are set flip the color of the corresponding screen pixel, while unset sprite pixels do nothing. The carry flag (VF) is set to 1 if any screen pixels are flipped from set to unset when a sprite is drawn and set to 0 otherwise.
+As previously described, a beeping sound is played when the value of the sound timer is nonzero.
+    </p>
+<h3 id="opcode">Opcode table</h3>
+<p>
+CHIP-8 has 35 opcodes, which are all two bytes long. The most significant byte is stored first. The opcodes are listed below, in hexadecimal and with the following symbols:
+</p>
+    <ul>
+        <li>NNN: address</li>
+        <li>NN: 8-bit constant</li>
+        <li>N: 4-bit constant</li>
+        <li>X and Y: 4-bit register identifier</li>
+    </ul>
+
+<table class="table table-striped table-bordered">
+    <thead>
+        <tr>
+            <th>Opcode</th>
+            <th>Explanation</th>
+        </tr>
+    </thead>
+    <tbody>
+<tbody>
+<tr>
+<td>0NNN</td>
+<td>Calls <a href="/wiki/RCA_1802" title="RCA 1802">RCA 1802</a> program at address NNN.</td>
+</tr>
+<tr>
+<td>00E0</td>
+<td>Clears the screen.</td>
+</tr>
+<tr>
+<td>00EE</td>
+<td>Returns from a subroutine.</td>
+</tr>
+<tr>
+<td>1NNN</td>
+<td>Jumps to address NNN.</td>
+</tr>
+<tr>
+<td>2NNN</td>
+<td>Calls subroutine at NNN.</td>
+</tr>
+<tr>
+<td>3XNN</td>
+<td>Skips the next instruction if VX equals NN.</td>
+</tr>
+<tr>
+<td>4XNN</td>
+<td>Skips the next instruction if VX doesn't equal NN.</td>
+</tr>
+<tr>
+<td>5XY0</td>
+<td>Skips the next instruction if VX equals VY.</td>
+</tr>
+<tr>
+<td>6XNN</td>
+<td>Sets VX to NN.</td>
+</tr>
+<tr>
+<td>7XNN</td>
+<td>Adds NN to VX.</td>
+</tr>
+<tr>
+<td>8XY0</td>
+<td>Sets VX to the value of VY.</td>
+</tr>
+<tr>
+<td>8XY1</td>
+<td>Sets VX to VX <a href="/wiki/Logical_disjunction" title="Logical disjunction">or</a> VY.</td>
+</tr>
+<tr>
+<td>8XY2</td>
+<td>Sets VX to VX <a href="/wiki/Logical_conjunction" title="Logical conjunction">and</a> VY.</td>
+</tr>
+<tr>
+<td>8XY3</td>
+<td>Sets VX to VX <a href="/wiki/Xor" title="Xor" class="mw-redirect">xor</a> VY.</td>
+</tr>
+<tr>
+<td>8XY4</td>
+<td>Adds VY to VX. VF is set to 1 when there's a carry, and to 0 when there isn't.</td>
+</tr>
+<tr>
+<td>8XY5</td>
+<td>VY is subtracted from VX. VF is set to 0 when there's a borrow, and 1 when there isn't.</td>
+</tr>
+<tr>
+<td>8XY6</td>
+<td>Shifts VX right by one. VF is set to the value of the <a href="/wiki/Least_significant_bit" title="Least significant bit">least significant bit</a> of VX before the shift.<sup id="cite_ref-shift_2-0" class="reference"><a href="#cite_note-shift-2"><span>[</span>2<span>]</span></a></sup></td>
+</tr>
+<tr>
+<td>8XY7</td>
+<td>Sets VX to VY minus VX. VF is set to 0 when there's a borrow, and 1 when there isn't.</td>
+</tr>
+<tr>
+<td>8XYE</td>
+<td>Shifts VX left by one. VF is set to the value of the <a href="/wiki/Most_significant_bit" title="Most significant bit">most significant bit</a> of VX before the shift.<sup id="cite_ref-shift_2-1" class="reference"><a href="#cite_note-shift-2"><span>[</span>2<span>]</span></a></sup></td>
+</tr>
+<tr>
+<td>9XY0</td>
+<td>Skips the next instruction if VX doesn't equal VY.</td>
+</tr>
+<tr>
+<td>ANNN</td>
+<td>Sets I to the address NNN.</td>
+</tr>
+<tr>
+<td>BNNN</td>
+<td>Jumps to the address NNN plus V0.</td>
+</tr>
+<tr>
+<td>CXNN</td>
+<td>Sets VX to a random number and NN.</td>
+</tr>
+<tr>
+<td>DXYN</td>
+<td>Draws a sprite at coordinate (VX, VY) that has a width of 8 pixels and a height of N pixels. Each row of 8 pixels is read as bit-coded (with the most significant bit of each byte displayed on the left) starting from memory location I; I value doesn't change after the execution of this instruction. As described above, VF is set to 1 if any screen pixels are flipped from set to unset when the sprite is drawn, and to 0 if that doesn't happen.</td>
+</tr>
+<tr>
+<td>EX9E</td>
+<td>Skips the next instruction if the key stored in VX is pressed.</td>
+</tr>
+<tr>
+<td>EXA1</td>
+<td>Skips the next instruction if the key stored in VX isn't pressed.</td>
+</tr>
+<tr>
+<td>FX07</td>
+<td>Sets VX to the value of the delay timer.</td>
+</tr>
+<tr>
+<td>FX0A</td>
+<td>A key press is awaited, and then stored in VX.</td>
+</tr>
+<tr>
+<td>FX15</td>
+<td>Sets the delay timer to VX.</td>
+</tr>
+<tr>
+<td>FX18</td>
+<td>Sets the sound timer to VX.</td>
+</tr>
+<tr>
+<td>FX1E</td>
+<td>Adds VX to I.<sup id="cite_ref-onlgame_3-0" class="reference"><a href="#cite_note-onlgame-3"><span>[</span>3<span>]</span></a></sup></td>
+</tr>
+<tr>
+<td>FX29</td>
+<td>Sets I to the location of the sprite for the character in VX. Characters 0-F (in hexadecimal) are represented by a 4x5 font.</td>
+</tr>
+<tr>
+<td>FX33</td>
+<td>Stores the <a href="/wiki/Binary-coded_decimal" title="Binary-coded decimal">Binary-coded decimal</a> representation of VX, with the most significant of three digits at the address in I, the middle digit at I plus 1, and the least significant digit at I plus 2. (In other words, take the decimal representation of VX, place the hundreds digit in memory at location in I, the tens digit at location I+1, and the ones digit at location I+2.)</td>
+</tr>
+<tr>
+<td>FX55</td>
+<td>Stores V0 to VX in memory starting at address I.<sup id="cite_ref-memi_4-0" class="reference"><a href="#cite_note-memi-4"><span>[</span>4<span>]</span></a></sup></td>
+</tr>
+<tr>
+<td>FX65</td>
+<td>Fills V0 to VX with values from memory starting at address I.<sup id="cite_ref-memi_4-1" class="reference"><a href="#cite_note-memi-4"><span>[</span>4<span>]</span></a></sup></td>
+</tr>
+</tbody>
+</table>
+
+@section SideBar{
+    <ul class="nav nav-tabs nav-stacked ">        
+        <li><a href="#memory">Memory</a></li>
+        <li><a href="#registers">Registers</a></li>    
+        <li><a href="#thestack">The stack</a></li>    
+        <li><a href="#timers">Timers</a></li>    
+        <li><a href="#input">Input</a></li>
+        <li><a href="#graphicssounds">Graphics and sound</a></li>
+        <li><a href="#opcode">Opcode table</a></li>
+    </ul>
+}	
