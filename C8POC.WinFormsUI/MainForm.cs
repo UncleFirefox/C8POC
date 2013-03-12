@@ -80,5 +80,15 @@ namespace C8POC.WinFormsUI
         private void panelGraphics_Paint(object sender, PaintEventArgs e)
         {
         }
+
+        private void MainForm_ResizeBegin(object sender, EventArgs e)
+        {
+            emulator.StopEmulator();
+        }
+
+        private void MainForm_ResizeEnd(object sender, EventArgs e)
+        {
+            emulator.StartEmulator();
+        }
     }
 }
