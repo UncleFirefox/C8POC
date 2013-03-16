@@ -32,12 +32,15 @@
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.openRomToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.aboutToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.openFileDialogRom = new System.Windows.Forms.OpenFileDialog();
             this.emulatorStatusStrip = new System.Windows.Forms.StatusStrip();
             this.labelFps = new System.Windows.Forms.ToolStripStatusLabel();
             this.labelStatusEmulator = new System.Windows.Forms.ToolStripStatusLabel();
+            this.toolStripConfig = new System.Windows.Forms.ToolStripMenuItem();
+            this.coreSettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.pluginSettingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.panelGraphics = new C8POC.WinFormsUI.DoubleBufferedPanel();
             this.menuStripMainWindow.SuspendLayout();
             this.emulatorStatusStrip.SuspendLayout();
@@ -47,7 +50,8 @@
             // 
             this.menuStripMainWindow.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileToolStripMenuItem,
-            this.aboutToolStripMenuItem});
+            this.toolStripConfig,
+            this.helpToolStripMenuItem});
             this.menuStripMainWindow.Location = new System.Drawing.Point(0, 0);
             this.menuStripMainWindow.Name = "menuStripMainWindow";
             this.menuStripMainWindow.Size = new System.Drawing.Size(640, 24);
@@ -62,36 +66,36 @@
             this.openRomToolStripMenuItem,
             this.exitToolStripMenuItem});
             this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
-            this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
+            this.fileToolStripMenuItem.Size = new System.Drawing.Size(35, 20);
             this.fileToolStripMenuItem.Text = "File";
             // 
             // openRomToolStripMenuItem
             // 
             this.openRomToolStripMenuItem.Name = "openRomToolStripMenuItem";
-            this.openRomToolStripMenuItem.Size = new System.Drawing.Size(140, 22);
+            this.openRomToolStripMenuItem.Size = new System.Drawing.Size(147, 22);
             this.openRomToolStripMenuItem.Text = "Open Rom...";
             this.openRomToolStripMenuItem.Click += new System.EventHandler(this.OpenRomToolStripMenuItemClick);
             // 
             // exitToolStripMenuItem
             // 
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
-            this.exitToolStripMenuItem.Size = new System.Drawing.Size(140, 22);
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(147, 22);
             this.exitToolStripMenuItem.Text = "Exit";
             this.exitToolStripMenuItem.Click += new System.EventHandler(this.ExitToolStripMenuItemClick);
             // 
+            // helpToolStripMenuItem
+            // 
+            this.helpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.aboutToolStripMenuItem});
+            this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
+            this.helpToolStripMenuItem.Size = new System.Drawing.Size(40, 20);
+            this.helpToolStripMenuItem.Text = "Help";
+            // 
             // aboutToolStripMenuItem
             // 
-            this.aboutToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.aboutToolStripMenuItem1});
             this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
-            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
-            this.aboutToolStripMenuItem.Text = "Help";
-            // 
-            // aboutToolStripMenuItem1
-            // 
-            this.aboutToolStripMenuItem1.Name = "aboutToolStripMenuItem1";
-            this.aboutToolStripMenuItem1.Size = new System.Drawing.Size(107, 22);
-            this.aboutToolStripMenuItem1.Text = "About";
+            this.aboutToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.aboutToolStripMenuItem.Text = "About";
             // 
             // openFileDialogRom
             // 
@@ -114,7 +118,7 @@
             // 
             this.labelFps.Name = "labelFps";
             this.labelFps.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.labelFps.Size = new System.Drawing.Size(30, 17);
+            this.labelFps.Size = new System.Drawing.Size(29, 17);
             this.labelFps.Text = "IDLE";
             // 
             // labelStatusEmulator
@@ -123,6 +127,27 @@
             this.labelStatusEmulator.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.labelStatusEmulator.Size = new System.Drawing.Size(42, 17);
             this.labelStatusEmulator.Text = "Status:";
+            // 
+            // toolStripConfig
+            // 
+            this.toolStripConfig.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.coreSettingsToolStripMenuItem,
+            this.pluginSettingsToolStripMenuItem});
+            this.toolStripConfig.Name = "toolStripConfig";
+            this.toolStripConfig.Size = new System.Drawing.Size(50, 20);
+            this.toolStripConfig.Text = "Config";
+            // 
+            // coreSettingsToolStripMenuItem
+            // 
+            this.coreSettingsToolStripMenuItem.Name = "coreSettingsToolStripMenuItem";
+            this.coreSettingsToolStripMenuItem.Size = new System.Drawing.Size(167, 22);
+            this.coreSettingsToolStripMenuItem.Text = "Core Settings...";
+            // 
+            // pluginSettingsToolStripMenuItem
+            // 
+            this.pluginSettingsToolStripMenuItem.Name = "pluginSettingsToolStripMenuItem";
+            this.pluginSettingsToolStripMenuItem.Size = new System.Drawing.Size(167, 22);
+            this.pluginSettingsToolStripMenuItem.Text = "Plugin Settings...";
             // 
             // panelGraphics
             // 
@@ -164,13 +189,16 @@
         private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem openRomToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
         private System.Windows.Forms.OpenFileDialog openFileDialogRom;
         private System.Windows.Forms.StatusStrip emulatorStatusStrip;
         private System.Windows.Forms.ToolStripStatusLabel labelFps;
         private System.Windows.Forms.ToolStripStatusLabel labelStatusEmulator;
-        private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
         private DoubleBufferedPanel panelGraphics;
+        private System.Windows.Forms.ToolStripMenuItem toolStripConfig;
+        private System.Windows.Forms.ToolStripMenuItem coreSettingsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem pluginSettingsToolStripMenuItem;
 
     }
 }

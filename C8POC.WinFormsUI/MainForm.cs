@@ -19,6 +19,18 @@ namespace C8POC.WinFormsUI
             InitializeComponent();
             emulator = new C8Engine();
             emulator.ScreenChanged += emulator_ScreenChanged;
+            this.KeyDown += MainForm_KeyDown;
+            this.KeyUp += MainForm_KeyUp;
+        }
+
+        void MainForm_KeyUp(object sender, KeyEventArgs e)
+        {
+            emulator.KeyUp(e.KeyValue);
+        }
+
+        void MainForm_KeyDown(object sender, KeyEventArgs e)
+        {
+            emulator.KeyDown(e.KeyValue);
         }
 
         void emulator_ScreenChanged(object sender, EventArgs e)

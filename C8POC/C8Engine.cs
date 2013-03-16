@@ -58,6 +58,8 @@ namespace C8POC
         private Stack<ushort> stack = new Stack<ushort>(16);
         private BitArray keys = new BitArray(16);
 
+        private Dictionary<int, byte> keyMap = new Dictionary<int, byte>(); 
+
         /// <summary>
         /// Get y value in opcodes like 5xy0 etc
         /// </summary>
@@ -92,12 +94,29 @@ namespace C8POC
         }
 
         /// <summary>
+        /// Timer in charge of handling the number of cycles per second
+        /// </summary>
+        private MicroTimer MicroTimer { get; set; }
+
+        /// <summary>
+        /// Determines if it has an executable ROM
+        /// </summary>
+        private bool HasRomLoaded()
+        {
+            return memory.Skip(StartRomAdress).Any(x => x != 0);
+        }
+
+        #endregion
+
+        #region I/O Handling
+
+        /// <summary>
         /// Event handler for screen changes
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
         public delegate void ScreenChangeEventHandler(object sender, EventArgs e);
-        
+
         /// <summary>
         /// Event that will be raised every that that the screen needs to be refreshed
         /// </summary>
@@ -116,80 +135,31 @@ namespace C8POC
         public event SoundGenerateEventHandler SoundGenerated;
 
         /// <summary>
-        /// Timer in charge of handling the number of cycles per second
+        /// Sets a pressed key
         /// </summary>
-        private MicroTimer MicroTimer { get; set; }
+        /// <param name="keyValue">The pressed keycode</param>
+        public void KeyDown(int keyValue)
+        {
+            byte mappedKeyIndex;
+
+            if (this.keyMap.TryGetValue(keyValue, out mappedKeyIndex))
+            {
+                keys[mappedKeyIndex] = true;
+            }
+        }
 
         /// <summary>
-        /// Determines if it has an executable ROM
+        /// Unsets a pressed key
         /// </summary>
-        private bool HasRomLoaded()
+        /// <param name="KeyValue">The released keycode</param>
+        public void KeyUp(int keyValue)
         {
-            return memory.Skip(0x200).Any(x => x != 0);
-        }
+            byte mappedKeyIndex;
 
-        #endregion
-
-        #region Engine constructor
-        
-        public C8Engine()
-        {
-            //The InstructionMap is loaded once!!
-            SetUpInstructionMap();
-
-            //Configure the timer
-            InitializeTimer();
-
-            // Load fontset should be loaded just once
-            LoadFontSet();
-        }
-
-        #endregion
-
-        #region Engine Actions
-
-        public void LoadEmulator(string filePath)
-        {
-            Initialize();
-            LoadGame(filePath);
-        }
-
-        public void StartEmulator()
-        {
-            if (HasRomLoaded())
+            if (this.keyMap.TryGetValue(keyValue, out mappedKeyIndex))
             {
-                MicroTimer.Start();
+                keys[mappedKeyIndex] = false;
             }
-        }
-
-        public void StopEmulator()
-        {
-            if (MicroTimer.Enabled)
-            {
-                MicroTimer.Stop();
-            }
-        }
-
-        private void EmulateCycle()
-        {
-            //Get Opcode located at program counter
-            FetchOpcode();
-
-            //Processes the opcode
-            ProcessOpcode();
-
-            //Update timers
-            UpdateTimers();
-        }
-
-        public void KeyDown(object sender, Byte keyIndex)
-        {
-            keys[keyIndex] = true;
-        }
-
-        public void KeyUp(object sender, Byte keyIndex)
-        {
-            keys[keyIndex] = false;
         }
 
         /// <summary>
@@ -203,6 +173,90 @@ namespace C8POC
             }
         }
 
+        /// <summary>
+        /// Raises the sound event
+        /// </summary>
+        private void GenerateSound()
+        {
+            if (SoundGenerated != null)
+            {
+                SoundGenerated(this, null);
+            }
+        }
+
+        #endregion
+
+        #region Engine constructor
+
+        public C8Engine()
+        {
+            //The InstructionMap is loaded once!!
+            SetUpInstructionMap();
+
+            //Set key mapping
+            SetUpDefaultKeyMap();
+
+            //Configure the timer
+            InitializeTimer();
+
+            // Load fontset should be loaded just once
+            LoadFontSet();
+        }
+
+        #endregion
+
+        #region Engine Actions
+
+        /// <summary>
+        /// Loads the emulator
+        /// </summary>
+        /// <param name="filePath">The rom full path</param>
+        public void LoadEmulator(string filePath)
+        {
+            Initialize();
+            LoadGame(filePath);
+        }
+
+        /// <summary>
+        /// Starts the timer if a correct rom has been loaded
+        /// </summary>
+        public void StartEmulator()
+        {
+            if (HasRomLoaded())
+            {
+                MicroTimer.Start();
+            }
+        }
+
+        /// <summary>
+        /// Stops the timer execution
+        /// </summary>
+        public void StopEmulator()
+        {
+            if (MicroTimer.Enabled)
+            {
+                MicroTimer.Stop();
+            }
+        }
+
+        /// <summary>
+        /// Emulates a cycle
+        /// </summary>
+        private void EmulateCycle()
+        {
+            //Get Opcode located at program counter
+            FetchOpcode();
+
+            //Processes the opcode
+            ProcessOpcode();
+
+            //Update timers
+            UpdateTimers();
+        }
+
+        /// <summary>
+        /// Timer update every cycle
+        /// </summary>
         private void UpdateTimers()
         {
             if (delayTimer > 0)
@@ -221,14 +275,9 @@ namespace C8POC
             }
         }
 
-        private void GenerateSound()
-        {
-            if (SoundGenerated != null)
-            {
-                SoundGenerated(this, null);
-            }
-        }
-
+        /// <summary>
+        /// Obtains the opcode and executes the action associated to it
+        /// </summary>
         private void ProcessOpcode()
         {
             try
@@ -309,6 +358,9 @@ namespace C8POC
             delayTimer = 0;
         }
 
+        /// <summary>
+        /// Loads the font set in memory
+        /// </summary>
         private void LoadFontSet()
         {
             for (var i = 0; i < chip8FontSet.Length; ++i)
@@ -317,17 +369,26 @@ namespace C8POC
             }
         }
 
+        /// <summary>
+        /// Initializes keyboard structure
+        /// </summary>
         private void SetupInput()
         {
             keys.SetAll(false);
         }
 
+        /// <summary>
+        /// Initializes graphics
+        /// </summary>
         private void SetupGraphics()
         {
             graphics.SetAll(false);
             DrawGraphics();
         }
 
+        /// <summary>
+        /// Sets the instruction map up for fast opcode decoding
+        /// </summary>
         private void SetUpInstructionMap()
         {
             instructionMap.Add(0x0000, GoToRoutineStartingWithZero);
@@ -369,20 +430,54 @@ namespace C8POC
             instructionMap.Add(0xF065, LoadFromValueInRegisterIntoAllRegisters);
         }
 
+        /// <summary>
+        /// Sets a default keyboard in groups of four 1-4,Q-R,A-F,Z-V
+        /// </summary>
+        private void SetUpDefaultKeyMap()
+        {
+            this.keyMap.Add(49, 0);
+            this.keyMap.Add(50, 1);
+            this.keyMap.Add(51, 2);
+            this.keyMap.Add(52, 3);
+            this.keyMap.Add(81, 4);
+            this.keyMap.Add(87, 5);
+            this.keyMap.Add(69, 6);
+            this.keyMap.Add(82, 7);
+            this.keyMap.Add(65, 8);
+            this.keyMap.Add(83, 9);
+            this.keyMap.Add(68, 10);
+            this.keyMap.Add(70, 11);
+            this.keyMap.Add(90, 12);
+            this.keyMap.Add(88, 13);
+            this.keyMap.Add(67, 14);
+            this.keyMap.Add(86, 15);
+        }
+
+        /// <summary>
+        /// Increases the program counter
+        /// </summary>
         private void IncreaseProgramCounter()
         {
             programCounter += 2;
         }
 
+        /// <summary>
+        /// Initializes the timer, it fires on every frame
+        /// </summary>
         private void InitializeTimer()
         {
             MicroTimer = new MicroTimer
                              {Interval = (long)((1.0/Settings.Default.FramesPerSecond)*1000.0*1000.0)};
             
-            MicroTimer.MicroTimerElapsed += TimerTick;
+            MicroTimer.MicroTimerElapsed += EmulateFrame;
         }
 
-        private void TimerTick(object sender, MicroTimerEventArgs timerEventArgs)
+        /// <summary>
+        /// Event fired to emulate each frame
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="timerEventArgs"></param>
+        private void EmulateFrame(object sender, MicroTimerEventArgs timerEventArgs)
         {
             for (int operationNum = 0; operationNum < Settings.Default.OperationsPerFrame; operationNum++)
             {
