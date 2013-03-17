@@ -13,7 +13,8 @@ namespace One
         {
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
             routes.IgnoreRoute("api/{*pathInfo}");
-
+            routes.MapHubs();
+            
             routes.MapRoute(
                 name: "Default",
                 url: "{controller}/{action}/{id}",

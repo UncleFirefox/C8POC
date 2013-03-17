@@ -173,6 +173,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebServiceExamples.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="EmulatorHub.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
