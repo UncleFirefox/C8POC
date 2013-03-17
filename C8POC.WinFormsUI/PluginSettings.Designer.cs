@@ -29,22 +29,22 @@
         private void InitializeComponent()
         {
             this.groupBoxGraphics = new System.Windows.Forms.GroupBox();
-            this.groupBoxSound = new System.Windows.Forms.GroupBox();
-            this.groupBoxKeyInput = new System.Windows.Forms.GroupBox();
-            this.comboBoxGraphics = new System.Windows.Forms.ComboBox();
-            this.buttonGraphicsConfig = new System.Windows.Forms.Button();
-            this.buttonGraphicsTest = new System.Windows.Forms.Button();
             this.buttonGraphicsAbout = new System.Windows.Forms.Button();
+            this.buttonGraphicsTest = new System.Windows.Forms.Button();
+            this.buttonGraphicsConfig = new System.Windows.Forms.Button();
+            this.comboBoxGraphics = new System.Windows.Forms.ComboBox();
+            this.groupBoxSound = new System.Windows.Forms.GroupBox();
+            this.buttonSoundAbout = new System.Windows.Forms.Button();
+            this.buttonSoundTest = new System.Windows.Forms.Button();
+            this.buttonSoundConfig = new System.Windows.Forms.Button();
+            this.comboBoxSound = new System.Windows.Forms.ComboBox();
+            this.groupBoxKeyInput = new System.Windows.Forms.GroupBox();
+            this.buttonKeyInputAbout = new System.Windows.Forms.Button();
+            this.buttonKeyInputTest = new System.Windows.Forms.Button();
+            this.buttonKeyInputConfig = new System.Windows.Forms.Button();
+            this.comboBoxKeyInput = new System.Windows.Forms.ComboBox();
             this.buttonSettingsCancel = new System.Windows.Forms.Button();
             this.buttonSettingsOk = new System.Windows.Forms.Button();
-            this.button1 = new System.Windows.Forms.Button();
-            this.button2 = new System.Windows.Forms.Button();
-            this.button3 = new System.Windows.Forms.Button();
-            this.comboBoxSound = new System.Windows.Forms.ComboBox();
-            this.button4 = new System.Windows.Forms.Button();
-            this.button5 = new System.Windows.Forms.Button();
-            this.button6 = new System.Windows.Forms.Button();
-            this.comboBoxKeyInput = new System.Windows.Forms.ComboBox();
             this.groupBoxGraphics.SuspendLayout();
             this.groupBoxSound.SuspendLayout();
             this.groupBoxKeyInput.SuspendLayout();
@@ -63,48 +63,14 @@
             this.groupBoxGraphics.TabStop = false;
             this.groupBoxGraphics.Text = "Graphics";
             // 
-            // groupBoxSound
+            // buttonGraphicsAbout
             // 
-            this.groupBoxSound.Controls.Add(this.button1);
-            this.groupBoxSound.Controls.Add(this.button2);
-            this.groupBoxSound.Controls.Add(this.button3);
-            this.groupBoxSound.Controls.Add(this.comboBoxSound);
-            this.groupBoxSound.Location = new System.Drawing.Point(13, 105);
-            this.groupBoxSound.Name = "groupBoxSound";
-            this.groupBoxSound.Size = new System.Drawing.Size(317, 66);
-            this.groupBoxSound.TabIndex = 1;
-            this.groupBoxSound.TabStop = false;
-            this.groupBoxSound.Text = "Sound";
-            // 
-            // groupBoxKeyInput
-            // 
-            this.groupBoxKeyInput.Controls.Add(this.button4);
-            this.groupBoxKeyInput.Controls.Add(this.button5);
-            this.groupBoxKeyInput.Controls.Add(this.button6);
-            this.groupBoxKeyInput.Controls.Add(this.comboBoxKeyInput);
-            this.groupBoxKeyInput.Location = new System.Drawing.Point(13, 198);
-            this.groupBoxKeyInput.Name = "groupBoxKeyInput";
-            this.groupBoxKeyInput.Size = new System.Drawing.Size(317, 66);
-            this.groupBoxKeyInput.TabIndex = 2;
-            this.groupBoxKeyInput.TabStop = false;
-            this.groupBoxKeyInput.Text = "Key Input";
-            // 
-            // comboBoxGraphics
-            // 
-            this.comboBoxGraphics.FormattingEnabled = true;
-            this.comboBoxGraphics.Location = new System.Drawing.Point(7, 28);
-            this.comboBoxGraphics.Name = "comboBoxGraphics";
-            this.comboBoxGraphics.Size = new System.Drawing.Size(145, 21);
-            this.comboBoxGraphics.TabIndex = 0;
-            // 
-            // buttonGraphicsConfig
-            // 
-            this.buttonGraphicsConfig.Location = new System.Drawing.Point(158, 28);
-            this.buttonGraphicsConfig.Name = "buttonGraphicsConfig";
-            this.buttonGraphicsConfig.Size = new System.Drawing.Size(55, 23);
-            this.buttonGraphicsConfig.TabIndex = 1;
-            this.buttonGraphicsConfig.Text = "Config...";
-            this.buttonGraphicsConfig.UseVisualStyleBackColor = true;
+            this.buttonGraphicsAbout.Location = new System.Drawing.Point(255, 28);
+            this.buttonGraphicsAbout.Name = "buttonGraphicsAbout";
+            this.buttonGraphicsAbout.Size = new System.Drawing.Size(55, 23);
+            this.buttonGraphicsAbout.TabIndex = 3;
+            this.buttonGraphicsAbout.Text = "About...";
+            this.buttonGraphicsAbout.UseVisualStyleBackColor = true;
             // 
             // buttonGraphicsTest
             // 
@@ -115,14 +81,118 @@
             this.buttonGraphicsTest.Text = "Test";
             this.buttonGraphicsTest.UseVisualStyleBackColor = true;
             // 
-            // buttonGraphicsAbout
+            // buttonGraphicsConfig
             // 
-            this.buttonGraphicsAbout.Location = new System.Drawing.Point(255, 28);
-            this.buttonGraphicsAbout.Name = "buttonGraphicsAbout";
-            this.buttonGraphicsAbout.Size = new System.Drawing.Size(55, 23);
-            this.buttonGraphicsAbout.TabIndex = 3;
-            this.buttonGraphicsAbout.Text = "About...";
-            this.buttonGraphicsAbout.UseVisualStyleBackColor = true;
+            this.buttonGraphicsConfig.Location = new System.Drawing.Point(158, 28);
+            this.buttonGraphicsConfig.Name = "buttonGraphicsConfig";
+            this.buttonGraphicsConfig.Size = new System.Drawing.Size(55, 23);
+            this.buttonGraphicsConfig.TabIndex = 1;
+            this.buttonGraphicsConfig.Text = "Config...";
+            this.buttonGraphicsConfig.UseVisualStyleBackColor = true;
+            // 
+            // comboBoxGraphics
+            // 
+            this.comboBoxGraphics.FormattingEnabled = true;
+            this.comboBoxGraphics.Location = new System.Drawing.Point(7, 28);
+            this.comboBoxGraphics.Name = "comboBoxGraphics";
+            this.comboBoxGraphics.Size = new System.Drawing.Size(145, 21);
+            this.comboBoxGraphics.TabIndex = 0;
+            // 
+            // groupBoxSound
+            // 
+            this.groupBoxSound.Controls.Add(this.buttonSoundAbout);
+            this.groupBoxSound.Controls.Add(this.buttonSoundTest);
+            this.groupBoxSound.Controls.Add(this.buttonSoundConfig);
+            this.groupBoxSound.Controls.Add(this.comboBoxSound);
+            this.groupBoxSound.Location = new System.Drawing.Point(13, 105);
+            this.groupBoxSound.Name = "groupBoxSound";
+            this.groupBoxSound.Size = new System.Drawing.Size(317, 66);
+            this.groupBoxSound.TabIndex = 1;
+            this.groupBoxSound.TabStop = false;
+            this.groupBoxSound.Text = "Sound";
+            // 
+            // buttonSoundAbout
+            // 
+            this.buttonSoundAbout.Location = new System.Drawing.Point(254, 28);
+            this.buttonSoundAbout.Name = "buttonSoundAbout";
+            this.buttonSoundAbout.Size = new System.Drawing.Size(55, 23);
+            this.buttonSoundAbout.TabIndex = 7;
+            this.buttonSoundAbout.Text = "About...";
+            this.buttonSoundAbout.UseVisualStyleBackColor = true;
+            // 
+            // buttonSoundTest
+            // 
+            this.buttonSoundTest.Location = new System.Drawing.Point(215, 28);
+            this.buttonSoundTest.Name = "buttonSoundTest";
+            this.buttonSoundTest.Size = new System.Drawing.Size(36, 23);
+            this.buttonSoundTest.TabIndex = 6;
+            this.buttonSoundTest.Text = "Test";
+            this.buttonSoundTest.UseVisualStyleBackColor = true;
+            // 
+            // buttonSoundConfig
+            // 
+            this.buttonSoundConfig.Location = new System.Drawing.Point(157, 28);
+            this.buttonSoundConfig.Name = "buttonSoundConfig";
+            this.buttonSoundConfig.Size = new System.Drawing.Size(55, 23);
+            this.buttonSoundConfig.TabIndex = 5;
+            this.buttonSoundConfig.Text = "Config...";
+            this.buttonSoundConfig.UseVisualStyleBackColor = true;
+            // 
+            // comboBoxSound
+            // 
+            this.comboBoxSound.FormattingEnabled = true;
+            this.comboBoxSound.Location = new System.Drawing.Point(6, 28);
+            this.comboBoxSound.Name = "comboBoxSound";
+            this.comboBoxSound.Size = new System.Drawing.Size(145, 21);
+            this.comboBoxSound.TabIndex = 4;
+            // 
+            // groupBoxKeyInput
+            // 
+            this.groupBoxKeyInput.Controls.Add(this.buttonKeyInputAbout);
+            this.groupBoxKeyInput.Controls.Add(this.buttonKeyInputTest);
+            this.groupBoxKeyInput.Controls.Add(this.buttonKeyInputConfig);
+            this.groupBoxKeyInput.Controls.Add(this.comboBoxKeyInput);
+            this.groupBoxKeyInput.Location = new System.Drawing.Point(13, 198);
+            this.groupBoxKeyInput.Name = "groupBoxKeyInput";
+            this.groupBoxKeyInput.Size = new System.Drawing.Size(317, 66);
+            this.groupBoxKeyInput.TabIndex = 2;
+            this.groupBoxKeyInput.TabStop = false;
+            this.groupBoxKeyInput.Text = "Key Input";
+            // 
+            // buttonKeyInputAbout
+            // 
+            this.buttonKeyInputAbout.Location = new System.Drawing.Point(254, 29);
+            this.buttonKeyInputAbout.Name = "buttonKeyInputAbout";
+            this.buttonKeyInputAbout.Size = new System.Drawing.Size(55, 23);
+            this.buttonKeyInputAbout.TabIndex = 7;
+            this.buttonKeyInputAbout.Text = "About...";
+            this.buttonKeyInputAbout.UseVisualStyleBackColor = true;
+            // 
+            // buttonKeyInputTest
+            // 
+            this.buttonKeyInputTest.Location = new System.Drawing.Point(215, 29);
+            this.buttonKeyInputTest.Name = "buttonKeyInputTest";
+            this.buttonKeyInputTest.Size = new System.Drawing.Size(36, 23);
+            this.buttonKeyInputTest.TabIndex = 6;
+            this.buttonKeyInputTest.Text = "Test";
+            this.buttonKeyInputTest.UseVisualStyleBackColor = true;
+            // 
+            // buttonKeyInputConfig
+            // 
+            this.buttonKeyInputConfig.Location = new System.Drawing.Point(157, 29);
+            this.buttonKeyInputConfig.Name = "buttonKeyInputConfig";
+            this.buttonKeyInputConfig.Size = new System.Drawing.Size(55, 23);
+            this.buttonKeyInputConfig.TabIndex = 5;
+            this.buttonKeyInputConfig.Text = "Config...";
+            this.buttonKeyInputConfig.UseVisualStyleBackColor = true;
+            // 
+            // comboBoxKeyInput
+            // 
+            this.comboBoxKeyInput.FormattingEnabled = true;
+            this.comboBoxKeyInput.Location = new System.Drawing.Point(6, 29);
+            this.comboBoxKeyInput.Name = "comboBoxKeyInput";
+            this.comboBoxKeyInput.Size = new System.Drawing.Size(145, 21);
+            this.comboBoxKeyInput.TabIndex = 4;
             // 
             // buttonSettingsCancel
             // 
@@ -142,80 +212,12 @@
             this.buttonSettingsOk.Text = "OK";
             this.buttonSettingsOk.UseVisualStyleBackColor = true;
             // 
-            // button1
-            // 
-            this.button1.Location = new System.Drawing.Point(254, 28);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(55, 23);
-            this.button1.TabIndex = 7;
-            this.button1.Text = "About...";
-            this.button1.UseVisualStyleBackColor = true;
-            // 
-            // button2
-            // 
-            this.button2.Location = new System.Drawing.Point(215, 28);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(36, 23);
-            this.button2.TabIndex = 6;
-            this.button2.Text = "Test";
-            this.button2.UseVisualStyleBackColor = true;
-            // 
-            // button3
-            // 
-            this.button3.Location = new System.Drawing.Point(157, 28);
-            this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(55, 23);
-            this.button3.TabIndex = 5;
-            this.button3.Text = "Config...";
-            this.button3.UseVisualStyleBackColor = true;
-            // 
-            // comboBoxSound
-            // 
-            this.comboBoxSound.FormattingEnabled = true;
-            this.comboBoxSound.Location = new System.Drawing.Point(6, 28);
-            this.comboBoxSound.Name = "comboBoxSound";
-            this.comboBoxSound.Size = new System.Drawing.Size(145, 21);
-            this.comboBoxSound.TabIndex = 4;
-            // 
-            // button4
-            // 
-            this.button4.Location = new System.Drawing.Point(254, 29);
-            this.button4.Name = "button4";
-            this.button4.Size = new System.Drawing.Size(55, 23);
-            this.button4.TabIndex = 7;
-            this.button4.Text = "About...";
-            this.button4.UseVisualStyleBackColor = true;
-            // 
-            // button5
-            // 
-            this.button5.Location = new System.Drawing.Point(215, 29);
-            this.button5.Name = "button5";
-            this.button5.Size = new System.Drawing.Size(36, 23);
-            this.button5.TabIndex = 6;
-            this.button5.Text = "Test";
-            this.button5.UseVisualStyleBackColor = true;
-            // 
-            // button6
-            // 
-            this.button6.Location = new System.Drawing.Point(157, 29);
-            this.button6.Name = "button6";
-            this.button6.Size = new System.Drawing.Size(55, 23);
-            this.button6.TabIndex = 5;
-            this.button6.Text = "Config...";
-            this.button6.UseVisualStyleBackColor = true;
-            // 
-            // comboBoxKeyInput
-            // 
-            this.comboBoxKeyInput.FormattingEnabled = true;
-            this.comboBoxKeyInput.Location = new System.Drawing.Point(6, 29);
-            this.comboBoxKeyInput.Name = "comboBoxKeyInput";
-            this.comboBoxKeyInput.Size = new System.Drawing.Size(145, 21);
-            this.comboBoxKeyInput.TabIndex = 4;
-            // 
             // PluginSettings
             // 
+            this.AcceptButton = this.buttonSettingsOk;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.CancelButton = this.buttonSettingsCancel;
             this.ClientSize = new System.Drawing.Size(342, 323);
             this.Controls.Add(this.buttonSettingsOk);
             this.Controls.Add(this.buttonSettingsCancel);
@@ -223,6 +225,7 @@
             this.Controls.Add(this.groupBoxSound);
             this.Controls.Add(this.groupBoxGraphics);
             this.Name = "PluginSettings";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Plugin Configuration";
             this.groupBoxGraphics.ResumeLayout(false);
             this.groupBoxSound.ResumeLayout(false);
@@ -240,13 +243,13 @@
         private System.Windows.Forms.Button buttonGraphicsConfig;
         private System.Windows.Forms.ComboBox comboBoxGraphics;
         private System.Windows.Forms.Button buttonGraphicsAbout;
-        private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.Button button2;
-        private System.Windows.Forms.Button button3;
+        private System.Windows.Forms.Button buttonSoundAbout;
+        private System.Windows.Forms.Button buttonSoundTest;
+        private System.Windows.Forms.Button buttonSoundConfig;
         private System.Windows.Forms.ComboBox comboBoxSound;
-        private System.Windows.Forms.Button button4;
-        private System.Windows.Forms.Button button5;
-        private System.Windows.Forms.Button button6;
+        private System.Windows.Forms.Button buttonKeyInputAbout;
+        private System.Windows.Forms.Button buttonKeyInputTest;
+        private System.Windows.Forms.Button buttonKeyInputConfig;
         private System.Windows.Forms.ComboBox comboBoxKeyInput;
         private System.Windows.Forms.Button buttonSettingsCancel;
         private System.Windows.Forms.Button buttonSettingsOk;

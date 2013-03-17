@@ -102,5 +102,11 @@ namespace C8POC.WinFormsUI
         {
             emulator.StartEmulator();
         }
+
+        private void pluginSettingsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            PluginSettings form = new PluginSettings();
+            form.ShowDialog();
+        }
     }
 }
