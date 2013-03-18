@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{13D18A20-EFB2-45F1-AFCE-5AB37A102E1C}</ProjectGuid>
+    <ProjectGuid>{8D633DEB-08C0-4BF5-AD8F-D5247C0301A8}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>C8POC</RootNamespace>
-    <AssemblyName>C8POC</AssemblyName>
+    <RootNamespace>C8POC.Plugins.Sound.ConsoleBeep</RootNamespace>
+    <AssemblyName>C8POC.Plugins.Sound.ConsoleBeep</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -40,26 +40,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="C8Engine.cs" />
-    <Compile Include="Interfaces\IGraphicsPlugin.cs" />
-    <Compile Include="Interfaces\IKeyboardPlugin.cs" />
-    <Compile Include="Interfaces\IPlugin.cs" />
-    <Compile Include="Interfaces\ISoundPlugin.cs" />
-    <Compile Include="Interfaces\ITrucha.cs" />
-    <Compile Include="MicroLibrary.cs" />
+    <Compile Include="ConsoleBeep.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Properties\Settings.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
-      <DependentUpon>Settings.settings</DependentUpon>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.config" />
-    <None Include="Properties\Settings.settings">
-      <Generator>PublicSettingsSingleFileGenerator</Generator>
-      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
-    </None>
+    <ProjectReference Include="..\C8POC\C8POC.csproj">
+      <Project>{13D18A20-EFB2-45F1-AFCE-5AB37A102E1C}</Project>
+      <Name>C8POC</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "C8POC.WinFormsUI", "C8POC.W
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "C8POC.ConsoleUI", "C8POC.ConsoleUI\C8POC.ConsoleUI.csproj", "{8E303761-F087-435D-839C-5C304F9039BD}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "C8POC.Plugins.Sound.ConsoleBeep", "C8POC.Plugins.Sound.ConsoleBeep\C8POC.Plugins.Sound.ConsoleBeep.csproj", "{8D633DEB-08C0-4BF5-AD8F-D5247C0301A8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -47,6 +49,16 @@ Global
 		{8E303761-F087-435D-839C-5C304F9039BD}.Release|Mixed Platforms.Build.0 = Release|x86
 		{8E303761-F087-435D-839C-5C304F9039BD}.Release|x86.ActiveCfg = Release|x86
 		{8E303761-F087-435D-839C-5C304F9039BD}.Release|x86.Build.0 = Release|x86
+		{8D633DEB-08C0-4BF5-AD8F-D5247C0301A8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8D633DEB-08C0-4BF5-AD8F-D5247C0301A8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8D633DEB-08C0-4BF5-AD8F-D5247C0301A8}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{8D633DEB-08C0-4BF5-AD8F-D5247C0301A8}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{8D633DEB-08C0-4BF5-AD8F-D5247C0301A8}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{8D633DEB-08C0-4BF5-AD8F-D5247C0301A8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8D633DEB-08C0-4BF5-AD8F-D5247C0301A8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8D633DEB-08C0-4BF5-AD8F-D5247C0301A8}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{8D633DEB-08C0-4BF5-AD8F-D5247C0301A8}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{8D633DEB-08C0-4BF5-AD8F-D5247C0301A8}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

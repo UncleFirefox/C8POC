@@ -8,6 +8,8 @@ using MicroLibrary;
 
 namespace C8POC
 {
+    using C8POC.Interfaces;
+
     public class C8Engine
     {
         #region Emulator Constants
