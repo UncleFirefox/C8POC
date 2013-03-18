@@ -7,14 +7,15 @@
     @Scripts.Render("~/bundles/modernizr")
     @Styles.Render("~/Content/bootstrap")
 </head>
-<body data-spy="scroll" data-target=".nav-list" style="padding-top:40px;">    
-    <div class="navbar navbar-fixed-top">
+<body data-spy="scroll" data-target=".nav-list" style="padding-top:0px;">    
+    <div class="navbar">
       <div class="navbar-inner">
         <a class="brand" href="@Url.Action("Index","Home")">CHIP-8</a>
         <ul class="nav">
           <li><a href="@Url.Action("Index","Home")">Applications</a></li>
           <li><a href="@Url.Action("Today","Home")">Today</a></li>
-          <li><a href="@Url.Action("VirtualMachine","Home")">Virtual machine</a></li>
+            <li><a href="@Url.Action("VirtualMachine","Home")">Virtual machine</a></li>
+            <li><a href="@Url.Action("Play", "Home")">Play</a></li>
         </ul>
       </div>
     </div>
@@ -33,6 +34,7 @@
     </div>
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
+    @Scripts.Render("~/bundles/mouse")
     <script type="text/javascript">
         $('ul.nav a').filter(function () {
             return this.href == window.location;

@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>mousetrap</id>
+    <version>1.3</version>
+    <title>Mousetrap</title>
+    <authors>Craig Campbell</authors>
+    <owners>Craig Campbell</owners>
+    <projectUrl>http://craig.is/killing/mice</projectUrl>
+    <iconUrl>http://cdn.craig.is/img/favicon/mousetrap.png</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Mousetrap is a standalone library with no external dependencies. It weighs in at around 1.7kb minified and gzipped and 3kb minified.
+
+Visit http://craig.is/killing/mice for code samples and documentation.</description>
+    <summary>A simple library for handling keyboard shortcuts in Javascript.</summary>
+    <releaseNotes>- .unbind() now accepts an array.
+- Formatting fixes.
+- Fix error with trigger if nothing is bound to key.</releaseNotes>
+    <copyright />
+    <language />
+    <tags>keyboard shortcut mouse javascript</tags>
+    <references />
+  </metadata>
+</package>

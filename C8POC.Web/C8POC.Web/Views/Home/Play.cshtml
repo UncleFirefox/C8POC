@@ -1,0 +1,18 @@
+﻿@model dynamic
+
+@{
+    ViewBag.Title = "Play";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<button class="btn" id="up" onclick="alert('up');"><i class="icon-arrow-up"></i></button>
+<button class="btn" id="down"><i class="icon-arrow-down"></i></button>
+<button class="btn" id="left"><i class="icon-arrow-left"></i></button>
+<button class="btn" id="right"><i class="icon-arrow-right"></i></button>
+@section scripts {
+  
+    <script type="text/javascript">
+        Mousetrap.bind('up', function () { $("#up").click(); });
+    </script>
+      
+}

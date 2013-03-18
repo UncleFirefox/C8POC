@@ -271,6 +271,8 @@
     <Content Include="Scripts\knockout-2.2.0.debug.js" />
     <Content Include="Scripts\knockout-2.2.0.js" />
     <Content Include="Scripts\modernizr-2.6.2.js" />
+    <Content Include="Scripts\mousetrap.js" />
+    <Content Include="Scripts\mousetrap.min.js" />
     <Content Include="Scripts\_references.js" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
@@ -286,6 +288,7 @@
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\Home\Today.cshtml" />
     <Content Include="Views\Home\VirtualMachine.cshtml" />
+    <Content Include="Views\Home\Play.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="00.-Infrastructure\" />
