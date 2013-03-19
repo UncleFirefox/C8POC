@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>mousetrap.extension.global</id>
+    <version>1.0.0</version>
+    <title>Mousetrap Extension - Global Bindings</title>
+    <authors>Craig Campbell</authors>
+    <owners>Craig Campbell</owners>
+    <projectUrl>http://craig.is/killing/mice</projectUrl>
+    <iconUrl>http://cdn.craig.is/img/favicon/mousetrap.png</iconUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>This extension allows you to specify keyboard events that will work anywhere including inside textarea/input fields.
+
+To use this extension, all you have to do is include the javascript on your page after you include Mousetrap.</description>
+    <summary>This extension allows you to specify keyboard events that will work anywhere including inside textarea/input fields.</summary>
+    <releaseNotes />
+    <copyright />
+    <language />
+    <tags>keyboard shortcut mouse javascript mousetrap extension textarea input</tags>
+    <dependencies>
+      <dependency id="mousetrap" version="1.2.1" />
+    </dependencies>
+    <references />
+  </metadata>
+</package>

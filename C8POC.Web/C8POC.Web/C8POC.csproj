@@ -271,6 +271,8 @@
     <Content Include="Scripts\knockout-2.2.0.debug.js" />
     <Content Include="Scripts\knockout-2.2.0.js" />
     <Content Include="Scripts\modernizr-2.6.2.js" />
+    <Content Include="Scripts\mousetrap-global.js" />
+    <Content Include="Scripts\mousetrap-global.min.js" />
     <Content Include="Scripts\mousetrap.js" />
     <Content Include="Scripts\mousetrap.min.js" />
     <Content Include="Scripts\_references.js" />
