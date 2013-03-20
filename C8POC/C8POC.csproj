@@ -45,7 +45,6 @@
     <Compile Include="Interfaces\IKeyboardPlugin.cs" />
     <Compile Include="Interfaces\IPlugin.cs" />
     <Compile Include="Interfaces\ISoundPlugin.cs" />
-    <Compile Include="Interfaces\ITrucha.cs" />
     <Compile Include="MicroLibrary.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Settings.Designer.cs">

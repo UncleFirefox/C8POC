@@ -1,24 +1,45 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Windows.Forms;
 
 namespace C8POC.Plugins.Sound.ConsoleBeep
 {
+    using System;
+    using System.ComponentModel.Composition;
+
     using C8POC.Interfaces;
 
+    /// <summary>
+    /// Early implementation of a Sound Class
+    /// </summary>
+    [Export(typeof(ISoundPlugin))]
     public class ConsoleSoundBeepPlugin : ISoundPlugin
     {
-        public void Configure()
+        public string PluginDescription
         {
-            throw new NotImplementedException();
+            get
+            {
+                return "Sound Plugin Based on Console.Beep vBeta";
+            }
         }
 
+        /// <summary>
+        /// Configuration for plugin
+        /// </summary>
+        public void Configure()
+        {
+            MessageBox.Show("Nothing to configure", "Plugin Configuration");
+        }
+
+        /// <summary>
+        /// About plugin implementation
+        /// </summary>
         public void AboutPlugin()
         {
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Action to generate sound
+        /// </summary>
         public void GenerateSound()
         {
             Console.Beep();

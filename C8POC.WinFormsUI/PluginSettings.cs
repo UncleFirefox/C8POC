@@ -1,47 +1,75 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Windows.Forms;
+using C8POC.Interfaces;
 
 namespace C8POC.WinFormsUI
 {
-    using System.IO;
-    using System.Reflection;
-
-    using C8POC.Interfaces;
+    using System.ComponentModel.Composition;
+    using System.ComponentModel.Composition.Hosting;
+    using System.Windows.Forms;
+    using System.Linq;
 
     public partial class PluginSettings : Form
     {
         public PluginSettings()
         {
-            InitializeComponent();
-            LoadPluginAssemblies();
+            this.InitializeComponent();
+            this.LoadPluginAssemblies();
         }
 
         private void LoadPluginAssemblies()
         {
-            var files = Directory.GetFiles(Path.Combine(Environment.CurrentDirectory, "Plugins"), "*.dll");
-            var assemblies = files.Select(Assembly.LoadFile);
+            //Approach with MEF
+            PluginContainer builder = new PluginContainer();
+            DirectoryCatalog catalog = new DirectoryCatalog("Plugins", "*.dll");
+            CompositionContainer container = new CompositionContainer(catalog);
+            container.ComposeParts(builder);
 
-            var assemblyFiltered = from asm in assemblies
-                                    from type in asm.GetTypes()
-                                    from iface in type.GetInterfaces()
-                                    where iface.IsAssignableFrom(typeof(ISoundPlugin)) &&
-                                          iface.FullName == typeof (ISoundPlugin).FullName
-                                    //select new {AsmName = asm.FullName, ObjectType = type};
-                                    select asm;
+            LoadPluginsInCombo(builder.SoundPlugins, comboBoxSound);
+            LoadPluginsInCombo(builder.GraphicsPlugins,comboBoxGraphics);
+            LoadPluginsInCombo(builder.KeyboardPlugins, comboBoxKeyInput);
+        }
 
-            var assemblylist = assemblyFiltered.ToList();
-            
-            var assemblynameslist =
-                assemblyFiltered.Select(
-                    x =>
-                    ((AssemblyTitleAttribute)
-                     x.GetCustomAttributes(typeof (AssemblyTitleAttribute), false).FirstOrDefault()).Title);
+        private void LoadPluginsInCombo(IEnumerable<IPlugin> pluginList, ComboBox combo)
+        {
+            if (pluginList.Any())
+            {
+                var plugins = pluginList.ToDictionary(x => x, x => x.PluginDescription);
+                BindDictionaryToComboBox(combo, plugins);
+            }
+        }
+
+        private static void BindDictionaryToComboBox(ComboBox combo, Dictionary<IPlugin, string> plugins)
+        {
+            combo.DataSource = new BindingSource(plugins, null);
+            combo.DisplayMember = "Value";
+            combo.ValueMember = "Key";
+        }
+
+        private void buttonSoundConfig_Click(object sender, EventArgs e)
+        {
+            ConfigurePlugin(comboBoxSound);
+        }
+
+        private void buttonGraphicsConfig_Click(object sender, EventArgs e)
+        {
+            ConfigurePlugin(comboBoxGraphics);
+        }
+
+        private void buttonKeyInputConfig_Click(object sender, EventArgs e)
+        {
+            ConfigurePlugin(comboBoxKeyInput);
+        }
+
+        private void ConfigurePlugin(ComboBox comboBox)
+        {
+            var plugin = comboBox.SelectedValue as IPlugin;
+
+            if (plugin != null)
+            {
+                plugin.Configure();
+            }
         }
     }
 }

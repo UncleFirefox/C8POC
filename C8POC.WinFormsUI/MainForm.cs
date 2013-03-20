@@ -1,39 +1,169 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Windows.Forms;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="MainForm.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   The main form.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
 
 namespace C8POC.WinFormsUI
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Drawing;
+    using System.Windows.Forms;
+
+    /// <summary>
+    /// The main form.
+    /// </summary>
     public partial class MainForm : Form
     {
-        private C8Engine emulator;
+        #region Constants and Fields
+
+        /// <summary>
+        /// The brush.
+        /// </summary>
         private Brush brush = new SolidBrush(Color.White);
 
+        /// <summary>
+        /// The emulator.
+        /// </summary>
+        private C8Engine emulator;
+
+        #endregion
+
+        #region Constructors and Destructors
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MainForm"/> class.
+        /// </summary>
         public MainForm()
         {
-            InitializeComponent();
-            emulator = new C8Engine();
-            emulator.ScreenChanged += emulator_ScreenChanged;
-            this.KeyDown += MainForm_KeyDown;
-            this.KeyUp += MainForm_KeyUp;
+            this.InitializeComponent();
+            this.emulator = new C8Engine();
+            this.emulator.ScreenChanged += this.emulator_ScreenChanged;
+            this.KeyDown += this.MainForm_KeyDown;
+            this.KeyUp += this.MainForm_KeyUp;
         }
 
-        void MainForm_KeyUp(object sender, KeyEventArgs e)
+        #endregion
+
+        #region Methods
+
+        /// <summary>
+        /// The exit tool strip menu item click.
+        /// </summary>
+        /// <param name="sender">
+        /// The sender.
+        /// </param>
+        /// <param name="e">
+        /// The e.
+        /// </param>
+        private void ExitToolStripMenuItemClick(object sender, EventArgs e)
         {
-            emulator.KeyUp(e.KeyValue);
+            this.emulator.StopEmulator();
+            this.Close();
         }
 
-        void MainForm_KeyDown(object sender, KeyEventArgs e)
+        /// <summary>
+        /// The main form_ form closing.
+        /// </summary>
+        /// <param name="sender">
+        /// The sender.
+        /// </param>
+        /// <param name="e">
+        /// The e.
+        /// </param>
+        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            emulator.KeyDown(e.KeyValue);
+            this.emulator.StopEmulator();
         }
 
-        void emulator_ScreenChanged(object sender, EventArgs e)
+        /// <summary>
+        /// The main form_ key down.
+        /// </summary>
+        /// <param name="sender">
+        /// The sender.
+        /// </param>
+        /// <param name="e">
+        /// The e.
+        /// </param>
+        private void MainForm_KeyDown(object sender, KeyEventArgs e)
+        {
+            this.emulator.KeyDown(e.KeyValue);
+        }
+
+        /// <summary>
+        /// The main form_ key up.
+        /// </summary>
+        /// <param name="sender">
+        /// The sender.
+        /// </param>
+        /// <param name="e">
+        /// The e.
+        /// </param>
+        private void MainForm_KeyUp(object sender, KeyEventArgs e)
+        {
+            this.emulator.KeyUp(e.KeyValue);
+        }
+
+        /// <summary>
+        /// The main form_ resize begin.
+        /// </summary>
+        /// <param name="sender">
+        /// The sender.
+        /// </param>
+        /// <param name="e">
+        /// The e.
+        /// </param>
+        private void MainForm_ResizeBegin(object sender, EventArgs e)
+        {
+            this.emulator.StopEmulator();
+        }
+
+        /// <summary>
+        /// The main form_ resize end.
+        /// </summary>
+        /// <param name="sender">
+        /// The sender.
+        /// </param>
+        /// <param name="e">
+        /// The e.
+        /// </param>
+        private void MainForm_ResizeEnd(object sender, EventArgs e)
+        {
+            this.emulator.StartEmulator();
+        }
+
+        /// <summary>
+        /// The open rom tool strip menu item click.
+        /// </summary>
+        /// <param name="sender">
+        /// The sender.
+        /// </param>
+        /// <param name="e">
+        /// The e.
+        /// </param>
+        private void OpenRomToolStripMenuItemClick(object sender, EventArgs e)
+        {
+            if (this.openFileDialogRom.ShowDialog() == DialogResult.OK)
+            {
+                this.emulator.LoadEmulator(this.openFileDialogRom.FileName);
+                this.emulator.StartEmulator();
+            }
+        }
+
+        /// <summary>
+        /// The emulator_ screen changed.
+        /// </summary>
+        /// <param name="sender">
+        /// The sender.
+        /// </param>
+        /// <param name="e">
+        /// The e.
+        /// </param>
+        private void emulator_ScreenChanged(object sender, EventArgs e)
         {
             var rectangles = new List<Rectangle>();
 
@@ -42,7 +172,7 @@ namespace C8POC.WinFormsUI
             {
                 for (var x = 0; x < 64; x++)
                 {
-                    if(((C8Engine)sender).GetPixelState(x,y))
+                    if (((C8Engine)sender).GetPixelState(x, y))
                     {
                         rectangles.Add(new Rectangle(x * 10, y * 10, 10, 10));
                     }
@@ -51,62 +181,70 @@ namespace C8POC.WinFormsUI
 
             if (rectangles.Count > 0)
             {
-                using (Graphics gfx = panelGraphics.CreateGraphics())
+                using (Graphics gfx = this.panelGraphics.CreateGraphics())
                 {
                     gfx.Clear(Color.Black);
-                    gfx.FillRectangles(brush, rectangles.ToArray());
+                    gfx.FillRectangles(this.brush, rectangles.ToArray());
                 }
             }
         }
 
-        private void OpenRomToolStripMenuItemClick(object sender, EventArgs e)
-        {
-            if(openFileDialogRom.ShowDialog() == DialogResult.OK)
-            {
-                emulator.LoadEmulator(openFileDialogRom.FileName);
-                emulator.StartEmulator();
-            }
-        }
-
-        private void ExitToolStripMenuItemClick(object sender, EventArgs e)
-        {
-            emulator.StopEmulator();
-            Close();
-        }
-
+        /// <summary>
+        /// The menu strip main window_ menu activate.
+        /// </summary>
+        /// <param name="sender">
+        /// The sender.
+        /// </param>
+        /// <param name="e">
+        /// The e.
+        /// </param>
         private void menuStripMainWindow_MenuActivate(object sender, EventArgs e)
         {
-            emulator.StopEmulator();
+            this.emulator.StopEmulator();
         }
 
+        /// <summary>
+        /// The menu strip main window_ menu deactivate.
+        /// </summary>
+        /// <param name="sender">
+        /// The sender.
+        /// </param>
+        /// <param name="e">
+        /// The e.
+        /// </param>
         private void menuStripMainWindow_MenuDeactivate(object sender, EventArgs e)
         {
-            emulator.StartEmulator();
+            this.emulator.StartEmulator();
         }
 
-        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            emulator.StopEmulator();
-        }
-
+        /// <summary>
+        /// The panel graphics_ paint.
+        /// </summary>
+        /// <param name="sender">
+        /// The sender.
+        /// </param>
+        /// <param name="e">
+        /// The e.
+        /// </param>
         private void panelGraphics_Paint(object sender, PaintEventArgs e)
         {
         }
 
-        private void MainForm_ResizeBegin(object sender, EventArgs e)
-        {
-            emulator.StopEmulator();
-        }
-
-        private void MainForm_ResizeEnd(object sender, EventArgs e)
-        {
-            emulator.StartEmulator();
-        }
-
+        /// <summary>
+        /// The plugin settings tool strip menu item_ click.
+        /// </summary>
+        /// <param name="sender">
+        /// The sender.
+        /// </param>
+        /// <param name="e">
+        /// The e.
+        /// </param>
         private void pluginSettingsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             PluginSettings form = new PluginSettings();
             form.ShowDialog();
         }
+
+        #endregion
     }
 }

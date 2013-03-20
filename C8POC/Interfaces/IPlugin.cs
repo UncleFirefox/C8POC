@@ -6,6 +6,11 @@
     public interface IPlugin
     {
         /// <summary>
+        /// Gets the plugin description
+        /// </summary>
+        string PluginDescription { get; }
+
+        /// <summary>
         /// Boots up the configuration for the plugin
         /// </summary>
         void Configure();
