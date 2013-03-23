@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{13D18A20-EFB2-45F1-AFCE-5AB37A102E1C}</ProjectGuid>
+    <ProjectGuid>{7FEF5BA1-D809-43CC-B4E1-E6FCD674D1EB}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>C8POC</RootNamespace>
-    <AssemblyName>C8POC</AssemblyName>
+    <RootNamespace>C8POC.Plugins.Graphics.GDIPlugin</RootNamespace>
+    <AssemblyName>C8POC.Plugins.Graphics.GDIPlugin</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -34,6 +34,8 @@
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -41,26 +43,25 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="C8Engine.cs" />
-    <Compile Include="Interfaces\IGraphicsPlugin.cs" />
-    <Compile Include="Interfaces\IKeyboardPlugin.cs" />
-    <Compile Include="Interfaces\IPlugin.cs" />
-    <Compile Include="Interfaces\ISoundPlugin.cs" />
-    <Compile Include="MicroLibrary.cs" />
-    <Compile Include="PluginManager.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Properties\Settings.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
-      <DependentUpon>Settings.settings</DependentUpon>
+    <Compile Include="GDIPlugin.cs" />
+    <Compile Include="GraphicsForm.cs">
+      <SubType>Form</SubType>
     </Compile>
+    <Compile Include="GraphicsForm.Designer.cs">
+      <DependentUpon>GraphicsForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="app.config" />
-    <None Include="Properties\Settings.settings">
-      <Generator>PublicSettingsSingleFileGenerator</Generator>
-      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
-    </None>
+    <EmbeddedResource Include="GraphicsForm.resx">
+      <DependentUpon>GraphicsForm.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\C8POC\C8POC.csproj">
+      <Project>{13D18A20-EFB2-45F1-AFCE-5AB37A102E1C}</Project>
+      <Name>C8POC</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

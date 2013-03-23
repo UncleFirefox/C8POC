@@ -93,6 +93,7 @@
             // 
             // comboBoxGraphics
             // 
+            this.comboBoxGraphics.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxGraphics.FormattingEnabled = true;
             this.comboBoxGraphics.Location = new System.Drawing.Point(7, 28);
             this.comboBoxGraphics.Name = "comboBoxGraphics";
@@ -142,6 +143,7 @@
             // 
             // comboBoxSound
             // 
+            this.comboBoxSound.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxSound.FormattingEnabled = true;
             this.comboBoxSound.Location = new System.Drawing.Point(6, 28);
             this.comboBoxSound.Name = "comboBoxSound";
@@ -191,6 +193,7 @@
             // 
             // comboBoxKeyInput
             // 
+            this.comboBoxKeyInput.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxKeyInput.FormattingEnabled = true;
             this.comboBoxKeyInput.Location = new System.Drawing.Point(6, 29);
             this.comboBoxKeyInput.Name = "comboBoxKeyInput";

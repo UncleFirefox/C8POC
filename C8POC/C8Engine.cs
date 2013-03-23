@@ -113,9 +113,7 @@ namespace C8POC
         /// <summary>
         /// Event handler for screen changes
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        public delegate void ScreenChangeEventHandler(object sender, EventArgs e);
+        public delegate void ScreenChangeEventHandler(BitArray graphics);
 
         /// <summary>
         /// Event that will be raised every that that the screen needs to be refreshed
@@ -169,7 +167,7 @@ namespace C8POC
         {
             if (ScreenChanged != null)
             {
-                ScreenChanged(this, null);
+                ScreenChanged(((BitArray)graphics.Clone()));
             }
         }
 

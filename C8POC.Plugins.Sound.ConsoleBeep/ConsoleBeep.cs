@@ -38,6 +38,22 @@ namespace C8POC.Plugins.Sound.ConsoleBeep
         }
 
         /// <summary>
+        /// Enable Plugin Action
+        /// </summary>
+        public void EnablePlugin()
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Disable plugin Action
+        /// </summary>
+        public void DisablePlugin()
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
         /// Action to generate sound
         /// </summary>
         public void GenerateSound()

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 
 namespace C8POC.ConsoleUI
 {
@@ -20,7 +21,7 @@ namespace C8POC.ConsoleUI
 
         // Actualizar pantalla de acuerdo a los valores del arreglo.
         // En esta implementación se escribe en la consola del sistema
-        static void Chip8ScreenChanged(object sender, EventArgs e)
+        static void Chip8ScreenChanged(BitArray graphics)
         {
             // Limpiamos la pantalla, también se puede usar Console.Clear();
             Console.Clear();
@@ -35,7 +36,7 @@ namespace C8POC.ConsoleUI
                 
                 for (var x = 0; x < 64; x++)
                 {
-                    Console.Write(((C8Engine) sender).GetPixelState(x, y) ? "█" : " ");
+                    Console.Write(GetPixelState(graphics, x,y) ? "█" : " ");
                 }
 
                 Console.WriteLine("║");
@@ -44,6 +45,18 @@ namespace C8POC.ConsoleUI
             // Pintamos bordes inferiores
             Console.WriteLine("╚" + "".PadRight(64, '═') + "╝");
             Console.WriteLine("");
+        }
+
+        /// <summary>
+        /// Gets the state of a pixel, take into account that
+        /// screen starts at upper left corner (0,0) and ends at lower right corner (63,31)
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <returns></returns>
+        private static bool GetPixelState(BitArray graphics, int x, int y)
+        {
+            return graphics[x + (64 * y)]; //64 is the resolution width of the screen
         }
     }
 }

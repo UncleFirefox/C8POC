@@ -1,41 +1,31 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using System.Windows.Forms;
 using C8POC.Interfaces;
 
 namespace C8POC.WinFormsUI
 {
-    using System.ComponentModel.Composition;
-    using System.ComponentModel.Composition.Hosting;
-    using System.Windows.Forms;
-    using System.Linq;
-
     public partial class PluginSettings : Form
     {
         public PluginSettings()
         {
-            this.InitializeComponent();
-            this.LoadPluginAssemblies();
+            InitializeComponent();
+            LoadPluginAssemblies();
         }
 
         private void LoadPluginAssemblies()
         {
-            //Approach with MEF
-            PluginContainer builder = new PluginContainer();
-            DirectoryCatalog catalog = new DirectoryCatalog("Plugins", "*.dll");
-            CompositionContainer container = new CompositionContainer(catalog);
-            container.ComposeParts(builder);
-
-            LoadPluginsInCombo(builder.SoundPlugins, comboBoxSound);
-            LoadPluginsInCombo(builder.GraphicsPlugins,comboBoxGraphics);
-            LoadPluginsInCombo(builder.KeyboardPlugins, comboBoxKeyInput);
+            LoadPluginsInCombo(PluginManager.Instance.SoundPlugins, comboBoxSound);
+            LoadPluginsInCombo(PluginManager.Instance.GraphicsPlugins, comboBoxGraphics);
+            LoadPluginsInCombo(PluginManager.Instance.KeyboardPlugins, comboBoxKeyInput);
         }
 
         private void LoadPluginsInCombo(IEnumerable<IPlugin> pluginList, ComboBox combo)
         {
             if (pluginList.Any())
             {
-                var plugins = pluginList.ToDictionary(x => x, x => x.PluginDescription);
+                Dictionary<IPlugin, string> plugins = pluginList.ToDictionary(x => x, x => x.PluginDescription);
                 BindDictionaryToComboBox(combo, plugins);
             }
         }

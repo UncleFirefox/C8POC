@@ -71,7 +71,6 @@
     <Compile Include="MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="PluginContainer.cs" />
     <Compile Include="PluginSettings.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -134,7 +133,7 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Plugins\C8POC.dll">
+    <Content Include="Plugins\C8POC.Plugins.Graphics.GDIPlugin.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Plugins\C8POC.Plugins.Sound.ConsoleBeep.dll">

@@ -1,7 +1,11 @@
-﻿namespace C8POC.Interfaces
+﻿using System.Collections;
+namespace C8POC.Interfaces
 {
     public interface IGraphicsPlugin : IPlugin
     {
-        void Draw();
+        /// <summary>
+        /// Action to Draw
+        /// </summary>
+        void Draw(BitArray graphics);
     }
 }

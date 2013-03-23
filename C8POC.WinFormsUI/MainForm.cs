@@ -7,6 +7,8 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
+using System.Collections;
+
 namespace C8POC.WinFormsUI
 {
     using System;
@@ -163,7 +165,7 @@ namespace C8POC.WinFormsUI
         /// <param name="e">
         /// The e.
         /// </param>
-        private void emulator_ScreenChanged(object sender, EventArgs e)
+        private void emulator_ScreenChanged(BitArray graphics)
         {
             var rectangles = new List<Rectangle>();
 
@@ -172,7 +174,7 @@ namespace C8POC.WinFormsUI
             {
                 for (var x = 0; x < 64; x++)
                 {
-                    if (((C8Engine)sender).GetPixelState(x, y))
+                    if (GetPixelState(graphics,x,y))
                     {
                         rectangles.Add(new Rectangle(x * 10, y * 10, 10, 10));
                     }
@@ -187,6 +189,18 @@ namespace C8POC.WinFormsUI
                     gfx.FillRectangles(this.brush, rectangles.ToArray());
                 }
             }
+        }
+
+        /// <summary>
+        /// Gets the state of a pixel, take into account that
+        /// screen starts at upper left corner (0,0) and ends at lower right corner (63,31)
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <returns></returns>
+        private bool GetPixelState(BitArray graphics, int x, int y)
+        {
+            return graphics[x + (64 * y)]; //64 is the resolution width of the screen
         }
 
         /// <summary>
