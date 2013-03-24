@@ -14,7 +14,7 @@ namespace C8POC.ConsoleUI
             chip8.StartEmulator();
         }
 
-        static void Chip8SoundGenerated(object sender, EventArgs e)
+        static void Chip8SoundGenerated()
         {
             Console.Beep();
         }

@@ -58,8 +58,6 @@ namespace C8POC
         private Stack<ushort> stack = new Stack<ushort>(16);
         private BitArray keys = new BitArray(16);
 
-        private Dictionary<int, byte> keyMap = new Dictionary<int, byte>(); 
-
         /// <summary>
         /// Get y value in opcodes like 5xy0 etc
         /// </summary>
@@ -125,7 +123,7 @@ namespace C8POC
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        public delegate void SoundGenerateEventHandler(object sender, EventArgs e);
+        public delegate void SoundGenerateEventHandler();
 
         /// <summary>
         /// Event that will be raised when a beep is generated
@@ -136,28 +134,18 @@ namespace C8POC
         /// Sets a pressed key
         /// </summary>
         /// <param name="keyValue">The pressed keycode</param>
-        public void KeyDown(int keyValue)
+        public void KeyDown(byte keyIndex)
         {
-            byte mappedKeyIndex;
-
-            if (this.keyMap.TryGetValue(keyValue, out mappedKeyIndex))
-            {
-                keys[mappedKeyIndex] = true;
-            }
+            keys[keyIndex] = true;
         }
 
         /// <summary>
         /// Unsets a pressed key
         /// </summary>
         /// <param name="KeyValue">The released keycode</param>
-        public void KeyUp(int keyValue)
+        public void KeyUp(byte keyIndex)
         {
-            byte mappedKeyIndex;
-
-            if (this.keyMap.TryGetValue(keyValue, out mappedKeyIndex))
-            {
-                keys[mappedKeyIndex] = false;
-            }
+            keys[keyIndex] = false;
         }
 
         /// <summary>
@@ -178,7 +166,7 @@ namespace C8POC
         {
             if (SoundGenerated != null)
             {
-                SoundGenerated(this, null);
+                SoundGenerated();
             }
         }
 
@@ -190,9 +178,6 @@ namespace C8POC
         {
             //The InstructionMap is loaded once!!
             SetUpInstructionMap();
-
-            //Set key mapping
-            SetUpDefaultKeyMap();
 
             //Configure the timer
             InitializeTimer();
@@ -426,29 +411,6 @@ namespace C8POC
             instructionMap.Add(0xF033, LoadBcdRepresentationFromRegister);
             instructionMap.Add(0xF055, LoadAllRegistersFromValueInRegister);
             instructionMap.Add(0xF065, LoadFromValueInRegisterIntoAllRegisters);
-        }
-
-        /// <summary>
-        /// Sets a default keyboard in groups of four 1-4,Q-R,A-F,Z-V
-        /// </summary>
-        private void SetUpDefaultKeyMap()
-        {
-            this.keyMap.Add(49, 0);
-            this.keyMap.Add(50, 1);
-            this.keyMap.Add(51, 2);
-            this.keyMap.Add(52, 3);
-            this.keyMap.Add(81, 4);
-            this.keyMap.Add(87, 5);
-            this.keyMap.Add(69, 6);
-            this.keyMap.Add(82, 7);
-            this.keyMap.Add(65, 8);
-            this.keyMap.Add(83, 9);
-            this.keyMap.Add(68, 10);
-            this.keyMap.Add(70, 11);
-            this.keyMap.Add(90, 12);
-            this.keyMap.Add(88, 13);
-            this.keyMap.Add(67, 14);
-            this.keyMap.Add(86, 15);
         }
 
         /// <summary>

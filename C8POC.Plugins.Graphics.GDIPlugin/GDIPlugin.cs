@@ -18,7 +18,7 @@ namespace C8POC.Plugins.Graphics.GDIPlugin
         /// <summary>
         /// From that will be displayed when the plugin is activated
         /// </summary>
-        private GraphicsForm _form = new GraphicsForm();
+        private GraphicsForm _form;
         
         /// <summary>
         /// The brush.
@@ -46,7 +46,8 @@ namespace C8POC.Plugins.Graphics.GDIPlugin
 
         public void EnablePlugin()
         {
-            _form.ShowDialog();
+            _form = new GraphicsForm();
+            _form.Show();
         }
 
         public void DisablePlugin()
@@ -72,7 +73,7 @@ namespace C8POC.Plugins.Graphics.GDIPlugin
 
             if (rectangles.Count > 0)
             {
-                using (var gfx = this._form.CreateGraphics())
+                using (var gfx = this._form.renderingPanel.CreateGraphics())
                 {
                     gfx.Clear(Color.Black);
                     gfx.FillRectangles(this._brush, rectangles.ToArray());

@@ -28,14 +28,24 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.renderingPanel = new C8POC.WinFormsUI.DoubleBufferedPanel();
             this.SuspendLayout();
+            // 
+            // renderingPanel
+            // 
+            this.renderingPanel.BackColor = System.Drawing.Color.Black;
+            this.renderingPanel.Location = new System.Drawing.Point(0, 0);
+            this.renderingPanel.Name = "renderingPanel";
+            this.renderingPanel.Size = new System.Drawing.Size(640, 320);
+            this.renderingPanel.TabIndex = 0;
             // 
             // GraphicsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.Color.Black;
-            this.ClientSize = new System.Drawing.Size(630, 288);
+            this.BackColor = System.Drawing.SystemColors.Control;
+            this.ClientSize = new System.Drawing.Size(640, 320);
+            this.Controls.Add(this.renderingPanel);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
             this.Name = "GraphicsForm";
             this.Text = "GDI Plugin";
@@ -44,5 +54,7 @@
         }
 
         #endregion
+
+        public WinFormsUI.DoubleBufferedPanel renderingPanel;
     }
 }

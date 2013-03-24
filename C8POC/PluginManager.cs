@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Hosting;
+using System.Linq;
 using C8POC.Interfaces;
 
 namespace C8POC
@@ -36,17 +37,17 @@ namespace C8POC
         /// <summary>
         /// Gets or sets the currently assigned Sound Plugin for execution
         /// </summary>
-        public IPlugin SoundPlugin { get; set; }
+        public ISoundPlugin SelectedSoundPlugin { get; set; }
 
         /// <summary>
         /// Gets or sets the currently assigned Graphics Plugin for execution
         /// </summary>
-        public IPlugin GraphicsPlugin { get; set; }
+        public IGraphicsPlugin SelectedGraphicsPlugin { get; set; }
 
         /// <summary>
         /// Gets or sets the currently assigned Keyboard Plugin for execution
         /// </summary>
-        public IPlugin KeyboardPlugin { get; set; }
+        public IKeyboardPlugin SelectedKeyboardPlugin { get; set; }
 
         #endregion
 
@@ -68,6 +69,21 @@ namespace C8POC
             var catalog = new DirectoryCatalog("Plugins", "*.dll");
             var container = new CompositionContainer(catalog);
             container.ComposeParts(this);
+
+            if (SoundPlugins.Any())
+            {
+                this.SelectedSoundPlugin = SoundPlugins.FirstOrDefault();
+            }
+
+            if(GraphicsPlugins.Any())
+            {
+                this.SelectedGraphicsPlugin = GraphicsPlugins.FirstOrDefault();
+            }
+
+            if (KeyboardPlugins.Any())
+            {
+                this.SelectedKeyboardPlugin = KeyboardPlugins.FirstOrDefault();
+            }
         }
 
         #endregion

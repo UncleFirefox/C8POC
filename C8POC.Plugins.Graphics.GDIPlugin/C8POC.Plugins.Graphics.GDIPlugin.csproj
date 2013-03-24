@@ -43,6 +43,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DoubleBufferedPanel.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="GDIPlugin.cs" />
     <Compile Include="GraphicsForm.cs">
       <SubType>Form</SubType>

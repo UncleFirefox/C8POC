@@ -41,7 +41,6 @@
             this.emulatorStatusStrip = new System.Windows.Forms.StatusStrip();
             this.labelFps = new System.Windows.Forms.ToolStripStatusLabel();
             this.labelStatusEmulator = new System.Windows.Forms.ToolStripStatusLabel();
-            this.panelGraphics = new C8POC.WinFormsUI.DoubleBufferedPanel();
             this.menuStripMainWindow.SuspendLayout();
             this.emulatorStatusStrip.SuspendLayout();
             this.SuspendLayout();
@@ -54,7 +53,7 @@
             this.helpToolStripMenuItem});
             this.menuStripMainWindow.Location = new System.Drawing.Point(0, 0);
             this.menuStripMainWindow.Name = "menuStripMainWindow";
-            this.menuStripMainWindow.Size = new System.Drawing.Size(640, 24);
+            this.menuStripMainWindow.Size = new System.Drawing.Size(301, 24);
             this.menuStripMainWindow.TabIndex = 0;
             this.menuStripMainWindow.Text = "menuStripMainWindow";
             this.menuStripMainWindow.MenuActivate += new System.EventHandler(this.menuStripMainWindow_MenuActivate);
@@ -128,16 +127,17 @@
             this.emulatorStatusStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.labelFps,
             this.labelStatusEmulator});
-            this.emulatorStatusStrip.Location = new System.Drawing.Point(0, 346);
+            this.emulatorStatusStrip.Location = new System.Drawing.Point(0, 159);
             this.emulatorStatusStrip.Name = "emulatorStatusStrip";
             this.emulatorStatusStrip.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
-            this.emulatorStatusStrip.Size = new System.Drawing.Size(640, 22);
+            this.emulatorStatusStrip.Size = new System.Drawing.Size(301, 22);
             this.emulatorStatusStrip.SizingGrip = false;
             this.emulatorStatusStrip.TabIndex = 1;
             this.emulatorStatusStrip.Text = "statusStrip1";
             // 
             // labelFps
             // 
+            this.labelFps.BackColor = System.Drawing.SystemColors.Control;
             this.labelFps.Name = "labelFps";
             this.labelFps.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.labelFps.Size = new System.Drawing.Size(30, 17);
@@ -145,26 +145,18 @@
             // 
             // labelStatusEmulator
             // 
+            this.labelStatusEmulator.BackColor = System.Drawing.SystemColors.Control;
             this.labelStatusEmulator.Name = "labelStatusEmulator";
             this.labelStatusEmulator.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.labelStatusEmulator.Size = new System.Drawing.Size(42, 17);
             this.labelStatusEmulator.Text = "Status:";
             // 
-            // panelGraphics
-            // 
-            this.panelGraphics.BackColor = System.Drawing.Color.Black;
-            this.panelGraphics.Location = new System.Drawing.Point(0, 25);
-            this.panelGraphics.Name = "panelGraphics";
-            this.panelGraphics.Size = new System.Drawing.Size(640, 320);
-            this.panelGraphics.TabIndex = 2;
-            this.panelGraphics.Paint += new System.Windows.Forms.PaintEventHandler(this.panelGraphics_Paint);
-            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(640, 368);
-            this.Controls.Add(this.panelGraphics);
+            this.BackColor = System.Drawing.Color.Black;
+            this.ClientSize = new System.Drawing.Size(301, 181);
             this.Controls.Add(this.emulatorStatusStrip);
             this.Controls.Add(this.menuStripMainWindow);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
@@ -196,7 +188,6 @@
         private System.Windows.Forms.ToolStripStatusLabel labelFps;
         private System.Windows.Forms.ToolStripStatusLabel labelStatusEmulator;
         private System.Windows.Forms.ToolStripMenuItem aboutToolStripMenuItem;
-        private DoubleBufferedPanel panelGraphics;
         private System.Windows.Forms.ToolStripMenuItem toolStripConfig;
         private System.Windows.Forms.ToolStripMenuItem coreSettingsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem pluginSettingsToolStripMenuItem;
