@@ -42,7 +42,6 @@ namespace C8POC.Plugins.Sound.ConsoleBeep
         /// </summary>
         public void EnablePlugin()
         {
-            throw new NotImplementedException();
         }
 
         /// <summary>
@@ -50,7 +49,6 @@ namespace C8POC.Plugins.Sound.ConsoleBeep
         /// </summary>
         public void DisablePlugin()
         {
-            throw new NotImplementedException();
         }
 
         /// <summary>

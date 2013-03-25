@@ -56,8 +56,6 @@
             this.menuStripMainWindow.Size = new System.Drawing.Size(301, 24);
             this.menuStripMainWindow.TabIndex = 0;
             this.menuStripMainWindow.Text = "menuStripMainWindow";
-            this.menuStripMainWindow.MenuActivate += new System.EventHandler(this.menuStripMainWindow_MenuActivate);
-            this.menuStripMainWindow.MenuDeactivate += new System.EventHandler(this.menuStripMainWindow_MenuDeactivate);
             // 
             // fileToolStripMenuItem
             // 
@@ -165,8 +163,6 @@
             this.Name = "MainForm";
             this.Text = "Chip8 Proof Of Concept";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
-            this.ResizeBegin += new System.EventHandler(this.MainForm_ResizeBegin);
-            this.ResizeEnd += new System.EventHandler(this.MainForm_ResizeEnd);
             this.menuStripMainWindow.ResumeLayout(false);
             this.menuStripMainWindow.PerformLayout();
             this.emulatorStatusStrip.ResumeLayout(false);

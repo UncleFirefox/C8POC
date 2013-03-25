@@ -7,13 +7,9 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
-using System.Collections;
-
 namespace C8POC.WinFormsUI
 {
     using System;
-    using System.Collections.Generic;
-    using System.Drawing;
     using System.Windows.Forms;
 
     /// <summary>
@@ -22,11 +18,6 @@ namespace C8POC.WinFormsUI
     public partial class MainForm : Form
     {
         #region Constants and Fields
-
-        /// <summary>
-        /// The brush.
-        /// </summary>
-        private Brush brush = new SolidBrush(Color.White);
 
         /// <summary>
         /// The emulator.
@@ -44,19 +35,36 @@ namespace C8POC.WinFormsUI
         {
             this.InitializeComponent();
             this.emulator = new C8Engine();
-            
-            //Link output events to plugins
+
+            // Link output events to plugins
             this.emulator.ScreenChanged += PluginManager.Instance.SelectedGraphicsPlugin.Draw;
             this.emulator.SoundGenerated += PluginManager.Instance.SelectedSoundPlugin.GenerateSound;
 
-            //Link input events to plugins
+            // Link key input events to plugins
             PluginManager.Instance.SelectedKeyboardPlugin.KeyUp += this.emulator.KeyUp;
             PluginManager.Instance.SelectedKeyboardPlugin.KeyDown += this.emulator.KeyDown;
+            PluginManager.Instance.SelectedKeyboardPlugin.KeyStopEmulation += this.StopEmulation;
+
+            // Link Graphics Plugin Closing Window
+            PluginManager.Instance.SelectedGraphicsPlugin.GraphicsExit += this.StopEmulation;
         }
 
         #endregion
 
         #region Methods
+
+        private void StartEmulation()
+        {
+            PluginManager.Instance.StartPluginsExecution();
+            this.emulator.StartEmulator();
+        }
+
+        private void StopEmulation()
+        {
+            this.emulator.StopEmulator();
+            PluginManager.Instance.StopPluginsExecution();
+        }
+
 
         /// <summary>
         /// The exit tool strip menu item click.
@@ -84,35 +92,7 @@ namespace C8POC.WinFormsUI
         /// </param>
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            this.emulator.StopEmulator();
-        }
-
-        /// <summary>
-        /// The main form_ resize begin.
-        /// </summary>
-        /// <param name="sender">
-        /// The sender.
-        /// </param>
-        /// <param name="e">
-        /// The e.
-        /// </param>
-        private void MainForm_ResizeBegin(object sender, EventArgs e)
-        {
-            this.emulator.StopEmulator();
-        }
-
-        /// <summary>
-        /// The main form_ resize end.
-        /// </summary>
-        /// <param name="sender">
-        /// The sender.
-        /// </param>
-        /// <param name="e">
-        /// The e.
-        /// </param>
-        private void MainForm_ResizeEnd(object sender, EventArgs e)
-        {
-            this.emulator.StartEmulator();
+            this.StopEmulation();
         }
 
         /// <summary>
@@ -129,38 +109,8 @@ namespace C8POC.WinFormsUI
             if (this.openFileDialogRom.ShowDialog() == DialogResult.OK)
             {
                 this.emulator.LoadEmulator(this.openFileDialogRom.FileName);
-                PluginManager.Instance.SelectedGraphicsPlugin.EnablePlugin();
-                PluginManager.Instance.SelectedKeyboardPlugin.EnablePlugin();
-                this.emulator.StartEmulator();
+                this.StartEmulation();
             }
-        }
-
-        /// <summary>
-        /// The menu strip main window_ menu activate.
-        /// </summary>
-        /// <param name="sender">
-        /// The sender.
-        /// </param>
-        /// <param name="e">
-        /// The e.
-        /// </param>
-        private void menuStripMainWindow_MenuActivate(object sender, EventArgs e)
-        {
-            this.emulator.StopEmulator();
-        }
-
-        /// <summary>
-        /// The menu strip main window_ menu deactivate.
-        /// </summary>
-        /// <param name="sender">
-        /// The sender.
-        /// </param>
-        /// <param name="e">
-        /// The e.
-        /// </param>
-        private void menuStripMainWindow_MenuDeactivate(object sender, EventArgs e)
-        {
-            this.emulator.StartEmulator();
         }
 
         /// <summary>

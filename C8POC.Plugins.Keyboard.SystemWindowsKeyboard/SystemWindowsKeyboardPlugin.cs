@@ -38,13 +38,23 @@ namespace C8POC.Plugins.Keyboard.SystemWindowsKeyboard
         /// </summary>
         public void EnablePlugin()
         {
-            _mKeyboardHookManager.Enabled = true;
             _mKeyboardHookManager.KeyUp += HookManagerOnKeyUp;
             _mKeyboardHookManager.KeyDown += HookManagerOnKeyDown;
+            _mKeyboardHookManager.Enabled = true;
         }
 
         private void HookManagerOnKeyDown(object sender, KeyEventArgs e)
         {
+            if (e.KeyCode == Keys.Escape)
+            {
+                if (this.KeyStopEmulation != null)
+                {
+                    this.KeyStopEmulation();
+                }
+
+                return;
+            }
+
             byte mappedKeyIndex;
 
             if (this.keyMap.TryGetValue(e.KeyValue, out mappedKeyIndex))
@@ -75,10 +85,14 @@ namespace C8POC.Plugins.Keyboard.SystemWindowsKeyboard
         public void DisablePlugin()
         {
             _mKeyboardHookManager.Enabled = false;
+            _mKeyboardHookManager.KeyUp -= HookManagerOnKeyUp;
+            _mKeyboardHookManager.KeyDown -= HookManagerOnKeyDown;
         }
 
         public event KeyUpEventHandler KeyUp;
         public event KeyUpEventHandler KeyDown;
+
+        public event KeyStopEmulationEventHandler KeyStopEmulation;
 
         /// <summary>
         /// Sets a default keyboard in groups of four 1-4,Q-R,A-F,Z-V

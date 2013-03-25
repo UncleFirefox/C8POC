@@ -4,9 +4,12 @@ using System.ComponentModel.Composition;
 using System.Drawing;
 using C8POC.Interfaces;
 using System.Collections;
+using System.Linq;
 
 namespace C8POC.Plugins.Graphics.GDIPlugin
 {
+    using System.Windows.Forms;
+
     /// <summary>
     /// Graphics plugin with GDI primitives for Windows Forms
     /// </summary>
@@ -44,15 +47,35 @@ namespace C8POC.Plugins.Graphics.GDIPlugin
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Enables the plugin
+        /// </summary>
         public void EnablePlugin()
         {
             _form = new GraphicsForm();
+            _form.Closed += GraphicsFormClosed;
             _form.Show();
         }
 
+        void GraphicsFormClosed(object sender, EventArgs e)
+        {
+            if (!this.formClosedByCode && GraphicsExit != null)
+            {
+                formClosedByCode = false;
+                GraphicsExit();
+            }
+        }
+
+        /// <summary>
+        /// Disables de plugin
+        /// </summary>
         public void DisablePlugin()
         {
-            _form.Close();
+            if (this._form != null && this.IsFormOpen(this._form))
+            {
+                this.formClosedByCode = true;
+                this._form.Close();
+            }
         }
 
         public void Draw(BitArray graphics)
@@ -81,8 +104,11 @@ namespace C8POC.Plugins.Graphics.GDIPlugin
             }
         }
 
+        public event GraphicsExitEventHandler GraphicsExit;
+
         #endregion
 
+        #region Other methods
         /// <summary>
         /// Gets the state of a pixel, take into account that
         /// screen starts at upper left corner (0,0) and ends at lower right corner (63,31)
@@ -94,5 +120,21 @@ namespace C8POC.Plugins.Graphics.GDIPlugin
         {
             return graphics[x + (64 * y)]; //64 is the resolution width of the screen
         }
+
+        /// <summary>
+        /// Determines if the graphics form is open
+        /// </summary>
+        /// <param name="form">The form to check</param>
+        /// <returns>Is the form open?</returns>
+        private bool IsFormOpen(GraphicsForm form)
+        {
+            return Application.OpenForms
+                              .Cast<Form>()
+                              .Any(x => x.GetType() == form.GetType());
+        }
+
+        private bool formClosedByCode { get; set; }
+
+        #endregion
     }
 }

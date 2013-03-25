@@ -86,6 +86,42 @@ namespace C8POC
             }
         }
 
+        public void StopPluginsExecution()
+        {
+            if (this.SelectedGraphicsPlugin != null)
+            {
+                this.SelectedGraphicsPlugin.DisablePlugin();
+            }
+
+            if (this.SelectedKeyboardPlugin != null)
+            {
+                this.SelectedKeyboardPlugin.DisablePlugin();
+            }
+
+            if (this.SelectedSoundPlugin != null)
+            {
+                this.SelectedSoundPlugin.DisablePlugin();
+            }
+        }
+
+        public void StartPluginsExecution()
+        {
+            if (this.SelectedGraphicsPlugin != null)
+            {
+                this.SelectedGraphicsPlugin.EnablePlugin();
+            }
+
+            if (this.SelectedKeyboardPlugin != null)
+            {
+                this.SelectedKeyboardPlugin.EnablePlugin();
+            }
+
+            if (this.SelectedSoundPlugin != null)
+            {
+                this.SelectedSoundPlugin.EnablePlugin();
+            }
+        }
+
         #endregion
     }
 }
