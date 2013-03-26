@@ -22,7 +22,7 @@ namespace C8POC.WinFormsUI
         /// <summary>
         /// The emulator.
         /// </summary>
-        private C8Engine emulator;
+        private readonly C8Engine emulator;
 
         #endregion
 
@@ -53,18 +53,23 @@ namespace C8POC.WinFormsUI
 
         #region Methods
 
+        /// <summary>
+        /// Starts the emulation
+        /// </summary>
         private void StartEmulation()
         {
             PluginManager.Instance.StartPluginsExecution();
             this.emulator.StartEmulator();
         }
 
+        /// <summary>
+        /// Stops the emulation
+        /// </summary>
         private void StopEmulation()
         {
             this.emulator.StopEmulator();
             PluginManager.Instance.StopPluginsExecution();
         }
-
 
         /// <summary>
         /// The exit tool strip menu item click.
@@ -77,7 +82,7 @@ namespace C8POC.WinFormsUI
         /// </param>
         private void ExitToolStripMenuItemClick(object sender, EventArgs e)
         {
-            this.emulator.StopEmulator();
+            this.StopEmulation();
             this.Close();
         }
 
@@ -90,7 +95,7 @@ namespace C8POC.WinFormsUI
         /// <param name="e">
         /// The e.
         /// </param>
-        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
+        private void MainFormFormClosing(object sender, FormClosingEventArgs e)
         {
             this.StopEmulation();
         }
@@ -122,9 +127,9 @@ namespace C8POC.WinFormsUI
         /// <param name="e">
         /// The e.
         /// </param>
-        private void pluginSettingsToolStripMenuItem_Click(object sender, EventArgs e)
+        private void PluginSettingsToolStripMenuItemClick(object sender, EventArgs e)
         {
-            PluginSettings form = new PluginSettings();
+            var form = new PluginSettings();
             form.ShowDialog();
         }
 

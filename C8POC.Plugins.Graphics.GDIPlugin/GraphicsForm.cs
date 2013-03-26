@@ -1,11 +1,12 @@
-﻿using System.Windows.Forms;
-
-namespace C8POC.Plugins.Graphics.GDIPlugin
+﻿namespace C8POC.Plugins.Graphics.GDIPlugin
 {
+    using System.Windows.Forms;
+
+    /// <summary>
+    /// Form to draw graphics into
+    /// </summary>
     public partial class GraphicsForm : Form
     {
-        public bool closedFromCode = false;
-
         public GraphicsForm()
         {
             InitializeComponent();

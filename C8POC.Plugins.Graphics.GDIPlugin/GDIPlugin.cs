@@ -1,14 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.Composition;
-using System.Drawing;
-using C8POC.Interfaces;
-using System.Collections;
-using System.Linq;
-
-namespace C8POC.Plugins.Graphics.GDIPlugin
+﻿namespace C8POC.Plugins.Graphics.GDIPlugin
 {
+    using System;
+    using System.Collections;
+    using System.Collections.Generic;
+    using System.ComponentModel.Composition;
+    using System.Drawing;
+    using System.Linq;
     using System.Windows.Forms;
+
+    using C8POC.Interfaces;
 
     /// <summary>
     /// Graphics plugin with GDI primitives for Windows Forms
@@ -19,29 +19,38 @@ namespace C8POC.Plugins.Graphics.GDIPlugin
         #region Properties
 
         /// <summary>
-        /// From that will be displayed when the plugin is activated
-        /// </summary>
-        private GraphicsForm _form;
-        
-        /// <summary>
         /// The brush.
         /// </summary>
-        private readonly Brush _brush = new SolidBrush(Color.White);
+        private readonly Brush brush = new SolidBrush(Color.White);
+
+        /// <summary>
+        /// From that will be displayed when the plugin is activated
+        /// </summary>
+        private GraphicsForm graphicsForm;
         
         #endregion
         
         #region IGraphicsPlugin Members
 
+        /// <summary>
+        /// Gets the plugin description
+        /// </summary>
         public string PluginDescription
         {
             get { return "Graphics plugin with GDI primitives for Windows Forms"; }
         }
 
+        /// <summary>
+        /// Prompts for a configuration
+        /// </summary>
         public void Configure()
         {
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Gets the about plugin window
+        /// </summary>
         public void AboutPlugin()
         {
             throw new NotImplementedException();
@@ -52,18 +61,9 @@ namespace C8POC.Plugins.Graphics.GDIPlugin
         /// </summary>
         public void EnablePlugin()
         {
-            _form = new GraphicsForm();
-            _form.Closed += GraphicsFormClosed;
-            _form.Show();
-        }
-
-        void GraphicsFormClosed(object sender, EventArgs e)
-        {
-            if (!this.formClosedByCode && GraphicsExit != null)
-            {
-                formClosedByCode = false;
-                GraphicsExit();
-            }
+            this.graphicsForm = new GraphicsForm();
+            this.graphicsForm.Closed += this.GraphicsFormClosed;
+            this.graphicsForm.Show();
         }
 
         /// <summary>
@@ -71,23 +71,27 @@ namespace C8POC.Plugins.Graphics.GDIPlugin
         /// </summary>
         public void DisablePlugin()
         {
-            if (this._form != null && this.IsFormOpen(this._form))
+            if (this.graphicsForm != null && this.IsFormOpen(this.graphicsForm))
             {
-                this.formClosedByCode = true;
-                this._form.Close();
+                this.FormClosedByCode = true;
+                this.graphicsForm.Close();
             }
         }
 
+        /// <summary>
+        /// Drawing implementation for the plugin
+        /// </summary>
+        /// <param name="graphics">The graphics array</param>
         public void Draw(BitArray graphics)
         {
             var rectangles = new List<Rectangle>();
 
             //Go through each pixel on the screen
-            for (int y = 0; y < 32; y++)
+            for (int y = 0; y < C8Constants.ResolutionHeight; y++)
             {
-                for (var x = 0; x < 64; x++)
+                for (var x = 0; x < C8Constants.ResolutionWidth; x++)
                 {
-                    if (GetPixelState(graphics,x, y))
+                    if (GetPixelState(graphics, x, y))
                     {
                         rectangles.Add(new Rectangle(x * 10, y * 10, 10, 10));
                     }
@@ -96,11 +100,25 @@ namespace C8POC.Plugins.Graphics.GDIPlugin
 
             if (rectangles.Count > 0)
             {
-                using (var gfx = this._form.renderingPanel.CreateGraphics())
+                using (var gfx = this.graphicsForm.renderingPanel.CreateGraphics())
                 {
                     gfx.Clear(Color.Black);
-                    gfx.FillRectangles(this._brush, rectangles.ToArray());
+                    gfx.FillRectangles(this.brush, rectangles.ToArray());
                 }
+            }
+        }
+
+        /// <summary>
+        /// Event fired when the graphics form closes
+        /// </summary>
+        /// <param name="sender">The sender</param>
+        /// <param name="e">The event args</param>
+        private void GraphicsFormClosed(object sender, EventArgs e)
+        {
+            if (!this.FormClosedByCode && this.GraphicsExit != null)
+            {
+                this.FormClosedByCode = false;
+                this.GraphicsExit();
             }
         }
 
@@ -113,12 +131,21 @@ namespace C8POC.Plugins.Graphics.GDIPlugin
         /// Gets the state of a pixel, take into account that
         /// screen starts at upper left corner (0,0) and ends at lower right corner (63,31)
         /// </summary>
-        /// <param name="x"></param>
-        /// <param name="y"></param>
-        /// <returns></returns>
+        /// <param name="graphics">
+        /// The graphics.
+        /// </param>
+        /// <param name="x">
+        /// Horizontal position
+        /// </param>
+        /// <param name="y">
+        /// Vertical position
+        /// </param>
+        /// <returns>
+        /// If the pixel set or not
+        /// </returns>
         private static bool GetPixelState(BitArray graphics, int x, int y)
         {
-            return graphics[x + (64 * y)]; //64 is the resolution width of the screen
+            return graphics[x + (C8Constants.ResolutionWidth * y)]; //C8Constants.ResolutionWidth is the resolution width of the screen
         }
 
         /// <summary>
@@ -133,7 +160,10 @@ namespace C8POC.Plugins.Graphics.GDIPlugin
                               .Any(x => x.GetType() == form.GetType());
         }
 
-        private bool formClosedByCode { get; set; }
+        /// <summary>
+        /// Gets or sets a value indicating whether the form has been closed by code
+        /// </summary>
+        private bool FormClosedByCode { get; set; }
 
         #endregion
     }

@@ -1,108 +1,78 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using C8POC.Properties;
-using MicroLibrary;
-
-namespace C8POC
+﻿namespace C8POC
 {
+    using System;
+    using System.Collections;
+    using System.Collections.Generic;
+    using System.IO;
+
+    using C8POC.Properties;
+
+    using MicroLibrary;
+
+    /// <summary>
+    /// Engine for emulator and central piece of this application
+    /// </summary>
     public class C8Engine
     {
-        #region Emulator Constants
+        #region Engine constructor
 
-        private readonly Byte[] chip8FontSet
-            = new Byte[]
-                  {
-                      0xF0, 0x90, 0x90, 0x90, 0xF0, // 0
-                      0x20, 0x60, 0x20, 0x20, 0x70, // 1
-                      0xF0, 0x10, 0xF0, 0x80, 0xF0, // 2
-                      0xF0, 0x10, 0xF0, 0x10, 0xF0, // 3
-                      0x90, 0x90, 0xF0, 0x10, 0x10, // 4
-                      0xF0, 0x80, 0xF0, 0x10, 0xF0, // 5
-                      0xF0, 0x80, 0xF0, 0x90, 0xF0, // 6
-                      0xF0, 0x10, 0x20, 0x40, 0x40, // 7
-                      0xF0, 0x90, 0xF0, 0x90, 0xF0, // 8
-                      0xF0, 0x90, 0xF0, 0x10, 0xF0, // 9
-                      0xF0, 0x90, 0xF0, 0x90, 0x90, // A
-                      0xE0, 0x90, 0xE0, 0x90, 0xE0, // B
-                      0xF0, 0x80, 0x80, 0x80, 0xF0, // C
-                      0xE0, 0x90, 0x90, 0x90, 0xE0, // D
-                      0xF0, 0x80, 0xF0, 0x80, 0xF0, // E
-                      0xF0, 0x80, 0xF0, 0x80, 0x80 // F
-                  };
+        /// <summary>
+        /// Initializes a new instance of the <see cref="C8Engine"/> class. 
+        /// </summary>
+        public C8Engine()
+        {
+            // The InstructionMap is loaded once!!
+            this.SetUpInstructionMap();
 
-        private const ushort StartRomAdress = 0x200;
-        private const ushort ResolutionWidth = 64;
-        private const ushort ResolutionHeight = 32;
+            // Configure the timer
+            this.InitializeTimer();
+
+            // Create the instance of the machine state
+            this.machineState = new C8MachineState();
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="C8Engine"/> class. 
+        /// Engine constructor with an injected machine state
+        /// </summary>
+        /// <param name="machState">
+        /// An injected machine state
+        /// </param>
+        public C8Engine(C8MachineState machState)
+        {
+            // The InstructionMap is loaded once!!
+            this.SetUpInstructionMap();
+
+            // Configure the timer
+            this.InitializeTimer();
+
+            // Injects the machine state
+            this.machineState = machState;
+        }
 
         #endregion
 
         #region Emulator Properties
 
+        /// <summary>
+        /// Gets or sets a value indicating whether if the emulator should be running, important to control the timer
+        /// </summary>
+        private bool IsRunning { get; set; }
+
+        /// <summary>
+        /// State of the machine (including registers etc)
+        /// </summary>
+        private C8MachineState machineState;
+
+        /// <summary>
+        /// Contains the mapping between an opcode and the function that should be executed
+        /// </summary>
         private Dictionary<ushort, Action> instructionMap = new Dictionary<ushort, Action>();
-        private ushort currentOpcode;
-        private Byte[] memory = new Byte[4096];
-
-        private ushort[] vRegisters = new ushort[16];
-
-        private ushort indexRegister;
-        private ushort programCounter;
-
-        private BitArray graphics = new BitArray(ResolutionWidth*ResolutionHeight, false);
-
-        private ushort delayTimer;
-        private ushort soundTimer;
-
-        private Stack<ushort> stack = new Stack<ushort>(16);
-        private BitArray keys = new BitArray(16);
-
-        /// <summary>
-        /// Get y value in opcodes like 5xy0 etc
-        /// </summary>
-        private ushort XRegisterFromCurrentOpcode
-        {
-            get { return (ushort)((currentOpcode & 0x0F00) >> 8); }
-        }
-
-        /// <summary>
-        /// Gets y value in opcodes like 5xy0 etc
-        /// </summary>
-        private ushort YRegisterFromCurrentOpcode
-        {
-            get { return (ushort)((currentOpcode & 0x00F0) >> 4); }
-        }
-
-        /// <summary>
-        /// Gets or sets the draw flag
-        /// </summary>
-        private bool IsDrawFlagSet { get; set; }
-
-        /// <summary>
-        /// Gets the state of a pixel, take into account that
-        /// screen starts at upper left corner (0,0) and ends at lower right corner (63,31)
-        /// </summary>
-        /// <param name="x"></param>
-        /// <param name="y"></param>
-        /// <returns></returns>
-        public bool GetPixelState(int x, int y)
-        {
-            return graphics[x + (ResolutionWidth * y)];
-        }
 
         /// <summary>
         /// Timer in charge of handling the number of cycles per second
         /// </summary>
         private MicroTimer MicroTimer { get; set; }
-
-        /// <summary>
-        /// Determines if it has an executable ROM
-        /// </summary>
-        private bool HasRomLoaded()
-        {
-            return memory.Skip(StartRomAdress).Any(x => x != 0);
-        }
 
         #endregion
 
@@ -111,6 +81,7 @@ namespace C8POC
         /// <summary>
         /// Event handler for screen changes
         /// </summary>
+        /// <param name="graphics">Graphics array</param>
         public delegate void ScreenChangeEventHandler(BitArray graphics);
 
         /// <summary>
@@ -121,8 +92,6 @@ namespace C8POC
         /// <summary>
         /// Event handler for sound generation
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         public delegate void SoundGenerateEventHandler();
 
         /// <summary>
@@ -133,19 +102,19 @@ namespace C8POC
         /// <summary>
         /// Sets a pressed key
         /// </summary>
-        /// <param name="keyValue">The pressed keycode</param>
+        /// <param name="keyIndex">The pressed key code</param>
         public void KeyDown(byte keyIndex)
         {
-            keys[keyIndex] = true;
+            machineState.Keys[keyIndex] = true;
         }
 
         /// <summary>
         /// Unsets a pressed key
         /// </summary>
-        /// <param name="KeyValue">The released keycode</param>
+        /// <param name="keyIndex">The released key code</param>
         public void KeyUp(byte keyIndex)
         {
-            keys[keyIndex] = false;
+            machineState.Keys[keyIndex] = false;
         }
 
         /// <summary>
@@ -155,7 +124,7 @@ namespace C8POC
         {
             if (ScreenChanged != null)
             {
-                ScreenChanged(((BitArray)graphics.Clone()));
+                ScreenChanged(((BitArray)machineState.Graphics.Clone()));
             }
         }
 
@@ -168,22 +137,6 @@ namespace C8POC
             {
                 SoundGenerated();
             }
-        }
-
-        #endregion
-
-        #region Engine constructor
-
-        public C8Engine()
-        {
-            //The InstructionMap is loaded once!!
-            SetUpInstructionMap();
-
-            //Configure the timer
-            InitializeTimer();
-
-            // Load fontset should be loaded just once
-            LoadFontSet();
         }
 
         #endregion
@@ -205,8 +158,9 @@ namespace C8POC
         /// </summary>
         public void StartEmulator()
         {
-            if (HasRomLoaded())
+            if (machineState.HasRomLoaded())
             {
+                this.IsRunning = true;
                 MicroTimer.Start();
             }
         }
@@ -216,6 +170,8 @@ namespace C8POC
         /// </summary>
         public void StopEmulator()
         {
+            this.IsRunning = false;
+
             if (MicroTimer.Enabled)
             {
                 MicroTimer.Stop();
@@ -227,14 +183,14 @@ namespace C8POC
         /// </summary>
         private void EmulateCycle()
         {
-            //Get Opcode located at program counter
-            FetchOpcode();
+            // Get Opcode located at program counter
+            this.machineState.FetchOpcode();
 
-            //Processes the opcode
-            ProcessOpcode();
+            // Processes the opcode
+            this.ProcessOpcode();
 
-            //Update timers
-            UpdateTimers();
+            // Update timers
+            this.UpdateTimers();
         }
 
         /// <summary>
@@ -242,19 +198,19 @@ namespace C8POC
         /// </summary>
         private void UpdateTimers()
         {
-            if (delayTimer > 0)
+            if (machineState.DelayTimer > 0)
             {
-                --delayTimer;
+                --machineState.DelayTimer;
             }
 
-            if (soundTimer > 0)
+            if (machineState.SoundTimer > 0)
             {
-                if (soundTimer == 1)
+                if (machineState.SoundTimer == 1)
                 {
                     GenerateSound();
                 }
 
-                --soundTimer;
+                --machineState.SoundTimer;
             }
         }
 
@@ -265,29 +221,16 @@ namespace C8POC
         {
             try
             {
-                instructionMap[(ushort) (currentOpcode & 0xF000)]();
+                instructionMap[(ushort) (machineState.CurrentOpcode & 0xF000)]();
             }
             catch (KeyNotFoundException)
             {
-                throw new Exception(string.Format("Instruction with Opcode {0:X} is not implemented", currentOpcode));
+                throw new Exception(string.Format("Instruction with Opcode {0:X} is not implemented", machineState.CurrentOpcode));
             }
         }
 
         /// <summary>
-        /// Fetches the opcode in memory using the program counter
-        /// Program counter auto increases after opcode fetching for next instruction
-        /// </summary>
-        private void FetchOpcode()
-        {
-            currentOpcode = memory[programCounter];
-            currentOpcode <<= 8;
-            currentOpcode |= memory[programCounter + 1];
-
-            IncreaseProgramCounter();
-        }
-
-        /// <summary>
-        /// Loads a Chip8 ROM file in memory
+        /// Loads a Chip8 ROM file in machineState.Memory
         /// </summary>
         /// <param name="filePath">Full path of rom</param>
         private void LoadGame(string filePath)
@@ -304,7 +247,7 @@ namespace C8POC
                 // Load rom starting at 0x200
                 for (int i = 0; i < rom.Length; i++)
                 {
-                    memory[StartRomAdress + i] = (byte) rom.ReadByte();
+                    this.machineState.Memory[C8Constants.StartRomAddress + i] = (byte)rom.ReadByte();
                 }
 
                 rom.Close();
@@ -320,53 +263,7 @@ namespace C8POC
         /// </summary>
         private void Initialize()
         {
-            SetupGraphics();
-            SetupInput();
-
-            programCounter = StartRomAdress; // Program counter starts at 0x200
-            currentOpcode = 0; // Reset current currentOpcode	
-            indexRegister = 0; // Reset index register
-
-            // Clear stack
-            stack.Clear();
-
-            // Clear registers V0-VF
-            Array.Clear(vRegisters,0,vRegisters.Length);
-
-            // Clear memory
-            Array.Clear(memory, StartRomAdress, memory.Length - StartRomAdress);
-
-            // Reset timers
-            soundTimer = 0;
-            delayTimer = 0;
-        }
-
-        /// <summary>
-        /// Loads the font set in memory
-        /// </summary>
-        private void LoadFontSet()
-        {
-            for (var i = 0; i < chip8FontSet.Length; ++i)
-            {
-                memory[i] = chip8FontSet[i];
-            }
-        }
-
-        /// <summary>
-        /// Initializes keyboard structure
-        /// </summary>
-        private void SetupInput()
-        {
-            keys.SetAll(false);
-        }
-
-        /// <summary>
-        /// Initializes graphics
-        /// </summary>
-        private void SetupGraphics()
-        {
-            graphics.SetAll(false);
-            DrawGraphics();
+            this.machineState.CleanMachineState();
         }
 
         /// <summary>
@@ -414,40 +311,40 @@ namespace C8POC
         }
 
         /// <summary>
-        /// Increases the program counter
-        /// </summary>
-        private void IncreaseProgramCounter()
-        {
-            programCounter += 2;
-        }
-
-        /// <summary>
         /// Initializes the timer, it fires on every frame
         /// </summary>
         private void InitializeTimer()
         {
             MicroTimer = new MicroTimer
-                             {Interval = (long)((1.0/Settings.Default.FramesPerSecond)*1000.0*1000.0)};
-            
-            MicroTimer.MicroTimerElapsed += EmulateFrame;
+                {
+                    Interval = (long)((1.0 / Settings.Default.FramesPerSecond) * 1000.0 * 1000.0) 
+                };
+
+            this.MicroTimer.MicroTimerElapsed += this.EmulateFrame;
         }
 
         /// <summary>
         /// Event fired to emulate each frame
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="timerEventArgs"></param>
+        /// <param name="sender">The sender</param>
+        /// <param name="timerEventArgs">The event arguments</param>
         private void EmulateFrame(object sender, MicroTimerEventArgs timerEventArgs)
         {
-            for (int operationNum = 0; operationNum < Settings.Default.OperationsPerFrame; operationNum++)
+            for (int cycleNum = 0; cycleNum < Settings.Default.CyclesPerFrame; cycleNum++)
             {
-                EmulateCycle();
+                this.EmulateCycle();
+
+                if (!this.IsRunning)
+                {
+                    this.StopEmulator();
+                    return;
+                }
             }
 
-            if (IsDrawFlagSet)
+            if (this.machineState.IsDrawFlagSet)
             {
-                DrawGraphics();
-                IsDrawFlagSet = false;
+                this.DrawGraphics();
+                this.machineState.IsDrawFlagSet = false;
             }
         }
 
@@ -458,11 +355,11 @@ namespace C8POC
         // Instruction set taken from http://devernay.free.fr/hacks/chip8/C8TECH10.HTM#00E0
 
         /// <summary>
-        /// Discriminates further into the instruction mapper for instructions starting with 0x8
+        /// Discriminates further into the instruction mapper for instructions starting with 0x0
         /// </summary>
         private void GoToRoutineStartingWithZero()
         {
-            var fetchedOpcode = currentOpcode & 0xF0FF;
+            var fetchedOpcode = this.machineState.CurrentOpcode & 0xF0FF;
             
             if (fetchedOpcode == 0x0000)
             {
@@ -491,19 +388,19 @@ namespace C8POC
         /// </summary>
         private void ClearScreen()
         {
-            graphics.SetAll(false);
-            IsDrawFlagSet = true;
+            machineState.Graphics.SetAll(false);
+            machineState.IsDrawFlagSet = true;
         }
 
         /// <summary>
         /// 00EE - RET
         /// Return from a subroutine.
-        /// The interpreter sets the program counter to the address at the top of the stack, 
-        /// then subtracts 1 from the stack pointer
+        /// The interpreter sets the program counter to the address at the top of the machineState.Stack, 
+        /// then subtracts 1 from the machineState.Stack pointer
         /// </summary>
         private void ReturnFromSubRoutine()
         {
-            programCounter = stack.Pop();
+            machineState.ProgramCounter = machineState.Stack.Pop();
         }
 
         /// <summary>
@@ -513,22 +410,22 @@ namespace C8POC
         /// </summary>
         private void Jump()
         {
-            programCounter = (ushort) (currentOpcode & 0x0FFF);
+            machineState.ProgramCounter = (ushort) (machineState.CurrentOpcode & 0x0FFF);
         }
 
         /// <summary>
         /// 2nnn - CALL addr
         /// Call subroutine at nnn.
-        /// The interpreter increments the stack pointer, then puts the current PC on the top of the stack. 
+        /// The interpreter increments the machineState.Stack pointer, then puts the current PC on the top of the machineState.Stack. 
         /// The PC is then set to nnn.
         /// </summary>
         private void CallAtAdress()
         {
             // Program counter will be increased right after the instruction fetch 
             // So theres no need to increase the program counter before pushing
-            stack.Push(programCounter);
+            machineState.Stack.Push(machineState.ProgramCounter);
 
-            programCounter = (ushort) (currentOpcode & 0x0FFF);
+            machineState.ProgramCounter = (ushort) (machineState.CurrentOpcode & 0x0FFF);
         }
 
         /// <summary>
@@ -538,9 +435,9 @@ namespace C8POC
         /// </summary>
         private void SkipNextInstructionIfRegisterEqualsImmediate()
         {
-            if (vRegisters[XRegisterFromCurrentOpcode] == (currentOpcode & 0x00FF))
+            if (machineState.VRegisters[machineState.XRegisterFromCurrentOpcode] == (machineState.CurrentOpcode & 0x00FF))
             {
-                IncreaseProgramCounter();
+                machineState.IncreaseProgramCounter();
             }
         }
 
@@ -551,9 +448,9 @@ namespace C8POC
         /// </summary>
         private void SkipNextInstructionIfRegisterNotEqualsImmediate()
         {
-            if (vRegisters[XRegisterFromCurrentOpcode] != (currentOpcode & 0x00FF))
+            if (machineState.VRegisters[machineState.XRegisterFromCurrentOpcode] != (machineState.CurrentOpcode & 0x00FF))
             {
-                IncreaseProgramCounter();
+                machineState.IncreaseProgramCounter();
             }
         }
 
@@ -564,9 +461,9 @@ namespace C8POC
         /// </summary>
         private void SkipNextInstructionIfRegisterEqualsRegister()
         {
-            if (vRegisters[XRegisterFromCurrentOpcode] == vRegisters[YRegisterFromCurrentOpcode])
+            if (machineState.VRegisters[machineState.XRegisterFromCurrentOpcode] == machineState.VRegisters[machineState.YRegisterFromCurrentOpcode])
             {
-                IncreaseProgramCounter();
+                machineState.IncreaseProgramCounter();
             }
         }
 
@@ -577,7 +474,7 @@ namespace C8POC
         /// </summary>
         private void LoadValueIntoRegister()
         {
-            vRegisters[XRegisterFromCurrentOpcode] = (ushort) (currentOpcode & 0x00FF);
+            machineState.VRegisters[machineState.XRegisterFromCurrentOpcode] = (ushort) (machineState.CurrentOpcode & 0x00FF);
         }
 
         /// <summary>
@@ -587,7 +484,7 @@ namespace C8POC
         /// </summary>
         private void AddValueIntoRegister()
         {
-            vRegisters[XRegisterFromCurrentOpcode] += (ushort) (currentOpcode & 0x00FF);
+            machineState.VRegisters[machineState.XRegisterFromCurrentOpcode] += (ushort) (machineState.CurrentOpcode & 0x00FF);
         }
 
         /// <summary>
@@ -595,7 +492,7 @@ namespace C8POC
         /// </summary>
         private void GoToArithmeticLogicInstruction()
         {
-            var filteredOpcode = (ushort)(currentOpcode & 0xF00F);
+            var filteredOpcode = (ushort)(machineState.CurrentOpcode & 0xF00F);
             
             if (filteredOpcode == 0x8000)
             {
@@ -614,7 +511,7 @@ namespace C8POC
         /// </summary>
         private void LoadRegisterIntoRegister()
         {
-            vRegisters[XRegisterFromCurrentOpcode] += vRegisters[YRegisterFromCurrentOpcode];
+            machineState.VRegisters[machineState.XRegisterFromCurrentOpcode] += machineState.VRegisters[machineState.YRegisterFromCurrentOpcode];
         }
 
         /// <summary>
@@ -626,7 +523,7 @@ namespace C8POC
         /// </summary>
         private void OrRegistersIntoRegister()
         {
-            vRegisters[XRegisterFromCurrentOpcode] |= vRegisters[YRegisterFromCurrentOpcode];
+            machineState.VRegisters[machineState.XRegisterFromCurrentOpcode] |= machineState.VRegisters[machineState.YRegisterFromCurrentOpcode];
         }
 
         /// <summary>
@@ -638,7 +535,7 @@ namespace C8POC
         /// </summary>
         private void AndRegistersIntoRegiter()
         {
-            vRegisters[XRegisterFromCurrentOpcode] &= vRegisters[YRegisterFromCurrentOpcode];
+            machineState.VRegisters[machineState.XRegisterFromCurrentOpcode] &= machineState.VRegisters[machineState.YRegisterFromCurrentOpcode];
         }
 
         /// <summary>
@@ -650,7 +547,7 @@ namespace C8POC
         /// </summary>
         private void ExclusiveOrIntoRegister()
         {
-            vRegisters[XRegisterFromCurrentOpcode] ^= vRegisters[YRegisterFromCurrentOpcode];
+            machineState.VRegisters[machineState.XRegisterFromCurrentOpcode] ^= machineState.VRegisters[machineState.YRegisterFromCurrentOpcode];
         }
 
         /// <summary>
@@ -661,15 +558,15 @@ namespace C8POC
         /// </summary>
         private void AddRegistersIntoRegister()
         {
-            vRegisters[XRegisterFromCurrentOpcode] += vRegisters[YRegisterFromCurrentOpcode];
+            machineState.VRegisters[machineState.XRegisterFromCurrentOpcode] += machineState.VRegisters[machineState.YRegisterFromCurrentOpcode];
 
-            if (vRegisters[XRegisterFromCurrentOpcode] > 0xFF)
+            if (machineState.VRegisters[machineState.XRegisterFromCurrentOpcode] > 0xFF)
             {
-                vRegisters[0xF] = 1;
+                machineState.VRegisters[0xF] = 1;
             }
             else
             {
-                vRegisters[0xF] = 0;
+                machineState.VRegisters[0xF] = 0;
             }
         }
 
@@ -680,16 +577,16 @@ namespace C8POC
         /// </summary>
         private void SubstractRegisters()
         {
-            if (vRegisters[XRegisterFromCurrentOpcode] > vRegisters[YRegisterFromCurrentOpcode])
+            if (machineState.VRegisters[machineState.XRegisterFromCurrentOpcode] > machineState.VRegisters[machineState.YRegisterFromCurrentOpcode])
             {
-                vRegisters[0xF] = 1;
+                machineState.VRegisters[0xF] = 1;
             }
             else
             {
-                vRegisters[0xF] = 0;
+                machineState.VRegisters[0xF] = 0;
             }
 
-            vRegisters[XRegisterFromCurrentOpcode] -= vRegisters[YRegisterFromCurrentOpcode];
+            machineState.VRegisters[machineState.XRegisterFromCurrentOpcode] -= machineState.VRegisters[machineState.YRegisterFromCurrentOpcode];
         }
 
         /// <summary>
@@ -699,16 +596,16 @@ namespace C8POC
         /// </summary>
         private void ShiftRegisterRight()
         {
-            if ((currentOpcode & 0x000F) == 1)
+            if ((machineState.CurrentOpcode & 0x000F) == 1)
             {
-                vRegisters[0xF] = 1;
+                machineState.VRegisters[0xF] = 1;
             }
             else
             {
-                vRegisters[0xF] = 0;
+                machineState.VRegisters[0xF] = 0;
             }
 
-            vRegisters[XRegisterFromCurrentOpcode] >>= 1;
+            machineState.VRegisters[machineState.XRegisterFromCurrentOpcode] >>= 1;
         }
 
         /// <summary>
@@ -718,17 +615,17 @@ namespace C8POC
         /// </summary>
         private void SubstractRegistersReverse()
         {
-            if (vRegisters[YRegisterFromCurrentOpcode] > vRegisters[XRegisterFromCurrentOpcode])
+            if (machineState.VRegisters[machineState.YRegisterFromCurrentOpcode] > machineState.VRegisters[machineState.XRegisterFromCurrentOpcode])
             {
-                vRegisters[0xF] = 1;
+                machineState.VRegisters[0xF] = 1;
             }
             else
             {
-                vRegisters[0xF] = 0;
+                machineState.VRegisters[0xF] = 0;
             }
 
-            vRegisters[XRegisterFromCurrentOpcode] =
-                (ushort) (vRegisters[YRegisterFromCurrentOpcode] - vRegisters[XRegisterFromCurrentOpcode]);
+            machineState.VRegisters[machineState.XRegisterFromCurrentOpcode] =
+                (ushort) (machineState.VRegisters[machineState.YRegisterFromCurrentOpcode] - machineState.VRegisters[machineState.XRegisterFromCurrentOpcode]);
         }
 
         /// <summary>
@@ -738,16 +635,16 @@ namespace C8POC
         /// </summary>
         private void ShiftRegisterLeft()
         {
-            if ((vRegisters[XRegisterFromCurrentOpcode] & 0xF000) == 0x1000)
+            if ((machineState.VRegisters[machineState.XRegisterFromCurrentOpcode] & 0xF000) == 0x1000)
             {
-                vRegisters[0xF] = 1;
+                machineState.VRegisters[0xF] = 1;
             }
             else
             {
-                vRegisters[0xF] = 0;
+                machineState.VRegisters[0xF] = 0;
             }
 
-            vRegisters[XRegisterFromCurrentOpcode] <<= 1;
+            machineState.VRegisters[machineState.XRegisterFromCurrentOpcode] <<= 1;
         }
 
         /// <summary>
@@ -757,9 +654,9 @@ namespace C8POC
         /// </summary>
         private void SkipNextInstructionIfRegisterNotEqualsRegister()
         {
-            if (vRegisters[XRegisterFromCurrentOpcode] != vRegisters[YRegisterFromCurrentOpcode])
+            if (machineState.VRegisters[machineState.XRegisterFromCurrentOpcode] != machineState.VRegisters[machineState.YRegisterFromCurrentOpcode])
             {
-                IncreaseProgramCounter();
+                machineState.IncreaseProgramCounter();
             }
         }
 
@@ -770,7 +667,7 @@ namespace C8POC
         /// </summary>
         private void LoadIntoIndexRegister()
         {
-            indexRegister = (ushort) (currentOpcode & 0x0FFF);
+            machineState.IndexRegister = (ushort) (machineState.CurrentOpcode & 0x0FFF);
         }
 
         /// <summary>
@@ -780,7 +677,7 @@ namespace C8POC
         /// </summary>
         private void JumpToV0PlusImmediate()
         {
-            programCounter = (ushort) (vRegisters[0] + (currentOpcode & 0x0FFF));
+            machineState.ProgramCounter = (ushort) (machineState.VRegisters[0] + (machineState.CurrentOpcode & 0x0FFF));
         }
 
         /// <summary>
@@ -793,13 +690,13 @@ namespace C8POC
         {
             var randomnumber = (ushort) new Random().Next(0, 255);
 
-            vRegisters[XRegisterFromCurrentOpcode] = (ushort) (randomnumber & (currentOpcode & 0x00FF));
+            machineState.VRegisters[machineState.XRegisterFromCurrentOpcode] = (ushort) (randomnumber & (machineState.CurrentOpcode & 0x00FF));
         }
 
         /// <summary>
         /// Dxyn - DRW Vx, Vy, nibble
-        /// Display n-byte sprite starting at memory location I at (Vx, Vy), set VF = collision.
-        /// The interpreter reads n bytes from memory, starting at the address stored in I. 
+        /// Display n-byte sprite starting at machineState.Memory location I at (Vx, Vy), set VF = collision.
+        /// The interpreter reads n bytes from machineState.Memory, starting at the address stored in I. 
         /// These bytes are then displayed as sprites on screen at coordinates (Vx, Vy). 
         /// Sprites are XORed onto the existing screen. 
         /// If this causes any pixels to be erased, VF is set to 1, otherwise it is set to 0. 
@@ -808,32 +705,32 @@ namespace C8POC
         /// </summary>
         private void DrawSprite()
         {
-            var numbytes = (ushort) (currentOpcode & 0x000F);
-            var positionX = vRegisters[XRegisterFromCurrentOpcode];
-            var positionY = vRegisters[YRegisterFromCurrentOpcode];
+            var numbytes = (ushort) (machineState.CurrentOpcode & 0x000F);
+            var positionX = machineState.VRegisters[machineState.XRegisterFromCurrentOpcode];
+            var positionY = machineState.VRegisters[machineState.YRegisterFromCurrentOpcode];
 
             for (int rowNum = 0; rowNum < numbytes; rowNum++)
             {
-                ushort currentpixel = memory[indexRegister + rowNum];
+                ushort currentpixel = machineState.Memory[machineState.IndexRegister + rowNum];
 
                 for (int colNum = 0; colNum < 8; colNum++) //We assume sprites are always 8 pixels wide
                 {
                     if ((currentpixel & (0x80 >> colNum)) != 0)
                     {
-                        int positioninGraphics = (positionX + colNum + ((positionY + rowNum)*ResolutionWidth))
-                            %(ResolutionWidth*ResolutionHeight); // Make sure we get a value inside boundaries
+                        int positioninGraphics = (positionX + colNum + ((positionY + rowNum)*C8Constants.ResolutionWidth))
+                            %(C8Constants.ResolutionWidth*C8Constants.ResolutionHeight); // Make sure we get a value inside boundaries
 
-                        if (graphics[positioninGraphics])
+                        if (machineState.Graphics[positioninGraphics])
                         {
                             //Collision!
-                            vRegisters[0xF] = 1;
+                            machineState.VRegisters[0xF] = 1;
                         }
 
-                        graphics[positioninGraphics] ^= true;
+                        machineState.Graphics[positioninGraphics] ^= true;
                     }
                 }
 
-                IsDrawFlagSet = true;
+                machineState.IsDrawFlagSet = true;
             }
         }
 
@@ -842,7 +739,7 @@ namespace C8POC
         /// </summary>
         private void GoToSkipRegisterInstruction()
         {
-            instructionMap[(ushort) (currentOpcode & 0xF0FF)]();
+            instructionMap[(ushort) (machineState.CurrentOpcode & 0xF0FF)]();
         }
 
         /// <summary>
@@ -853,9 +750,9 @@ namespace C8POC
         /// </summary>
         private void SkipNextInstructionIfRegisterEqualsKeyPressed()
         {
-            if (keys[vRegisters[XRegisterFromCurrentOpcode]])
+            if (machineState.Keys[machineState.VRegisters[machineState.XRegisterFromCurrentOpcode]])
             {
-                IncreaseProgramCounter();
+                machineState.IncreaseProgramCounter();
             }
         }
 
@@ -867,9 +764,9 @@ namespace C8POC
         /// </summary>
         private void SkipNextInstructionIfRegisterNotEqualsKeyPressed()
         {
-            if (!keys[vRegisters[XRegisterFromCurrentOpcode]])
+            if (!machineState.Keys[machineState.VRegisters[machineState.XRegisterFromCurrentOpcode]])
             {
-                IncreaseProgramCounter();
+                machineState.IncreaseProgramCounter();
             }
         }
 
@@ -878,7 +775,7 @@ namespace C8POC
         /// </summary>
         private void GoToMemoryOperationInstruction()
         {
-            instructionMap[(ushort) (currentOpcode & 0xF0FF)]();
+            instructionMap[(ushort) (machineState.CurrentOpcode & 0xF0FF)]();
         }
 
         /// <summary>
@@ -888,7 +785,7 @@ namespace C8POC
         /// </summary>
         private void LoadTimerValueIntoRegister()
         {
-            vRegisters[XRegisterFromCurrentOpcode] = delayTimer;
+            machineState.VRegisters[machineState.XRegisterFromCurrentOpcode] = machineState.DelayTimer;
         }
 
         /// <summary>
@@ -899,7 +796,7 @@ namespace C8POC
         private void LoadKeyIntoRegister()
         {
             //TODO What do I do with this wait for key?
-            /*while (!keys.OfType<bool>().Any(x => x))
+            /*while (!machineState.Keys.OfType<bool>().Any(x => x))
             {
 
             }*/
@@ -912,7 +809,7 @@ namespace C8POC
         /// </summary>
         private void LoadRegisterIntoDelayTimer()
         {
-            delayTimer = vRegisters[XRegisterFromCurrentOpcode];
+            machineState.DelayTimer = machineState.VRegisters[machineState.XRegisterFromCurrentOpcode];
         }
 
         /// <summary>
@@ -922,7 +819,7 @@ namespace C8POC
         /// </summary>
         private void LoadRegisterIntoSoundTimer()
         {
-            soundTimer = vRegisters[XRegisterFromCurrentOpcode];
+            machineState.SoundTimer = machineState.VRegisters[machineState.XRegisterFromCurrentOpcode];
         }
 
         /// <summary>
@@ -932,7 +829,7 @@ namespace C8POC
         /// </summary>
         private void AddRegisterToIndexRegister()
         {
-            indexRegister += vRegisters[XRegisterFromCurrentOpcode];
+            machineState.IndexRegister += machineState.VRegisters[machineState.XRegisterFromCurrentOpcode];
         }
 
         /// <summary>
@@ -944,11 +841,11 @@ namespace C8POC
         private void LoadFontSpriteLocationFromValueInRegister()
         {
             // Comments from NGEmu about this opcode
-            /*Mmm... basically, set the memory pointer I to the location of the character of the hexadecimal stored in register VX. 
+            /*Mmm... basically, set the machineState.Memory pointer I to the location of the character of the hexadecimal stored in register VX. 
               So... if it's FA29, you look in register VA and see what value it holds. 
               If it's F129, you look in register V1 and see what value it holds.
               You can assume that the value stored in those registers only goes from 0x0 to 0xF. 
-              Now... your emulator should have a table of sprite data already preset somewhere in the memory (preferrably in the locations before 0x200). 
+              Now... your emulator should have a table of sprite data already preset somewhere in the machineState.Memory (preferrably in the locations before 0x200). 
               These are sprite of characters from 0 to F, and they are 4x5 each in dimension. 
               Which means... mmm... the number 0 should be somewhat like this in binary data:
 
@@ -960,51 +857,51 @@ namespace C8POC
 
               If you have to ask, that's because the draw instruction draws 8 bits at a time.*/
 
-            ushort character = vRegisters[XRegisterFromCurrentOpcode];
+            ushort character = machineState.VRegisters[machineState.XRegisterFromCurrentOpcode];
 
             // We assume that the value for character goes from 0x0 to 0xF and that each digit has size 5 (5 rows per digit)
             // Fonts are loaded starting at 0x0
-            indexRegister = (ushort) (5*character);
+            machineState.IndexRegister = (ushort) (5*character);
         }
 
         /// <summary>
         /// Fx33 - LD B, Vx
-        /// Store BCD representation of Vx in memory locations I, I+1, and I+2.
+        /// Store BCD representation of Vx in machineState.Memory locations I, I+1, and I+2.
         /// The interpreter takes the decimal value of Vx, 
-        /// and places the hundreds digit in memory at location in I, 
+        /// and places the hundreds digit in machineState.Memory at location in I, 
         /// the tens digit at location I+1, 
         /// and the ones digit at location I+2.
         /// </summary>
         private void LoadBcdRepresentationFromRegister()
         {
-            memory[indexRegister] = (byte) (vRegisters[XRegisterFromCurrentOpcode]/100); //Hundreds
-            memory[indexRegister + 1] = (byte) ((vRegisters[XRegisterFromCurrentOpcode]/10)%10); //Tens
-            memory[indexRegister + 2] = (byte) (vRegisters[XRegisterFromCurrentOpcode]%10); //Ones
+            machineState.Memory[machineState.IndexRegister] = (byte) (machineState.VRegisters[machineState.XRegisterFromCurrentOpcode]/100); //Hundreds
+            machineState.Memory[machineState.IndexRegister + 1] = (byte) ((machineState.VRegisters[machineState.XRegisterFromCurrentOpcode]/10)%10); //Tens
+            machineState.Memory[machineState.IndexRegister + 2] = (byte) (machineState.VRegisters[machineState.XRegisterFromCurrentOpcode]%10); //Ones
         }
 
         /// <summary>
         /// Fx55 - LD [I], Vx
-        /// Store registers V0 through Vx in memory starting at location I.
-        /// The interpreter copies the values of registers V0 through Vx into memory, starting at the address in I.
+        /// Store registers V0 through Vx in machineState.Memory starting at location I.
+        /// The interpreter copies the values of registers V0 through Vx into machineState.Memory, starting at the address in I.
         /// </summary>
         private void LoadAllRegistersFromValueInRegister()
         {
-            for (int i = 0; i <= XRegisterFromCurrentOpcode; i++)
+            for (int i = 0; i <= machineState.XRegisterFromCurrentOpcode; i++)
             {
-                memory[indexRegister + i] = (byte) vRegisters[i];
+                machineState.Memory[machineState.IndexRegister + i] = (byte) machineState.VRegisters[i];
             }
         }
 
         /// <summary>
         /// Fx65 - LD Vx, [I]
-        /// Read registers V0 through Vx from memory starting at location I.
-        /// The interpreter reads values from memory starting at location I into registers V0 through Vx.
+        /// Read registers V0 through Vx from machineState.Memory starting at location I.
+        /// The interpreter reads values from machineState.Memory starting at location I into registers V0 through Vx.
         /// </summary>
         private void LoadFromValueInRegisterIntoAllRegisters()
         {
-            for (int i = 0; i <= XRegisterFromCurrentOpcode; i++)
+            for (int i = 0; i <= machineState.XRegisterFromCurrentOpcode; i++)
             {
-                vRegisters[i] = memory[indexRegister + i];
+                machineState.VRegisters[i] = machineState.Memory[machineState.IndexRegister + i];
             }
         }
 

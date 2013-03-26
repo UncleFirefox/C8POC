@@ -1,33 +1,58 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.Composition;
-using System.Windows.Forms;
-using C8POC.Interfaces;
-using MouseKeyboardActivityMonitor;
-using MouseKeyboardActivityMonitor.WinApi;
-
-namespace C8POC.Plugins.Keyboard.SystemWindowsKeyboard
+﻿namespace C8POC.Plugins.Keyboard.SystemWindowsKeyboard
 {
+    using System;
+    using System.Collections.Generic;
+    using System.ComponentModel.Composition;
+    using System.Windows.Forms;
+
+    using C8POC.Interfaces;
+
+    using MouseKeyboardActivityMonitor;
+    using MouseKeyboardActivityMonitor.WinApi;
+
+    /// <summary>
+    /// Implementation of a keyboard plugin using Windows Hooks
+    /// </summary>
     [Export(typeof(IKeyboardPlugin))]
     public class SystemWindowsKeyboardPlugin : IKeyboardPlugin
     {
-        private readonly KeyboardHookListener _mKeyboardHookManager = new KeyboardHookListener(new GlobalHooker());
+        /// <summary>
+        /// Keyboard listener for hooks
+        /// </summary>
+        private readonly KeyboardHookListener keyboardHookManager = new KeyboardHookListener(new GlobalHooker());
 
+        /// <summary>
+        /// Local mapper between actual key codes and keys in the emulator
+        /// </summary>
+        private readonly Dictionary<int, byte> keyMap = new Dictionary<int, byte>(); 
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SystemWindowsKeyboardPlugin"/> class.
+        /// </summary>
         public SystemWindowsKeyboardPlugin()
         {
-            SetUpDefaultKeyMap();
+            this.SetUpDefaultKeyMap();
         }
 
+        /// <summary>
+        /// Gets the plugin description
+        /// </summary>
         public string PluginDescription
         {
             get { return "Windows Hooks System Implementation of Key Input Plugin"; }
         }
 
+        /// <summary>
+        /// Creates a prompt for configuration
+        /// </summary>
         public void Configure()
         {
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Gets an about message
+        /// </summary>
         public void AboutPlugin()
         {
             throw new NotImplementedException();
@@ -38,11 +63,45 @@ namespace C8POC.Plugins.Keyboard.SystemWindowsKeyboard
         /// </summary>
         public void EnablePlugin()
         {
-            _mKeyboardHookManager.KeyUp += HookManagerOnKeyUp;
-            _mKeyboardHookManager.KeyDown += HookManagerOnKeyDown;
-            _mKeyboardHookManager.Enabled = true;
+            this.keyboardHookManager.KeyUp += this.HookManagerOnKeyUp;
+            this.keyboardHookManager.KeyDown += this.HookManagerOnKeyDown;
+            this.keyboardHookManager.Enabled = true;
         }
 
+        /// <summary>
+        /// Stop capturing key input
+        /// </summary>
+        public void DisablePlugin()
+        {
+            this.keyboardHookManager.Enabled = false;
+            this.keyboardHookManager.KeyUp -= this.HookManagerOnKeyUp;
+            this.keyboardHookManager.KeyDown -= this.HookManagerOnKeyDown;
+        }
+
+        /// <summary>
+        /// Event that will fire on key up
+        /// </summary>
+        public event KeyUpEventHandler KeyUp;
+
+        /// <summary>
+        /// Event that will fire on key down
+        /// </summary>
+        public event KeyDownEventHandler KeyDown;
+
+        /// <summary>
+        /// Event that will fire when the exit key is pressed
+        /// </summary>
+        public event KeyStopEmulationEventHandler KeyStopEmulation;
+
+        /// <summary>
+        /// Hook for key pressing
+        /// </summary>
+        /// <param name="sender">
+        /// The sender.
+        /// </param>
+        /// <param name="e">
+        /// The e.
+        /// </param>
         private void HookManagerOnKeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Escape)
@@ -66,6 +125,11 @@ namespace C8POC.Plugins.Keyboard.SystemWindowsKeyboard
             }
         }
 
+        /// <summary>
+        /// Hook for key releasing
+        /// </summary>
+        /// <param name="sender">The sender</param>
+        /// <param name="e">Key event args</param>
         private void HookManagerOnKeyUp(object sender, KeyEventArgs e)
         {
             byte mappedKeyIndex;
@@ -78,21 +142,6 @@ namespace C8POC.Plugins.Keyboard.SystemWindowsKeyboard
                 }
             }
         }
-
-        /// <summary>
-        /// Stop capturing key input
-        /// </summary>
-        public void DisablePlugin()
-        {
-            _mKeyboardHookManager.Enabled = false;
-            _mKeyboardHookManager.KeyUp -= HookManagerOnKeyUp;
-            _mKeyboardHookManager.KeyDown -= HookManagerOnKeyDown;
-        }
-
-        public event KeyUpEventHandler KeyUp;
-        public event KeyUpEventHandler KeyDown;
-
-        public event KeyStopEmulationEventHandler KeyStopEmulation;
 
         /// <summary>
         /// Sets a default keyboard in groups of four 1-4,Q-R,A-F,Z-V
@@ -116,7 +165,5 @@ namespace C8POC.Plugins.Keyboard.SystemWindowsKeyboard
             this.keyMap.Add(67, 0xE);
             this.keyMap.Add(86, 0xF);
         }
-
-        private Dictionary<int, byte> keyMap = new Dictionary<int, byte>(); 
     }
 }

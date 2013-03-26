@@ -89,7 +89,7 @@
             this.buttonGraphicsConfig.TabIndex = 1;
             this.buttonGraphicsConfig.Text = "Config...";
             this.buttonGraphicsConfig.UseVisualStyleBackColor = true;
-            this.buttonGraphicsConfig.Click += new System.EventHandler(this.buttonGraphicsConfig_Click);
+            this.buttonGraphicsConfig.Click += new System.EventHandler(this.ButtonGraphicsConfigClick);
             // 
             // comboBoxGraphics
             // 
@@ -139,7 +139,7 @@
             this.buttonSoundConfig.TabIndex = 5;
             this.buttonSoundConfig.Text = "Config...";
             this.buttonSoundConfig.UseVisualStyleBackColor = true;
-            this.buttonSoundConfig.Click += new System.EventHandler(this.buttonSoundConfig_Click);
+            this.buttonSoundConfig.Click += new System.EventHandler(this.ButtonSoundConfigClick);
             // 
             // comboBoxSound
             // 
@@ -189,7 +189,7 @@
             this.buttonKeyInputConfig.TabIndex = 5;
             this.buttonKeyInputConfig.Text = "Config...";
             this.buttonKeyInputConfig.UseVisualStyleBackColor = true;
-            this.buttonKeyInputConfig.Click += new System.EventHandler(this.buttonKeyInputConfig_Click);
+            this.buttonKeyInputConfig.Click += new System.EventHandler(this.ButtonKeyInputConfigClick);
             // 
             // comboBoxKeyInput
             // 
@@ -232,6 +232,7 @@
             this.Controls.Add(this.groupBoxSound);
             this.Controls.Add(this.groupBoxGraphics);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            this.MaximizeBox = false;
             this.Name = "PluginSettings";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Plugin Configuration";

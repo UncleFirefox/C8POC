@@ -1,19 +1,29 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Windows.Forms;
-using C8POC.Interfaces;
-
-namespace C8POC.WinFormsUI
+﻿namespace C8POC.WinFormsUI
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Windows.Forms;
+
+    using C8POC.Interfaces;
+
+    /// <summary>
+    /// Plugin settings form
+    /// </summary>
     public partial class PluginSettings : Form
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PluginSettings"/> class.
+        /// </summary>
         public PluginSettings()
         {
-            InitializeComponent();
-            LoadPluginAssemblies();
+            this.InitializeComponent();
+            this.LoadPluginAssemblies();
         }
 
+        /// <summary>
+        /// Loads plugins inside of combos
+        /// </summary>
         private void LoadPluginAssemblies()
         {
             LoadPluginsInCombo(PluginManager.Instance.SoundPlugins, comboBoxSound);
@@ -21,6 +31,15 @@ namespace C8POC.WinFormsUI
             LoadPluginsInCombo(PluginManager.Instance.KeyboardPlugins, comboBoxKeyInput);
         }
 
+        /// <summary>
+        /// Loads plugins inside the combo
+        /// </summary>
+        /// <param name="pluginList">
+        /// The plugin list.
+        /// </param>
+        /// <param name="combo">
+        /// The combo.
+        /// </param>
         private void LoadPluginsInCombo(IEnumerable<IPlugin> pluginList, ComboBox combo)
         {
             if (pluginList.Any())
@@ -30,6 +49,15 @@ namespace C8POC.WinFormsUI
             }
         }
 
+        /// <summary>
+        /// Binds the dictionary to the proper combo
+        /// </summary>
+        /// <param name="combo">
+        /// The combo.
+        /// </param>
+        /// <param name="plugins">
+        /// The plugins.
+        /// </param>
         private static void BindDictionaryToComboBox(ComboBox combo, Dictionary<IPlugin, string> plugins)
         {
             combo.DataSource = new BindingSource(plugins, null);
@@ -37,21 +65,40 @@ namespace C8POC.WinFormsUI
             combo.ValueMember = "Key";
         }
 
-        private void buttonSoundConfig_Click(object sender, EventArgs e)
+        /// <summary>
+        /// Configures the selected sound plugin
+        /// </summary>
+        /// <param name="sender">The sender</param>
+        /// <param name="e">Event args</param>
+        private void ButtonSoundConfigClick(object sender, EventArgs e)
         {
-            ConfigurePlugin(comboBoxSound);
+            this.ConfigurePlugin(comboBoxSound);
         }
 
-        private void buttonGraphicsConfig_Click(object sender, EventArgs e)
+        /// <summary>
+        /// Configures the selected graphics plugin
+        /// </summary>
+        /// <param name="sender">The sender</param>
+        /// <param name="e">Event args</param>
+        private void ButtonGraphicsConfigClick(object sender, EventArgs e)
         {
-            ConfigurePlugin(comboBoxGraphics);
+            this.ConfigurePlugin(comboBoxGraphics);
         }
 
-        private void buttonKeyInputConfig_Click(object sender, EventArgs e)
+        /// <summary>
+        /// Configures the selected key input plugin
+        /// </summary>
+        /// <param name="sender">The sender</param>
+        /// <param name="e">Event args</param>
+        private void ButtonKeyInputConfigClick(object sender, EventArgs e)
         {
-            ConfigurePlugin(comboBoxKeyInput);
+            this.ConfigurePlugin(comboBoxKeyInput);
         }
 
+        /// <summary>
+        /// Configures the plugin of a given combo box
+        /// </summary>
+        /// <param name="comboBox"></param>
         private void ConfigurePlugin(ComboBox comboBox)
         {
             var plugin = comboBox.SelectedValue as IPlugin;

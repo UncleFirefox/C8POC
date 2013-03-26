@@ -35,9 +35,9 @@ namespace C8POC.Properties {
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("10")]
-        public long OperationsPerFrame {
+        public long CyclesPerFrame {
             get {
-                return ((long)(this["OperationsPerFrame"]));
+                return ((long)(this["CyclesPerFrame"]));
             }
         }
     }

@@ -1,9 +1,8 @@
-﻿using System.Windows.Forms;
-
-namespace C8POC.Plugins.Sound.ConsoleBeep
+﻿namespace C8POC.Plugins.Sound.ConsoleBeep
 {
     using System;
     using System.ComponentModel.Composition;
+    using System.Windows.Forms;
 
     using C8POC.Interfaces;
 
@@ -13,6 +12,9 @@ namespace C8POC.Plugins.Sound.ConsoleBeep
     [Export(typeof(ISoundPlugin))]
     public class ConsoleSoundBeepPlugin : ISoundPlugin
     {
+        /// <summary>
+        /// Gets the plugin description
+        /// </summary>
         public string PluginDescription
         {
             get

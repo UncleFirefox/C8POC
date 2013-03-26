@@ -41,7 +41,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="C8Constants.cs" />
     <Compile Include="C8Engine.cs" />
+    <Compile Include="C8MachineState.cs" />
     <Compile Include="Interfaces\IGraphicsPlugin.cs" />
     <Compile Include="Interfaces\IKeyboardPlugin.cs" />
     <Compile Include="Interfaces\IPlugin.cs" />

@@ -27,14 +27,14 @@ namespace C8POC.ConsoleUI
             Console.Clear();
 
             // Pintamos bordes superiores
-            Console.WriteLine("╔" + "".PadRight(64, '═') + "╗");
+            Console.WriteLine("╔" + "".PadRight(C8Constants.ResolutionWidth, '═') + "╗");
 
             // Se pinta la pantalla
-            for (int y = 0; y < 32; y++)
+            for (int y = 0; y < C8Constants.ResolutionHeight; y++)
             {
                 Console.Write("║");	 // Usamos un pipe (|) para los bordes de pantalla
                 
-                for (var x = 0; x < 64; x++)
+                for (var x = 0; x < C8Constants.ResolutionWidth; x++)
                 {
                     Console.Write(GetPixelState(graphics, x,y) ? "█" : " ");
                 }
@@ -43,7 +43,7 @@ namespace C8POC.ConsoleUI
             }
 
             // Pintamos bordes inferiores
-            Console.WriteLine("╚" + "".PadRight(64, '═') + "╝");
+            Console.WriteLine("╚" + "".PadRight(C8Constants.ResolutionWidth, '═') + "╝");
             Console.WriteLine("");
         }
 
@@ -56,7 +56,7 @@ namespace C8POC.ConsoleUI
         /// <returns></returns>
         private static bool GetPixelState(BitArray graphics, int x, int y)
         {
-            return graphics[x + (64 * y)]; //64 is the resolution width of the screen
+            return graphics[x + (C8Constants.ResolutionWidth * y)];
         }
     }
 }

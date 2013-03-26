@@ -1,15 +1,15 @@
-﻿using System.Collections;
-
-namespace C8POC.Interfaces
+﻿namespace C8POC.Interfaces
 {
     /// <summary>
-    /// Event handler for key input press
+    /// Event handler raised when the user releases a key
     /// </summary>
+    /// <param name="keyIndex">The released key index</param>
     public delegate void KeyUpEventHandler(byte keyIndex);
 
     /// <summary>
-    /// Event handler for key input release
+    /// Event handler raised when the user presses a key
     /// </summary>
+    /// <param name="keyIndex">They pressed key index</param>
     public delegate void KeyDownEventHandler(byte keyIndex);
 
     /// <summary>
@@ -17,6 +17,9 @@ namespace C8POC.Interfaces
     /// </summary>
     public delegate void KeyStopEmulationEventHandler();
 
+    /// <summary>
+    /// Interface that any keyboard plugin should implement
+    /// </summary>
     public interface IKeyboardPlugin : IPlugin
     {
         /// <summary>
@@ -27,7 +30,7 @@ namespace C8POC.Interfaces
         /// <summary>
         /// Event that will be raised every time that a key is released
         /// </summary>
-        event KeyUpEventHandler KeyDown;
+        event KeyDownEventHandler KeyDown;
 
         /// <summary>
         /// Event that will be raised every time that the stop emulation key is pressed

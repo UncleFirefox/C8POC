@@ -100,7 +100,7 @@
             this.pluginSettingsToolStripMenuItem.Name = "pluginSettingsToolStripMenuItem";
             this.pluginSettingsToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
             this.pluginSettingsToolStripMenuItem.Text = "Plugin Settings...";
-            this.pluginSettingsToolStripMenuItem.Click += new System.EventHandler(this.pluginSettingsToolStripMenuItem_Click);
+            this.pluginSettingsToolStripMenuItem.Click += new System.EventHandler(this.PluginSettingsToolStripMenuItemClick);
             // 
             // helpToolStripMenuItem
             // 
@@ -162,7 +162,7 @@
             this.MaximizeBox = false;
             this.Name = "MainForm";
             this.Text = "Chip8 Proof Of Concept";
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainFormFormClosing);
             this.menuStripMainWindow.ResumeLayout(false);
             this.menuStripMainWindow.PerformLayout();
             this.emulatorStatusStrip.ResumeLayout(false);
