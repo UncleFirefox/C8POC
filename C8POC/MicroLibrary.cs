@@ -7,7 +7,8 @@ namespace MicroLibrary
     /// </summary>
     public class MicroStopwatch : System.Diagnostics.Stopwatch
     {
-        readonly double _microSecPerTick = 1000000D / Frequency;
+        readonly double _microSecPerTick
+            = 1000000D / System.Diagnostics.Stopwatch.Frequency;
 
         public MicroStopwatch()
         {
@@ -53,22 +54,29 @@ namespace MicroLibrary
 
         public long Interval
         {
-            get { return _timerIntervalInMicroSec; }
-            set { _timerIntervalInMicroSec = value; }
+            get
+            {
+                return System.Threading.Interlocked.Read(
+                    ref _timerIntervalInMicroSec);
+            }
+            set
+            {
+                System.Threading.Interlocked.Exchange(
+                    ref _timerIntervalInMicroSec, value);
+            }
         }
 
         public long IgnoreEventIfLateBy
         {
             get
             {
-                return _ignoreEventIfLateBy;
+                return System.Threading.Interlocked.Read(
+                    ref _ignoreEventIfLateBy);
             }
             set
             {
-                if (value <= 0)
-                    _ignoreEventIfLateBy = long.MaxValue;
-                else
-                    _ignoreEventIfLateBy = value;
+                System.Threading.Interlocked.Exchange(
+                    ref _ignoreEventIfLateBy, value <= 0 ? long.MaxValue : value);
             }
         }
 
@@ -77,9 +85,13 @@ namespace MicroLibrary
             set
             {
                 if (value)
+                {
                     Start();
+                }
                 else
+                {
                     Stop();
+                }
             }
             get
             {
@@ -95,10 +107,14 @@ namespace MicroLibrary
             }
 
             _stopTimer = false;
+
             System.Threading.ThreadStart threadStart = delegate()
             {
-                NotificationTimer(Interval, IgnoreEventIfLateBy, ref _stopTimer);
+                NotificationTimer(ref _timerIntervalInMicroSec,
+                                  ref _ignoreEventIfLateBy,
+                                  ref _stopTimer);
             };
+
             _threadTimer = new System.Threading.Thread(threadStart);
             _threadTimer.Priority = System.Threading.ThreadPriority.Highest;
             _threadTimer.Start();
@@ -108,7 +124,7 @@ namespace MicroLibrary
         {
             _stopTimer = true;
 
-            if (_threadTimer.ManagedThreadId ==
+            if (_threadTimer != null && _threadTimer.ManagedThreadId ==
                 System.Threading.Thread.CurrentThread.ManagedThreadId)
             {
                 return;
@@ -120,8 +136,8 @@ namespace MicroLibrary
             }
         }
 
-        void NotificationTimer(long timerInterval,
-                               long ignoreEventIfLateBy,
+        void NotificationTimer(ref long timerIntervalInMicroSec,
+                               ref long ignoreEventIfLateBy,
                                ref bool stopTimer)
         {
             int  timerCount = 0;
@@ -134,7 +150,13 @@ namespace MicroLibrary
             {
                 long callbackFunctionExecutionTime =
                     microStopwatch.ElapsedMicroseconds - nextNotification;
-                nextNotification += timerInterval;
+
+                long timerIntervalInMicroSecCurrent =
+                    System.Threading.Interlocked.Read(ref timerIntervalInMicroSec);
+                long ignoreEventIfLateByCurrent =
+                    System.Threading.Interlocked.Read(ref ignoreEventIfLateBy);
+
+                nextNotification += timerIntervalInMicroSecCurrent;
                 timerCount++;
                 long elapsedMicroseconds = 0;
 
@@ -144,9 +166,9 @@ namespace MicroLibrary
                     System.Threading.Thread.SpinWait(10);
                 }
 
-                long timerLateBy = elapsedMicroseconds - (timerCount * timerInterval);
+                long timerLateBy = elapsedMicroseconds - nextNotification;
 
-                if (timerLateBy >= ignoreEventIfLateBy)
+                if (timerLateBy >= ignoreEventIfLateByCurrent)
                 {
                     continue;
                 }

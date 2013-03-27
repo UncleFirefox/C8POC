@@ -1,13 +1,4 @@
-﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="MainForm.cs" company="">
-//   
-// </copyright>
-// <summary>
-//   The main form.
-// </summary>
-// --------------------------------------------------------------------------------------------------------------------
-
-namespace C8POC.WinFormsUI
+﻿namespace C8POC.WinFormsUI
 {
     using System;
     using System.Windows.Forms;
