@@ -1,13 +1,17 @@
-﻿namespace C8POC
+﻿using System.ComponentModel;
+using System.Linq;
+
+namespace C8POC
 {
     using System;
     using System.Collections;
     using System.Collections.Generic;
     using System.IO;
 
-    using C8POC.Properties;
+    using Properties;
 
     using MicroLibrary;
+    using Interfaces;
 
     /// <summary>
     /// Engine for emulator and central piece of this application
@@ -20,15 +24,8 @@
         /// Initializes a new instance of the <see cref="C8Engine"/> class. 
         /// </summary>
         public C8Engine()
+            : this(new C8MachineState())
         {
-            // The InstructionMap is loaded once!!
-            this.SetUpInstructionMap();
-
-            // Configure the timer
-            this.InitializeTimer();
-
-            // Create the instance of the machine state
-            this.machineState = new C8MachineState();
         }
 
         /// <summary>
@@ -42,6 +39,9 @@
         {
             // The InstructionMap is loaded once!!
             this.SetUpInstructionMap();
+
+            //Loads the plugins
+            this.LoadPlugins();
 
             // Configure the timer
             this.InitializeTimer();
@@ -73,6 +73,21 @@
         /// Timer in charge of handling the number of cycles per second
         /// </summary>
         private MicroTimer MicroTimer { get; set; }
+
+        /// <summary>
+        /// Loaded graphics plugin
+        /// </summary>
+        private IGraphicsPlugin SelectedGraphicsPlugin { get; set; }
+
+        /// <summary>
+        /// Loaded sound plugin
+        /// </summary>
+        private ISoundPlugin SelectedSoundPlugin { get; set; }
+
+        /// <summary>
+        /// Loaded Keyboard plugin
+        /// </summary>
+        private IKeyboardPlugin SelectedKeyboardPlugin { get; set; }
 
         #endregion
 
@@ -124,7 +139,7 @@
         {
             if (ScreenChanged != null)
             {
-                ScreenChanged(((BitArray)machineState.Graphics.Clone()));
+                ScreenChanged(((BitArray) machineState.Graphics.Clone()));
             }
         }
 
@@ -136,6 +151,82 @@
             if (SoundGenerated != null)
             {
                 SoundGenerated();
+            }
+        }
+
+        #endregion
+
+        #region Plugin Handling
+
+        private void LoadPlugins()
+        {
+            this.SelectedGraphicsPlugin = PluginManager.Instance.GraphicsPlugins.FirstOrDefault();
+            this.SelectedSoundPlugin = PluginManager.Instance.SoundPlugins.FirstOrDefault();
+            this.SelectedKeyboardPlugin = PluginManager.Instance.KeyboardPlugins.FirstOrDefault();
+
+            this.LinkPluginEvents();
+        }
+
+        private void LinkPluginEvents()
+        {
+            if (this.SelectedGraphicsPlugin != null)
+            {
+                this.ScreenChanged += this.SelectedGraphicsPlugin.Draw;
+                this.SelectedGraphicsPlugin.GraphicsExit += this.StopEmulator;
+            }
+
+            if (this.SelectedSoundPlugin != null)
+            {
+                this.SoundGenerated += this.SelectedSoundPlugin.GenerateSound;
+            }
+
+            if (this.SelectedKeyboardPlugin != null)
+            {
+                this.SelectedKeyboardPlugin.KeyUp += this.KeyUp;
+                this.SelectedKeyboardPlugin.KeyDown += this.KeyDown;
+                this.SelectedKeyboardPlugin.KeyStopEmulation += this.StopEmulator;
+            }
+        }
+
+        /// <summary>
+        /// Disables the selected plugins
+        /// </summary>
+        public void StopPluginsExecution()
+        {
+            if (this.SelectedGraphicsPlugin != null)
+            {
+                this.SelectedGraphicsPlugin.DisablePlugin();
+            }
+
+            if (this.SelectedKeyboardPlugin != null)
+            {
+                this.SelectedKeyboardPlugin.DisablePlugin();
+            }
+
+            if (this.SelectedSoundPlugin != null)
+            {
+                this.SelectedSoundPlugin.DisablePlugin();
+            }
+        }
+
+        /// <summary>
+        /// Enables all the plugins
+        /// </summary>
+        public void StartPluginsExecution()
+        {
+            if (this.SelectedGraphicsPlugin != null)
+            {
+                this.SelectedGraphicsPlugin.EnablePlugin();
+            }
+
+            if (this.SelectedKeyboardPlugin != null)
+            {
+                this.SelectedKeyboardPlugin.EnablePlugin();
+            }
+
+            if (this.SelectedSoundPlugin != null)
+            {
+                this.SelectedSoundPlugin.EnablePlugin();
             }
         }
 
@@ -161,6 +252,7 @@
             if (machineState.HasRomLoaded())
             {
                 this.IsRunning = true;
+                this.StartPluginsExecution();
                 MicroTimer.Start();
             }
         }
@@ -175,6 +267,7 @@
             if (MicroTimer.Enabled)
             {
                 MicroTimer.Stop();
+                this.StopPluginsExecution();
             }
         }
 
@@ -225,7 +318,8 @@
             }
             catch (KeyNotFoundException)
             {
-                throw new Exception(string.Format("Instruction with Opcode {0:X} is not implemented", machineState.CurrentOpcode));
+                throw new Exception(string.Format("Instruction with Opcode {0:X} is not implemented",
+                                                  machineState.CurrentOpcode));
             }
         }
 
@@ -247,7 +341,7 @@
                 // Load rom starting at 0x200
                 for (int i = 0; i < rom.Length; i++)
                 {
-                    this.machineState.Memory[C8Constants.StartRomAddress + i] = (byte)rom.ReadByte();
+                    this.machineState.Memory[C8Constants.StartRomAddress + i] = (byte) rom.ReadByte();
                 }
 
                 rom.Close();
@@ -295,7 +389,7 @@
             instructionMap.Add(0xB000, JumpToV0PlusImmediate);
             instructionMap.Add(0xC000, LoadRandomIntoRegister);
             instructionMap.Add(0xD000, DrawSprite);
-            instructionMap.Add(0xE000, GoToSkipRegisterInstruction );
+            instructionMap.Add(0xE000, GoToSkipRegisterInstruction);
             instructionMap.Add(0xE09E, SkipNextInstructionIfRegisterEqualsKeyPressed);
             instructionMap.Add(0xE0A1, SkipNextInstructionIfRegisterNotEqualsKeyPressed);
             instructionMap.Add(0xF000, GoToMemoryOperationInstruction);
@@ -316,9 +410,9 @@
         private void InitializeTimer()
         {
             MicroTimer = new MicroTimer
-                {
-                    Interval = (long)((1.0 / Settings.Default.FramesPerSecond) * 1000.0 * 1000.0) 
-                };
+                             {
+                                 Interval = (long) ((1.0/Settings.Default.FramesPerSecond)*1000.0*1000.0)
+                             };
 
             this.MicroTimer.MicroTimerElapsed += this.EmulateFrame;
         }
@@ -360,7 +454,7 @@
         private void GoToRoutineStartingWithZero()
         {
             var fetchedOpcode = this.machineState.CurrentOpcode & 0xF0FF;
-            
+
             if (fetchedOpcode == 0x0000)
             {
                 JumpToRoutineAtAdress();
@@ -435,7 +529,8 @@
         /// </summary>
         private void SkipNextInstructionIfRegisterEqualsImmediate()
         {
-            if (machineState.VRegisters[machineState.XRegisterFromCurrentOpcode] == (machineState.CurrentOpcode & 0x00FF))
+            if (machineState.VRegisters[machineState.XRegisterFromCurrentOpcode] ==
+                (machineState.CurrentOpcode & 0x00FF))
             {
                 machineState.IncreaseProgramCounter();
             }
@@ -448,7 +543,8 @@
         /// </summary>
         private void SkipNextInstructionIfRegisterNotEqualsImmediate()
         {
-            if (machineState.VRegisters[machineState.XRegisterFromCurrentOpcode] != (machineState.CurrentOpcode & 0x00FF))
+            if (machineState.VRegisters[machineState.XRegisterFromCurrentOpcode] !=
+                (machineState.CurrentOpcode & 0x00FF))
             {
                 machineState.IncreaseProgramCounter();
             }
@@ -461,7 +557,8 @@
         /// </summary>
         private void SkipNextInstructionIfRegisterEqualsRegister()
         {
-            if (machineState.VRegisters[machineState.XRegisterFromCurrentOpcode] == machineState.VRegisters[machineState.YRegisterFromCurrentOpcode])
+            if (machineState.VRegisters[machineState.XRegisterFromCurrentOpcode] ==
+                machineState.VRegisters[machineState.YRegisterFromCurrentOpcode])
             {
                 machineState.IncreaseProgramCounter();
             }
@@ -474,7 +571,8 @@
         /// </summary>
         private void LoadValueIntoRegister()
         {
-            machineState.VRegisters[machineState.XRegisterFromCurrentOpcode] = (ushort) (machineState.CurrentOpcode & 0x00FF);
+            machineState.VRegisters[machineState.XRegisterFromCurrentOpcode] =
+                (ushort) (machineState.CurrentOpcode & 0x00FF);
         }
 
         /// <summary>
@@ -484,7 +582,8 @@
         /// </summary>
         private void AddValueIntoRegister()
         {
-            machineState.VRegisters[machineState.XRegisterFromCurrentOpcode] += (ushort) (machineState.CurrentOpcode & 0x00FF);
+            machineState.VRegisters[machineState.XRegisterFromCurrentOpcode] +=
+                (ushort) (machineState.CurrentOpcode & 0x00FF);
         }
 
         /// <summary>
@@ -492,8 +591,8 @@
         /// </summary>
         private void GoToArithmeticLogicInstruction()
         {
-            var filteredOpcode = (ushort)(machineState.CurrentOpcode & 0xF00F);
-            
+            var filteredOpcode = (ushort) (machineState.CurrentOpcode & 0xF00F);
+
             if (filteredOpcode == 0x8000)
             {
                 LoadRegisterIntoRegister();
@@ -511,7 +610,8 @@
         /// </summary>
         private void LoadRegisterIntoRegister()
         {
-            machineState.VRegisters[machineState.XRegisterFromCurrentOpcode] += machineState.VRegisters[machineState.YRegisterFromCurrentOpcode];
+            machineState.VRegisters[machineState.XRegisterFromCurrentOpcode] +=
+                machineState.VRegisters[machineState.YRegisterFromCurrentOpcode];
         }
 
         /// <summary>
@@ -523,7 +623,8 @@
         /// </summary>
         private void OrRegistersIntoRegister()
         {
-            machineState.VRegisters[machineState.XRegisterFromCurrentOpcode] |= machineState.VRegisters[machineState.YRegisterFromCurrentOpcode];
+            machineState.VRegisters[machineState.XRegisterFromCurrentOpcode] |=
+                machineState.VRegisters[machineState.YRegisterFromCurrentOpcode];
         }
 
         /// <summary>
@@ -535,7 +636,8 @@
         /// </summary>
         private void AndRegistersIntoRegiter()
         {
-            machineState.VRegisters[machineState.XRegisterFromCurrentOpcode] &= machineState.VRegisters[machineState.YRegisterFromCurrentOpcode];
+            machineState.VRegisters[machineState.XRegisterFromCurrentOpcode] &=
+                machineState.VRegisters[machineState.YRegisterFromCurrentOpcode];
         }
 
         /// <summary>
@@ -547,7 +649,8 @@
         /// </summary>
         private void ExclusiveOrIntoRegister()
         {
-            machineState.VRegisters[machineState.XRegisterFromCurrentOpcode] ^= machineState.VRegisters[machineState.YRegisterFromCurrentOpcode];
+            machineState.VRegisters[machineState.XRegisterFromCurrentOpcode] ^=
+                machineState.VRegisters[machineState.YRegisterFromCurrentOpcode];
         }
 
         /// <summary>
@@ -558,7 +661,8 @@
         /// </summary>
         private void AddRegistersIntoRegister()
         {
-            machineState.VRegisters[machineState.XRegisterFromCurrentOpcode] += machineState.VRegisters[machineState.YRegisterFromCurrentOpcode];
+            machineState.VRegisters[machineState.XRegisterFromCurrentOpcode] +=
+                machineState.VRegisters[machineState.YRegisterFromCurrentOpcode];
 
             if (machineState.VRegisters[machineState.XRegisterFromCurrentOpcode] > 0xFF)
             {
@@ -577,7 +681,8 @@
         /// </summary>
         private void SubstractRegisters()
         {
-            if (machineState.VRegisters[machineState.XRegisterFromCurrentOpcode] > machineState.VRegisters[machineState.YRegisterFromCurrentOpcode])
+            if (machineState.VRegisters[machineState.XRegisterFromCurrentOpcode] >
+                machineState.VRegisters[machineState.YRegisterFromCurrentOpcode])
             {
                 machineState.VRegisters[0xF] = 1;
             }
@@ -586,7 +691,8 @@
                 machineState.VRegisters[0xF] = 0;
             }
 
-            machineState.VRegisters[machineState.XRegisterFromCurrentOpcode] -= machineState.VRegisters[machineState.YRegisterFromCurrentOpcode];
+            machineState.VRegisters[machineState.XRegisterFromCurrentOpcode] -=
+                machineState.VRegisters[machineState.YRegisterFromCurrentOpcode];
         }
 
         /// <summary>
@@ -615,7 +721,8 @@
         /// </summary>
         private void SubstractRegistersReverse()
         {
-            if (machineState.VRegisters[machineState.YRegisterFromCurrentOpcode] > machineState.VRegisters[machineState.XRegisterFromCurrentOpcode])
+            if (machineState.VRegisters[machineState.YRegisterFromCurrentOpcode] >
+                machineState.VRegisters[machineState.XRegisterFromCurrentOpcode])
             {
                 machineState.VRegisters[0xF] = 1;
             }
@@ -625,7 +732,9 @@
             }
 
             machineState.VRegisters[machineState.XRegisterFromCurrentOpcode] =
-                (ushort) (machineState.VRegisters[machineState.YRegisterFromCurrentOpcode] - machineState.VRegisters[machineState.XRegisterFromCurrentOpcode]);
+                (ushort)
+                (machineState.VRegisters[machineState.YRegisterFromCurrentOpcode] -
+                 machineState.VRegisters[machineState.XRegisterFromCurrentOpcode]);
         }
 
         /// <summary>
@@ -654,7 +763,8 @@
         /// </summary>
         private void SkipNextInstructionIfRegisterNotEqualsRegister()
         {
-            if (machineState.VRegisters[machineState.XRegisterFromCurrentOpcode] != machineState.VRegisters[machineState.YRegisterFromCurrentOpcode])
+            if (machineState.VRegisters[machineState.XRegisterFromCurrentOpcode] !=
+                machineState.VRegisters[machineState.YRegisterFromCurrentOpcode])
             {
                 machineState.IncreaseProgramCounter();
             }
@@ -690,7 +800,8 @@
         {
             var randomnumber = (ushort) new Random().Next(0, 255);
 
-            machineState.VRegisters[machineState.XRegisterFromCurrentOpcode] = (ushort) (randomnumber & (machineState.CurrentOpcode & 0x00FF));
+            machineState.VRegisters[machineState.XRegisterFromCurrentOpcode] =
+                (ushort) (randomnumber & (machineState.CurrentOpcode & 0x00FF));
         }
 
         /// <summary>
@@ -717,8 +828,10 @@
                 {
                     if ((currentpixel & (0x80 >> colNum)) != 0)
                     {
-                        int positioninGraphics = (positionX + colNum + ((positionY + rowNum)*C8Constants.ResolutionWidth))
-                            %(C8Constants.ResolutionWidth*C8Constants.ResolutionHeight); // Make sure we get a value inside boundaries
+                        int positioninGraphics = (positionX + colNum +
+                                                  ((positionY + rowNum)*C8Constants.ResolutionWidth))
+                                                 %(C8Constants.ResolutionWidth*C8Constants.ResolutionHeight);
+                            // Make sure we get a value inside boundaries
 
                         if (machineState.Graphics[positioninGraphics])
                         {
@@ -874,9 +987,12 @@
         /// </summary>
         private void LoadBcdRepresentationFromRegister()
         {
-            machineState.Memory[machineState.IndexRegister] = (byte) (machineState.VRegisters[machineState.XRegisterFromCurrentOpcode]/100); //Hundreds
-            machineState.Memory[machineState.IndexRegister + 1] = (byte) ((machineState.VRegisters[machineState.XRegisterFromCurrentOpcode]/10)%10); //Tens
-            machineState.Memory[machineState.IndexRegister + 2] = (byte) (machineState.VRegisters[machineState.XRegisterFromCurrentOpcode]%10); //Ones
+            machineState.Memory[machineState.IndexRegister] =
+                (byte) (machineState.VRegisters[machineState.XRegisterFromCurrentOpcode]/100); //Hundreds
+            machineState.Memory[machineState.IndexRegister + 1] =
+                (byte) ((machineState.VRegisters[machineState.XRegisterFromCurrentOpcode]/10)%10); //Tens
+            machineState.Memory[machineState.IndexRegister + 2] =
+                (byte) (machineState.VRegisters[machineState.XRegisterFromCurrentOpcode]%10); //Ones
         }
 
         /// <summary>
@@ -906,5 +1022,19 @@
         }
 
         #endregion
+
+        public static T GetTfromString<T>(string mystring)
+        {
+            var typeConverter = TypeDescriptor.GetConverter(typeof (T));
+            try
+            {
+                var returnValue = (T)(typeConverter.ConvertFromInvariantString(mystring));
+                return returnValue;
+            }
+            catch (Exception)
+            {
+                return default(T);
+            }
+        }
     }
 }

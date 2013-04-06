@@ -32,48 +32,6 @@
         }
 
         /// <summary>
-        /// Disables the selected plugins
-        /// </summary>
-        public void StopPluginsExecution()
-        {
-            if (this.SelectedGraphicsPlugin != null)
-            {
-                this.SelectedGraphicsPlugin.DisablePlugin();
-            }
-
-            if (this.SelectedKeyboardPlugin != null)
-            {
-                this.SelectedKeyboardPlugin.DisablePlugin();
-            }
-
-            if (this.SelectedSoundPlugin != null)
-            {
-                this.SelectedSoundPlugin.DisablePlugin();
-            }
-        }
-
-        /// <summary>
-        /// Enables all the plugins
-        /// </summary>
-        public void StartPluginsExecution()
-        {
-            if (this.SelectedGraphicsPlugin != null)
-            {
-                this.SelectedGraphicsPlugin.EnablePlugin();
-            }
-
-            if (this.SelectedKeyboardPlugin != null)
-            {
-                this.SelectedKeyboardPlugin.EnablePlugin();
-            }
-
-            if (this.SelectedSoundPlugin != null)
-            {
-                this.SelectedSoundPlugin.EnablePlugin();
-            }
-        }
-
-        /// <summary>
         /// Gets the assemblies inside the Plugins folder of the exe
         /// </summary>
         private void LoadPluginsFromAssemblies()
@@ -82,21 +40,6 @@
             var catalog = new DirectoryCatalog("Plugins", "*.dll");
             var container = new CompositionContainer(catalog);
             container.ComposeParts(this);
-
-            if (this.SoundPlugins.Any())
-            {
-                this.SelectedSoundPlugin = this.SoundPlugins.FirstOrDefault();
-            }
-
-            if (this.GraphicsPlugins.Any())
-            {
-                this.SelectedGraphicsPlugin = this.GraphicsPlugins.FirstOrDefault();
-            }
-
-            if (this.KeyboardPlugins.Any())
-            {
-                this.SelectedKeyboardPlugin = this.KeyboardPlugins.FirstOrDefault();
-            }
         }
 
         #endregion
@@ -125,21 +68,6 @@
         /// </summary>
         [ImportMany(typeof(ISoundPlugin))]
         public IEnumerable<ISoundPlugin> SoundPlugins { get; set; }
-
-        /// <summary>
-        /// Gets or sets the currently assigned Sound Plugin for execution
-        /// </summary>
-        public ISoundPlugin SelectedSoundPlugin { get; set; }
-
-        /// <summary>
-        /// Gets or sets the currently assigned Graphics Plugin for execution
-        /// </summary>
-        public IGraphicsPlugin SelectedGraphicsPlugin { get; set; }
-
-        /// <summary>
-        /// Gets or sets the currently assigned Keyboard Plugin for execution
-        /// </summary>
-        public IKeyboardPlugin SelectedKeyboardPlugin { get; set; }
 
         #endregion
     }

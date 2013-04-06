@@ -133,6 +133,9 @@
     <Content Include="Plugins\C8POC.Plugins.Graphics.GDIPlugin.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Plugins\C8POC.Plugins.Graphics.GDIPlugin.pdb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Plugins\C8POC.Plugins.Keyboard.SystemWindowsKeyboard.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

@@ -74,6 +74,14 @@
             if (this.graphicsForm != null && this.IsFormOpen(this.graphicsForm))
             {
                 this.FormClosedByCode = true;
+                
+                //The thread safe way to close the form :)
+                if (this.graphicsForm.InvokeRequired)
+                {
+                    this.graphicsForm.BeginInvoke(new Action(() => this.graphicsForm.Close()));
+                    return;
+                }
+
                 this.graphicsForm.Close();
             }
         }

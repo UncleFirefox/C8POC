@@ -26,41 +26,11 @@
         {
             this.InitializeComponent();
             this.emulator = new C8Engine();
-
-            // Link output events to plugins
-            this.emulator.ScreenChanged += PluginManager.Instance.SelectedGraphicsPlugin.Draw;
-            this.emulator.SoundGenerated += PluginManager.Instance.SelectedSoundPlugin.GenerateSound;
-
-            // Link key input events to plugins
-            PluginManager.Instance.SelectedKeyboardPlugin.KeyUp += this.emulator.KeyUp;
-            PluginManager.Instance.SelectedKeyboardPlugin.KeyDown += this.emulator.KeyDown;
-            PluginManager.Instance.SelectedKeyboardPlugin.KeyStopEmulation += this.StopEmulation;
-
-            // Link Graphics Plugin Closing Window
-            PluginManager.Instance.SelectedGraphicsPlugin.GraphicsExit += this.StopEmulation;
         }
 
         #endregion
 
         #region Methods
-
-        /// <summary>
-        /// Starts the emulation
-        /// </summary>
-        private void StartEmulation()
-        {
-            PluginManager.Instance.StartPluginsExecution();
-            this.emulator.StartEmulator();
-        }
-
-        /// <summary>
-        /// Stops the emulation
-        /// </summary>
-        private void StopEmulation()
-        {
-            this.emulator.StopEmulator();
-            PluginManager.Instance.StopPluginsExecution();
-        }
 
         /// <summary>
         /// The exit tool strip menu item click.
@@ -73,7 +43,7 @@
         /// </param>
         private void ExitToolStripMenuItemClick(object sender, EventArgs e)
         {
-            this.StopEmulation();
+            this.emulator.StopEmulator();
             this.Close();
         }
 
@@ -88,7 +58,7 @@
         /// </param>
         private void MainFormFormClosing(object sender, FormClosingEventArgs e)
         {
-            this.StopEmulation();
+            this.emulator.StopEmulator();
         }
 
         /// <summary>
@@ -105,7 +75,7 @@
             if (this.openFileDialogRom.ShowDialog() == DialogResult.OK)
             {
                 this.emulator.LoadEmulator(this.openFileDialogRom.FileName);
-                this.StartEmulation();
+                this.emulator.StartEmulator();
             }
         }
 

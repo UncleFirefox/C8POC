@@ -1,0 +1,136 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Comment CommentText="Plugins are stored instances inside PluginManager">
+    <Position X="8.479" Y="3.646" Height="0.75" Width="1.273" />
+  </Comment>
+  <Class Name="C8POC.C8Constants">
+    <Position X="12.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEAABAAABAAAAAAAQAAAAAAAAAgAAIACAAAABAAAAA=</HashCode>
+      <FileName>C8Constants.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="C8POC.C8Engine">
+    <Position X="4" Y="6.25" Width="2" />
+    <Compartments>
+      <Compartment Name="Events" Collapsed="true" />
+    </Compartments>
+    <NestedTypes>
+      <Delegate Name="C8POC.C8Engine.ScreenChangeEventHandler" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>C8Engine.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Delegate>
+      <Delegate Name="C8POC.C8Engine.SoundGenerateEventHandler" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>C8Engine.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Delegate>
+    </NestedTypes>
+    <AssociationLine Name="SelectedGraphicsPlugin" Type="C8POC.Interfaces.IGraphicsPlugin" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="4.312" Y="6.25" />
+        <Point X="4.312" Y="5.875" />
+        <Point X="2.25" Y="5.875" />
+        <Point X="2.25" Y="4.934" />
+      </Path>
+      <MemberNameLabel ManuallyPlaced="true" ManuallySized="true">
+        <Position X="-1.755" Y="0.112" Height="0.182" Width="1.613" />
+      </MemberNameLabel>
+    </AssociationLine>
+    <AssociationLine Name="SelectedKeyboardPlugin" Type="C8POC.Interfaces.IKeyboardPlugin" ManuallyRouted="true" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="5.688" Y="6.25" />
+        <Point X="5.688" Y="5.855" />
+        <Point X="7.875" Y="5.855" />
+        <Point X="7.875" Y="4.867" />
+      </Path>
+      <MemberNameLabel ManuallyPlaced="true">
+        <Position X="0.1" Y="0.133" />
+      </MemberNameLabel>
+    </AssociationLine>
+    <AssociationLine Name="SelectedSoundPlugin" Type="C8POC.Interfaces.ISoundPlugin" FixedFromPoint="true">
+      <Path>
+        <Point X="5" Y="6.25" />
+        <Point X="5" Y="4.483" />
+      </Path>
+    </AssociationLine>
+    <TypeIdentifier>
+      <HashCode>EFAYAEAEgkxIwSAQBU0C4ABFMsFTARUSDIBSkoYAAGU=</HashCode>
+      <FileName>C8Engine.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="machineState" />
+      <Property Name="MicroTimer" />
+      <Property Name="SelectedGraphicsPlugin" />
+      <Property Name="SelectedKeyboardPlugin" />
+      <Property Name="SelectedSoundPlugin" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="C8POC.C8MachineState">
+    <Position X="0.5" Y="6.25" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAEAAAQAAAAAAAKAGAAIAEAAikBAAAAAAgAAAALgAAQ=</HashCode>
+      <FileName>C8MachineState.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="C8POC.PluginManager">
+    <Position X="9.5" Y="0.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAQAAgAAAAAABAAAAAQAAAAgAACAA=</HashCode>
+      <FileName>PluginManager.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MicroLibrary.MicroTimer">
+    <Position X="7.25" Y="7.25" Width="2" />
+    <Compartments>
+      <Compartment Name="Fields" Collapsed="true" />
+    </Compartments>
+    <NestedTypes>
+      <Delegate Name="MicroLibrary.MicroTimer.MicroTimerElapsedEventHandler">
+        <TypeIdentifier>
+          <NewMemberFileName>MicroLibrary.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Delegate>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAQIAAEAACAAAIAEQIAAACAEAAAAAAAAIAAAAAAAAAA=</HashCode>
+      <FileName>MicroLibrary.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="C8POC.Properties.Settings">
+    <Position X="14.75" Y="0.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAIAAAAAABQAAAAAAAAAABAAA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Interface Name="C8POC.Interfaces.IGraphicsPlugin">
+    <Position X="1.5" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAEA=</HashCode>
+      <FileName>Interfaces\IGraphicsPlugin.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="C8POC.Interfaces.IKeyboardPlugin">
+    <Position X="6.75" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAgAAEAAgAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Interfaces\IKeyboardPlugin.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="C8POC.Interfaces.IPlugin">
+    <Position X="4.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAACAAAEABAAAAAAAgAAAAAAgAAAAAAAAA=</HashCode>
+      <FileName>Interfaces\IPlugin.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="C8POC.Interfaces.ISoundPlugin">
+    <Position X="4.25" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEA=</HashCode>
+      <FileName>Interfaces\ISoundPlugin.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
