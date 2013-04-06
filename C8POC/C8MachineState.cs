@@ -1,4 +1,6 @@
-﻿namespace C8POC
+﻿using C8POC.Interfaces;
+
+namespace C8POC
 {
     using System;
     using System.Collections;
@@ -8,7 +10,7 @@
     /// <summary>
     /// Class that wraps the Chip8 Machine State
     /// </summary>
-    public class C8MachineState
+    public class C8MachineState :IMachineState
     {
         #region Constructor
 
@@ -191,7 +193,7 @@
         /// <summary>
         /// Loads the font set in memory
         /// </summary>
-        private void LoadFontSet()
+        public void LoadFontSet()
         {
             for (var i = 0; i < C8Constants.Chip8FontSet.Length; i++)
             {

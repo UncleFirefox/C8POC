@@ -44,11 +44,14 @@
     <Compile Include="C8Constants.cs" />
     <Compile Include="C8Engine.cs" />
     <Compile Include="C8MachineState.cs" />
+    <Compile Include="Interfaces\IMachineState.cs" />
     <Compile Include="Interfaces\IGraphicsPlugin.cs" />
     <Compile Include="Interfaces\IKeyboardPlugin.cs" />
+    <Compile Include="Interfaces\IOpcodeProcessor.cs" />
     <Compile Include="Interfaces\IPlugin.cs" />
     <Compile Include="Interfaces\ISoundPlugin.cs" />
     <Compile Include="MicroLibrary.cs" />
+    <Compile Include="OpcodeProcessor.cs" />
     <Compile Include="PluginManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
