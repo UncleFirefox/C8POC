@@ -9,12 +9,11 @@ TODO:
 
 -Revision of not implemented opcodes
 
--Key input system (customization, emulator key configuration in app.config?)
-
 -Bugfixing with special interest in controlling threads and timers
 
--Separation of responsabilities
+		-Use a task on a separate thread for engine execution main loop instead of a thread insanity timer
 
-		-Wrap emulator properties in a struct (machine state)
+-Separation of responsabilities
   
 		-Isolate I/O operations (Sound, Graphics, KeyInput) in a Plugin System
+		-Plugin system Lazy loaded based on metadata
