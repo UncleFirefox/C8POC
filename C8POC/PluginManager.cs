@@ -1,4 +1,6 @@
-﻿namespace C8POC
+﻿using System;
+
+namespace C8POC
 {
     using System.Collections.Generic;
     using System.ComponentModel.Composition;
@@ -55,19 +57,19 @@
         /// Gets or sets the list of graphic plugins it could be done with IEnumerable lazy loading
         /// </summary>
         [ImportMany(typeof(IGraphicsPlugin))]
-        public IEnumerable<IGraphicsPlugin> GraphicsPlugins { get; set; }
+        public IEnumerable<Lazy<IGraphicsPlugin, IPluginMetadata>> GraphicsPlugins { get; set; }
 
         /// <summary>
         /// Gets or sets the list of keyboard plugins
         /// </summary>
         [ImportMany(typeof(IKeyboardPlugin))]
-        public IEnumerable<IKeyboardPlugin> KeyboardPlugins { get; set; }
+        public IEnumerable<Lazy<IKeyboardPlugin, IPluginMetadata>> KeyboardPlugins { get; set; }
 
         /// <summary>
         /// Gets or sets the list of sound plugins
         /// </summary>
         [ImportMany(typeof(ISoundPlugin))]
-        public IEnumerable<ISoundPlugin> SoundPlugins { get; set; }
+        public IEnumerable<Lazy<ISoundPlugin,IPluginMetadata>> SoundPlugins { get; set; }
 
         #endregion
     }

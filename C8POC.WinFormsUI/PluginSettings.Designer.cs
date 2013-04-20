@@ -232,6 +232,7 @@
             this.Controls.Add(this.groupBoxSound);
             this.Controls.Add(this.groupBoxGraphics);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            this.MaximizeBox = false;
             this.Name = "PluginSettings";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Plugin Configuration";

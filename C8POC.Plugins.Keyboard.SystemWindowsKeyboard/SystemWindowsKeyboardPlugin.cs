@@ -14,6 +14,9 @@
     /// Implementation of a keyboard plugin using Windows Hooks
     /// </summary>
     [Export(typeof(IKeyboardPlugin))]
+    [ExportMetadata("Version", "0.1")]
+    [ExportMetadata("NameSpace", "C8POC.Plugins.Keyboard.SystemWindowsKeyboard.SystemWindowsKeyboardPlugin")]
+    [ExportMetadata("Description", "Windows Hooks System Implementation of Key Input Plugin")]
     public class SystemWindowsKeyboardPlugin : IKeyboardPlugin
     {
         /// <summary>
@@ -32,14 +35,6 @@
         public SystemWindowsKeyboardPlugin()
         {
             this.SetUpDefaultKeyMap();
-        }
-
-        /// <summary>
-        /// Gets the plugin description
-        /// </summary>
-        public string PluginDescription
-        {
-            get { return "Windows Hooks System Implementation of Key Input Plugin"; }
         }
 
         /// <summary>

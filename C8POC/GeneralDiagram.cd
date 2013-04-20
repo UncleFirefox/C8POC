@@ -59,13 +59,12 @@
       </MemberNameLabel>
     </AssociationLine>
     <TypeIdentifier>
-      <HashCode>EBAMAEAEAAQAgSAAAEwAwABBAkFQAAQSDIBAggAAAGE=</HashCode>
+      <HashCode>kBAMAEAEAAQAgSAAAEwAwAABAwFQBAAQDIBAggAAAGE=</HashCode>
       <FileName>C8Engine.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
       <Field Name="machineState" />
       <Field Name="opcodeProcessor" />
-      <Property Name="MicroTimer" />
       <Property Name="SelectedGraphicsPlugin" />
       <Property Name="SelectedSoundPlugin" />
       <Property Name="SelectedKeyboardPlugin" />
@@ -76,23 +75,6 @@
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAQAAgAAAAAABAAAAAQAAAAgAACAA=</HashCode>
       <FileName>PluginManager.cs</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="MicroLibrary.MicroTimer">
-    <Position X="4.25" Y="14.25" Width="2" />
-    <Compartments>
-      <Compartment Name="Fields" Collapsed="true" />
-    </Compartments>
-    <NestedTypes>
-      <Delegate Name="MicroLibrary.MicroTimer.MicroTimerElapsedEventHandler">
-        <TypeIdentifier>
-          <NewMemberFileName>MicroLibrary.cs</NewMemberFileName>
-        </TypeIdentifier>
-      </Delegate>
-    </NestedTypes>
-    <TypeIdentifier>
-      <HashCode>AAQIAAEAACAAAIAEQIAAACAEAAAAAAAAIAAAAAAAAAA=</HashCode>
-      <FileName>MicroLibrary.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="C8POC.Properties.Settings">

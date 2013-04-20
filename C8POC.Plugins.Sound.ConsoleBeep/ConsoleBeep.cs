@@ -10,19 +10,11 @@
     /// Early implementation of a Sound Class
     /// </summary>
     [Export(typeof(ISoundPlugin))]
+    [ExportMetadata("Version","0.1")]
+    [ExportMetadata("NameSpace","C8POC.Plugins.Sound.ConsoleBeep.ConsoleSoundBeepPlugin")]
+    [ExportMetadata("Description", "Sound Plugin Based on Console.Beep")]
     public class ConsoleSoundBeepPlugin : ISoundPlugin
     {
-        /// <summary>
-        /// Gets the plugin description
-        /// </summary>
-        public string PluginDescription
-        {
-            get
-            {
-                return "Sound Plugin Based on Console.Beep vBeta";
-            }
-        }
-
         /// <summary>
         /// Configuration for plugin
         /// </summary>

@@ -49,8 +49,8 @@
     <Compile Include="Interfaces\IKeyboardPlugin.cs" />
     <Compile Include="Interfaces\IOpcodeProcessor.cs" />
     <Compile Include="Interfaces\IPlugin.cs" />
+    <Compile Include="Interfaces\IPluginMetadata.cs" />
     <Compile Include="Interfaces\ISoundPlugin.cs" />
-    <Compile Include="MicroLibrary.cs" />
     <Compile Include="OpcodeProcessor.cs" />
     <Compile Include="PluginManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

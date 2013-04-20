@@ -5,8 +5,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "C8POC", "C8POC\C8POC.csproj
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "C8POC.WinFormsUI", "C8POC.WinFormsUI\C8POC.WinFormsUI.csproj", "{97F1A082-9035-4501-BBE1-BCCD0B02B30B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "C8POC.ConsoleUI", "C8POC.ConsoleUI\C8POC.ConsoleUI.csproj", "{8E303761-F087-435D-839C-5C304F9039BD}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "C8POC.Plugins.Sound.ConsoleBeep", "C8POC.Plugins.Sound.ConsoleBeep\C8POC.Plugins.Sound.ConsoleBeep.csproj", "{8D633DEB-08C0-4BF5-AD8F-D5247C0301A8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "C8POC.Plugins.Graphics.GDIPlugin", "C8POC.Plugins.Graphics.GDIPlugin\C8POC.Plugins.Graphics.GDIPlugin.csproj", "{7FEF5BA1-D809-43CC-B4E1-E6FCD674D1EB}"
@@ -45,16 +43,6 @@ Global
 		{97F1A082-9035-4501-BBE1-BCCD0B02B30B}.Release|Mixed Platforms.Build.0 = Release|x86
 		{97F1A082-9035-4501-BBE1-BCCD0B02B30B}.Release|x86.ActiveCfg = Release|x86
 		{97F1A082-9035-4501-BBE1-BCCD0B02B30B}.Release|x86.Build.0 = Release|x86
-		{8E303761-F087-435D-839C-5C304F9039BD}.Debug|Any CPU.ActiveCfg = Debug|x86
-		{8E303761-F087-435D-839C-5C304F9039BD}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
-		{8E303761-F087-435D-839C-5C304F9039BD}.Debug|Mixed Platforms.Build.0 = Debug|x86
-		{8E303761-F087-435D-839C-5C304F9039BD}.Debug|x86.ActiveCfg = Debug|x86
-		{8E303761-F087-435D-839C-5C304F9039BD}.Debug|x86.Build.0 = Debug|x86
-		{8E303761-F087-435D-839C-5C304F9039BD}.Release|Any CPU.ActiveCfg = Release|x86
-		{8E303761-F087-435D-839C-5C304F9039BD}.Release|Mixed Platforms.ActiveCfg = Release|x86
-		{8E303761-F087-435D-839C-5C304F9039BD}.Release|Mixed Platforms.Build.0 = Release|x86
-		{8E303761-F087-435D-839C-5C304F9039BD}.Release|x86.ActiveCfg = Release|x86
-		{8E303761-F087-435D-839C-5C304F9039BD}.Release|x86.Build.0 = Release|x86
 		{8D633DEB-08C0-4BF5-AD8F-D5247C0301A8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{8D633DEB-08C0-4BF5-AD8F-D5247C0301A8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8D633DEB-08C0-4BF5-AD8F-D5247C0301A8}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU

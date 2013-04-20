@@ -75,7 +75,7 @@
             if (this.openFileDialogRom.ShowDialog() == DialogResult.OK)
             {
                 this.emulator.LoadEmulator(this.openFileDialogRom.FileName);
-                this.emulator.StartEmulator();
+                this.emulator.StartEmulation();
             }
         }
 

@@ -1,5 +1,8 @@
 ﻿using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace C8POC
 {
@@ -8,7 +11,6 @@ namespace C8POC
     using System.Collections.Generic;
     using System.IO;
     using Interfaces;
-    using MicroLibrary;
     using Properties;
 
     /// <summary>
@@ -48,9 +50,6 @@ namespace C8POC
 
             //Loads the plugins
             this.LoadPlugins();
-
-            // Configure the timer
-            this.InitializeTimer();
         }
 
         #endregion
@@ -58,7 +57,7 @@ namespace C8POC
         #region Emulator Properties
 
         /// <summary>
-        /// Gets or sets a value indicating whether if the emulator should be running, important to control the timer
+        /// Gets or sets a value indicating whether if the emulator should be running, important to control the game loop
         /// </summary>
         private bool IsRunning { get; set; }
 
@@ -76,11 +75,6 @@ namespace C8POC
         /// Contains the mapping between an opcode and the function that should be executed
         /// </summary>
         private Dictionary<ushort, Action> instructionMap = new Dictionary<ushort, Action>();
-
-        /// <summary>
-        /// Timer in charge of handling the number of cycles per second
-        /// </summary>
-        private MicroTimer MicroTimer { get; set; }
 
         /// <summary>
         /// Loaded graphics plugin
@@ -168,9 +162,9 @@ namespace C8POC
 
         private void LoadPlugins()
         {
-            this.SelectedGraphicsPlugin = PluginManager.Instance.GraphicsPlugins.FirstOrDefault();
-            this.SelectedSoundPlugin = PluginManager.Instance.SoundPlugins.FirstOrDefault();
-            this.SelectedKeyboardPlugin = PluginManager.Instance.KeyboardPlugins.FirstOrDefault();
+            this.SelectedGraphicsPlugin = PluginManager.Instance.GraphicsPlugins.FirstOrDefault().Value;
+            this.SelectedSoundPlugin = PluginManager.Instance.SoundPlugins.FirstOrDefault().Value;
+            this.SelectedKeyboardPlugin = PluginManager.Instance.KeyboardPlugins.FirstOrDefault().Value;
 
             this.LinkPluginEvents();
         }
@@ -253,15 +247,39 @@ namespace C8POC
         }
 
         /// <summary>
-        /// Starts the timer if a correct rom has been loaded
+        /// Starts the emulation using a delegate
         /// </summary>
-        public void StartEmulator()
+        public void StartEmulation()
         {
-            if (machineState.HasRomLoaded())
+            if (!machineState.HasRomLoaded())
             {
-                this.IsRunning = true;
-                this.StartPluginsExecution();
-                MicroTimer.Start();
+                return;
+            }
+
+            this.StartPluginsExecution();
+
+            var engineExecutionTask = new Task(EmulatorTask);
+            engineExecutionTask.ContinueWith(task => StopPluginsExecution());
+            engineExecutionTask.Start();
+        }
+
+        private void EmulatorTask()
+        {
+            this.IsRunning = true;
+
+            var cycleStopWatch = new Stopwatch();
+            var millisecondsperframe = 1.0/(Settings.Default.FramesPerSecond)*1000.0;
+
+            // Gets to the emulator loop
+            while (this.IsRunning)
+            {
+                cycleStopWatch.Restart();
+
+                EmulatorLoop();
+
+                Thread.Sleep((int) Math.Max(0.0,
+                                            millisecondsperframe - cycleStopWatch.ElapsedMilliseconds)
+                    );
             }
         }
 
@@ -271,11 +289,28 @@ namespace C8POC
         public void StopEmulator()
         {
             this.IsRunning = false;
+        }
 
-            if (MicroTimer.Enabled)
+        /// <summary>
+        /// This is where all the action happens its kind of simillar to the GameLoop
+        /// </summary>
+        private void EmulatorLoop()
+        {
+            for (int cycleNum = 0; cycleNum < Settings.Default.CyclesPerFrame; cycleNum++)
             {
-                MicroTimer.Stop();
-                this.StopPluginsExecution();
+                this.EmulateCycle();
+
+                if (!this.IsRunning)
+                {
+                    this.StopEmulator();
+                    return;
+                }
+            }
+
+            if (this.machineState.IsDrawFlagSet)
+            {
+                this.DrawGraphics();
+                this.machineState.IsDrawFlagSet = false;
             }
         }
 
@@ -410,44 +445,6 @@ namespace C8POC
             instructionMap.Add(0xF033, opcodeProcessor.LoadBcdRepresentationFromRegister);
             instructionMap.Add(0xF055, opcodeProcessor.LoadAllRegistersFromValueInRegister);
             instructionMap.Add(0xF065, opcodeProcessor.LoadFromValueInRegisterIntoAllRegisters);
-        }
-
-        /// <summary>
-        /// Initializes the timer, it fires on every frame
-        /// </summary>
-        private void InitializeTimer()
-        {
-            MicroTimer = new MicroTimer
-                             {
-                                 Interval = (long) ((1.0/Settings.Default.FramesPerSecond)*1000.0*1000.0)
-                             };
-
-            this.MicroTimer.MicroTimerElapsed += this.EmulateFrame;
-        }
-
-        /// <summary>
-        /// Event fired to emulate each frame
-        /// </summary>
-        /// <param name="sender">The sender</param>
-        /// <param name="timerEventArgs">The event arguments</param>
-        private void EmulateFrame(object sender, MicroTimerEventArgs timerEventArgs)
-        {
-            for (int cycleNum = 0; cycleNum < Settings.Default.CyclesPerFrame; cycleNum++)
-            {
-                this.EmulateCycle();
-
-                if (!this.IsRunning)
-                {
-                    this.StopEmulator();
-                    return;
-                }
-            }
-
-            if (this.machineState.IsDrawFlagSet)
-            {
-                this.DrawGraphics();
-                this.machineState.IsDrawFlagSet = false;
-            }
         }
 
         #endregion

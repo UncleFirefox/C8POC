@@ -26,43 +26,29 @@
         /// </summary>
         private void LoadPluginAssemblies()
         {
-            LoadPluginsInCombo(PluginManager.Instance.SoundPlugins, comboBoxSound);
-            LoadPluginsInCombo(PluginManager.Instance.GraphicsPlugins, comboBoxGraphics);
-            LoadPluginsInCombo(PluginManager.Instance.KeyboardPlugins, comboBoxKeyInput);
-        }
-
-        /// <summary>
-        /// Loads plugins inside the combo
-        /// </summary>
-        /// <param name="pluginList">
-        /// The plugin list.
-        /// </param>
-        /// <param name="combo">
-        /// The combo.
-        /// </param>
-        private void LoadPluginsInCombo(IEnumerable<IPlugin> pluginList, ComboBox combo)
-        {
-            if (pluginList.Any())
+            if (PluginManager.Instance.SoundPlugins.Any())
             {
-                Dictionary<IPlugin, string> plugins = pluginList.ToDictionary(x => x, x => x.PluginDescription);
-                BindDictionaryToComboBox(combo, plugins);
+                var plugins = PluginManager.Instance.SoundPlugins.ToDictionary(x => x, x => x.Metadata.Description);
+                comboBoxSound.DataSource = new BindingSource(plugins, null);
+                comboBoxSound.DisplayMember = "Value";
+                comboBoxSound.ValueMember = "Key";
             }
-        }
 
-        /// <summary>
-        /// Binds the dictionary to the proper combo
-        /// </summary>
-        /// <param name="combo">
-        /// The combo.
-        /// </param>
-        /// <param name="plugins">
-        /// The plugins.
-        /// </param>
-        private static void BindDictionaryToComboBox(ComboBox combo, Dictionary<IPlugin, string> plugins)
-        {
-            combo.DataSource = new BindingSource(plugins, null);
-            combo.DisplayMember = "Value";
-            combo.ValueMember = "Key";
+            if (PluginManager.Instance.GraphicsPlugins.Any())
+            {
+                var plugins = PluginManager.Instance.GraphicsPlugins.ToDictionary(x => x, x => x.Metadata.Description);
+                comboBoxGraphics.DataSource = new BindingSource(plugins, null);
+                comboBoxGraphics.DisplayMember = "Value";
+                comboBoxGraphics.ValueMember = "Key";
+            }
+
+            if (PluginManager.Instance.KeyboardPlugins.Any())
+            {
+                var plugins = PluginManager.Instance.KeyboardPlugins.ToDictionary(x => x, x => x.Metadata.Description);
+                comboBoxKeyInput.DataSource = new BindingSource(plugins, null);
+                comboBoxKeyInput.DisplayMember = "Value";
+                comboBoxKeyInput.ValueMember = "Key";
+            }
         }
 
         /// <summary>
@@ -101,11 +87,11 @@
         /// <param name="comboBox"></param>
         private void ConfigurePlugin(ComboBox comboBox)
         {
-            var plugin = comboBox.SelectedValue as IPlugin;
+            var plugin = comboBox.SelectedValue as Lazy<IPlugin,IPluginMetadata>;
 
             if (plugin != null)
             {
-                plugin.Configure();
+                plugin.Value.Configure();
             }
         }
     }

@@ -15,6 +15,9 @@ namespace C8POC.Plugins.Graphics.SDLPlugin
     using SdlDotNet.Core;
 
     [Export(typeof(IGraphicsPlugin))]
+    [ExportMetadata("Version", "0.1")]
+    [ExportMetadata("NameSpace", "C8POC.Plugins.Graphics.SDLPlugin.SDLPlugin")]
+    [ExportMetadata("Description", "Graphics plugin based on SDL")]
     public class SDLPlugin : IGraphicsPlugin
     {
         /// <summary>
@@ -46,17 +49,6 @@ namespace C8POC.Plugins.Graphics.SDLPlugin
         /// Surface that takes the rendering
         /// </summary>
         private Surface renderSurface { get; set; }
-
-        /// <summary>
-        /// Gets the plugin description
-        /// </summary>
-        public string PluginDescription
-        {
-            get
-            {
-                return "SDL Graphics Plugin";
-            }
-        }
 
         public void Configure()
         {
@@ -92,9 +84,9 @@ namespace C8POC.Plugins.Graphics.SDLPlugin
         /// <param name="e"></param>
         void RenderFormClosed(object sender, EventArgs e)
         {
-            if (!this.formClosedByCode && this.GraphicsExit != null)
+            if (this.GraphicsExit != null && this.IsFormOpen(this.renderForm))
             {
-                this.formClosedByCode = false;
+                this.formClosedByCode = true;
                 this.GraphicsExit();
             }
         }
@@ -104,9 +96,17 @@ namespace C8POC.Plugins.Graphics.SDLPlugin
         /// </summary>
         public void DisablePlugin()
         {
-            if (this.renderForm != null && this.IsFormOpen(this.renderForm))
+            if (!this.formClosedByCode && this.GraphicsExit != null)
             {
                 this.formClosedByCode = true;
+
+                //The thread safe way to close the form :)
+                if (this.renderForm.InvokeRequired)
+                {
+                    this.renderForm.BeginInvoke(new Action(() => this.renderForm.Close()));
+                    return;
+                }
+
                 this.renderForm.Close();
             }
         }
@@ -122,6 +122,7 @@ namespace C8POC.Plugins.Graphics.SDLPlugin
         /// <param name="graphics">A bit array containing graphics</param>
         public void Draw(BitArray graphics)
         {
+            renderSurface.Fill(Color.Black);
 
             // Go through each pixel on the screen
             for (int y = 0; y < C8Constants.ResolutionHeight; y++)
@@ -137,6 +138,19 @@ namespace C8POC.Plugins.Graphics.SDLPlugin
             }
 
             renderSurface.Update();
+            
+            if (this.renderForm.InvokeRequired)
+            {
+                this.renderForm.BeginInvoke(new Action(this.RenderSurfaceInWindow));
+            }
+            else
+            {
+                RenderSurfaceInWindow();
+            }
+        }
+
+        private void RenderSurfaceInWindow()
+        {
             renderForm.surfaceControlC8.Blit(renderSurface);
             renderForm.surfaceControlC8.Update();
         }

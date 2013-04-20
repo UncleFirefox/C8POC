@@ -14,6 +14,9 @@
     /// Graphics plugin with GDI primitives for Windows Forms
     /// </summary>
     [Export(typeof(IGraphicsPlugin))]
+    [ExportMetadata("Version", "0.1")]
+    [ExportMetadata("NameSpace", "C8POC.Plugins.Graphics.GDIPlugin.GdiPlugin")]
+    [ExportMetadata("Description", "Graphics plugin based on GDI")]
     public class GdiPlugin : IGraphicsPlugin
     {
         #region Properties
@@ -31,14 +34,6 @@
         #endregion
         
         #region IGraphicsPlugin Members
-
-        /// <summary>
-        /// Gets the plugin description
-        /// </summary>
-        public string PluginDescription
-        {
-            get { return "Graphics plugin with GDI primitives for Windows Forms"; }
-        }
 
         /// <summary>
         /// Prompts for a configuration
