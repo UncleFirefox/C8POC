@@ -9,11 +9,8 @@ TODO:
 
 -Revision of not implemented opcodes
 
--Bugfixing with special interest in controlling threads and timers
-
-		-Use a task on a separate thread for engine execution main loop instead of a thread insanity timer
+-Review how multithreading behaves in performance
 
 -Separation of responsabilities
   
-		-Isolate I/O operations (Sound, Graphics, KeyInput) in a Plugin System
-		-Plugin system Lazy loaded based on metadata
+		-Create a system to save and load the plugin configuration
