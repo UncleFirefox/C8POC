@@ -1,17 +1,26 @@
-﻿using System.ComponentModel;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="C8Engine.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   Engine for emulator and central piece of this application
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
 
 namespace C8POC
 {
     using System;
     using System.Collections;
     using System.Collections.Generic;
+    using System.ComponentModel;
+    using System.Diagnostics;
     using System.IO;
-    using Interfaces;
-    using Properties;
+    using System.Linq;
+    using System.Threading;
+    using System.Threading.Tasks;
+
+    using C8POC.Interfaces;
+    using C8POC.Properties;
 
     /// <summary>
     /// Engine for emulator and central piece of this application
@@ -160,6 +169,9 @@ namespace C8POC
 
         #region Plugin Handling
 
+        /// <summary>
+        /// Loads the plugins
+        /// </summary>
         private void LoadPlugins()
         {
             this.SelectedGraphicsPlugin = PluginManager.Instance.GraphicsPlugins.FirstOrDefault().Value;
@@ -169,6 +181,9 @@ namespace C8POC
             this.LinkPluginEvents();
         }
 
+        /// <summary>
+        /// The link plugin events.
+        /// </summary>
         private void LinkPluginEvents()
         {
             if (this.SelectedGraphicsPlugin != null)
