@@ -66,9 +66,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Libraries\SdlDotNet.dll" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\C8POC\C8POC.csproj">
       <Project>{13D18A20-EFB2-45F1-AFCE-5AB37A102E1C}</Project>
       <Name>C8POC</Name>
@@ -82,6 +79,9 @@
     <EmbeddedResource Include="RenderForm.resx">
       <DependentUpon>RenderForm.cs</DependentUpon>
     </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Libraries\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
