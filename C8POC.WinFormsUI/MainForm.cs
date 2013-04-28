@@ -95,5 +95,20 @@
         }
 
         #endregion
+
+        /// <summary>
+        /// Opens a core settings form
+        /// </summary>
+        /// <param name="sender">
+        /// The sender.
+        /// </param>
+        /// <param name="e">
+        /// The e.
+        /// </param>
+        private void CoreSettingsToolStripMenuItemClick(object sender, EventArgs e)
+        {
+            var form = new CoreSettingsForm();
+            form.ShowDialog();
+        }
     }
 }

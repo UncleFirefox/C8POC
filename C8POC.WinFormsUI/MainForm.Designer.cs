@@ -94,6 +94,7 @@
             this.coreSettingsToolStripMenuItem.Name = "coreSettingsToolStripMenuItem";
             this.coreSettingsToolStripMenuItem.Size = new System.Drawing.Size(162, 22);
             this.coreSettingsToolStripMenuItem.Text = "Core Settings...";
+            this.coreSettingsToolStripMenuItem.Click += new System.EventHandler(this.CoreSettingsToolStripMenuItemClick);
             // 
             // pluginSettingsToolStripMenuItem
             // 
@@ -161,6 +162,7 @@
             this.MainMenuStrip = this.menuStripMainWindow;
             this.MaximizeBox = false;
             this.Name = "MainForm";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Chip8 Proof Of Concept";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainFormFormClosing);
             this.menuStripMainWindow.ResumeLayout(false);

@@ -5,14 +5,19 @@ using System.Text;
 using System.Drawing;
 using System.Windows.Forms;
 using SdlDotNet.Graphics;
+using System.Linq;
 
 namespace C8POC.Plugins.Graphics.SDLPlugin
 {
     using System.Collections;
     using System.ComponentModel.Composition;
+    using System.IO;
 
     using C8POC.Interfaces;
+    using C8POC.Properties;
+
     using SdlDotNet.Core;
+    using System.Configuration;
 
     [Export(typeof(IGraphicsPlugin))]
     [ExportMetadata("Version", "0.1")]
@@ -58,6 +63,29 @@ namespace C8POC.Plugins.Graphics.SDLPlugin
         public void AboutPlugin()
         {
             throw new NotImplementedException();
+        }
+
+        private static string GetConfigurationPath()
+        {
+            /* Utilizar arquivos de configuração em DLL não é trivial. 
+             * Para conseguir isso devemos seguire os seguintes passos:
+             * - Adicionar um novo Application Configuration File e de a ele o nome de MefLogger.dll.config
+             * - Mudar a propriedade BuildAction para Content
+             * - Mudar a propriedade Copy to Output para Copy Always
+             */
+            // Abre o arquivo de configuração
+            Configuration pluginConfig =
+                ConfigurationManager.OpenExeConfiguration(typeof(SDLPlugin).Assembly.Location);
+
+            pluginConfig.AppSettings.Settings.Add("clave","risrasrisras");
+            pluginConfig.SaveAs(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData) + "\\C8POC\\risrasrisrasrisras");
+
+            return pluginConfig.AppSettings.Settings["clave"].Value;
+
+            // Recupera a seção appSettings
+            AppSettingsSection PluginConfigAppSettings = (AppSettingsSection)pluginConfig.GetSection("appSettings");
+            // retorna o valor da chave PluginPath
+            return PluginConfigAppSettings.Settings["PluginPath"].Value;
         }
 
         /// <summary>

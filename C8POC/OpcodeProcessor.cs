@@ -1,11 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using C8POC.Interfaces;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="OpcodeProcessor.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   Interprets instructions working with a given MachineState
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
 
 namespace C8POC
 {
+    using System;
+
+    using C8POC.Interfaces;
+
+    /// <summary>
+    /// Interprets instructions working with a given MachineState
+    /// </summary>
     public class OpcodeProcessor : IOpcodeProcessor
     {
         #region Properties

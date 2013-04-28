@@ -2,11 +2,20 @@
 <SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="C8POC.Properties" GeneratedClassName="Settings">
   <Profiles />
   <Settings>
-    <Setting Name="FramesPerSecond" Type="System.Int64" Scope="Application">
+    <Setting Name="FramesPerSecond" Type="System.Int64" Scope="User">
       <Value Profile="(Default)">60</Value>
     </Setting>
-    <Setting Name="CyclesPerFrame" Type="System.Int64" Scope="Application">
+    <Setting Name="CyclesPerFrame" Type="System.Int64" Scope="User">
       <Value Profile="(Default)">10</Value>
+    </Setting>
+    <Setting Name="SelectedGraphicsPlugin" Type="System.String" Scope="User">
+      <Value Profile="(Default)">C8POC.Plugins.Graphics.SDLPlugin.SDLPlugin</Value>
+    </Setting>
+    <Setting Name="SelectedSoundPlugin" Type="System.String" Scope="User">
+      <Value Profile="(Default)">C8POC.Plugins.Sound.ConsoleBeep.ConsoleSoundBeepPlugin</Value>
+    </Setting>
+    <Setting Name="SelectedKeyboardPlugin" Type="System.String" Scope="User">
+      <Value Profile="(Default)">C8POC.Plugins.Keyboard.SystemWindowsKeyboard.SystemWindowsKeyboardPlugin</Value>
     </Setting>
   </Settings>
 </SettingsFile>
