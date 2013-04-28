@@ -174,9 +174,9 @@ namespace C8POC
         /// </summary>
         private void LoadPlugins()
         {
-            this.SelectedGraphicsPlugin = PluginManager.Instance.GraphicsPlugins.FirstOrDefault().Value;
-            this.SelectedSoundPlugin = PluginManager.Instance.SoundPlugins.FirstOrDefault().Value;
-            this.SelectedKeyboardPlugin = PluginManager.Instance.KeyboardPlugins.FirstOrDefault().Value;
+            this.SelectedGraphicsPlugin = PluginManager.Instance.GetPluginByNameSpace<IGraphicsPlugin>(Properties.Settings.Default.SelectedGraphicsPlugin);
+            this.SelectedSoundPlugin = PluginManager.Instance.GetPluginByNameSpace<ISoundPlugin>(Properties.Settings.Default.SelectedSoundPlugin);
+            this.SelectedKeyboardPlugin = PluginManager.Instance.GetPluginByNameSpace<IKeyboardPlugin>(Properties.Settings.Default.SelectedKeyboardPlugin);
 
             this.LinkPluginEvents();
         }
