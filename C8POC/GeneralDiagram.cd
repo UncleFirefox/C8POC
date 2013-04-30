@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1">
   <Comment CommentText="Plugins are stored instances inside PluginManager using MEF">
-    <Position X="8.479" Y="3.646" Height="0.885" Width="1.273" />
+    <Position X="8.021" Y="0.511" Height="0.885" Width="1.273" />
   </Comment>
   <Class Name="C8POC.C8Constants">
     <Position X="12.5" Y="0.5" Width="1.5" />
@@ -71,16 +71,16 @@
     </ShowAsAssociation>
   </Class>
   <Class Name="C8POC.PluginManager">
-    <Position X="9.5" Y="0.5" Width="2.25" />
+    <Position X="9.5" Y="0.5" Width="2.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAQAAgAAAAAABAAAAAQAAAAgAACAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAAAAQBAgAAAAAABgAgAAQAAABgAACAA=</HashCode>
       <FileName>PluginManager.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="C8POC.Properties.Settings">
-    <Position X="14.75" Y="0.5" Width="1.75" />
+    <Position X="14.75" Y="0.5" Width="2" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAIAAAAAABQAAAAAAAAAABAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAACAAAAAAoAAAAAARQAAAAAAAAAABAAA=</HashCode>
     </TypeIdentifier>
   </Class>
   <Interface Name="C8POC.Interfaces.IGraphicsPlugin">
@@ -98,9 +98,9 @@
     </TypeIdentifier>
   </Interface>
   <Interface Name="C8POC.Interfaces.IPlugin">
-    <Position X="4.5" Y="0.5" Width="1.5" />
+    <Position X="4" Y="0.5" Width="2.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAACAAAEABAAAAAAAgAAAAAAgAAAAAAAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAAAEAEABAAAAAAAgAAAAAAgAAAAAAAAA=</HashCode>
       <FileName>Interfaces\IPlugin.cs</FileName>
     </TypeIdentifier>
   </Interface>

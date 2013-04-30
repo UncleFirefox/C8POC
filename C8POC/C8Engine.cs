@@ -170,6 +170,51 @@ namespace C8POC
         #region Plugin Handling
 
         /// <summary>
+        /// Disables the selected plugins
+        /// </summary>
+        public void StopPluginsExecution()
+        {
+            if (this.SelectedGraphicsPlugin != null)
+            {
+                this.SelectedGraphicsPlugin.DisablePlugin();
+            }
+
+            if (this.SelectedKeyboardPlugin != null)
+            {
+                this.SelectedKeyboardPlugin.DisablePlugin();
+            }
+
+            if (this.SelectedSoundPlugin != null)
+            {
+                this.SelectedSoundPlugin.DisablePlugin();
+            }
+        }
+
+        /// <summary>
+        /// Enables all the plugins
+        /// </summary>
+        public void StartPluginsExecution()
+        {
+            if (this.SelectedGraphicsPlugin != null)
+            {
+                this.SelectedGraphicsPlugin.EnablePlugin(
+                    PluginManager.Instance.GetPluginConfiguration(this.SelectedGraphicsPlugin));
+            }
+
+            if (this.SelectedKeyboardPlugin != null)
+            {
+                this.SelectedKeyboardPlugin.EnablePlugin(
+                    PluginManager.Instance.GetPluginConfiguration(this.SelectedKeyboardPlugin));
+            }
+
+            if (this.SelectedSoundPlugin != null)
+            {
+                this.SelectedSoundPlugin.EnablePlugin(
+                    PluginManager.Instance.GetPluginConfiguration(this.SelectedSoundPlugin));
+            }
+        }
+
+        /// <summary>
         /// Loads the plugins
         /// </summary>
         private void LoadPlugins()
@@ -202,48 +247,6 @@ namespace C8POC
                 this.SelectedKeyboardPlugin.KeyUp += this.KeyUp;
                 this.SelectedKeyboardPlugin.KeyDown += this.KeyDown;
                 this.SelectedKeyboardPlugin.KeyStopEmulation += this.StopEmulator;
-            }
-        }
-
-        /// <summary>
-        /// Disables the selected plugins
-        /// </summary>
-        public void StopPluginsExecution()
-        {
-            if (this.SelectedGraphicsPlugin != null)
-            {
-                this.SelectedGraphicsPlugin.DisablePlugin();
-            }
-
-            if (this.SelectedKeyboardPlugin != null)
-            {
-                this.SelectedKeyboardPlugin.DisablePlugin();
-            }
-
-            if (this.SelectedSoundPlugin != null)
-            {
-                this.SelectedSoundPlugin.DisablePlugin();
-            }
-        }
-
-        /// <summary>
-        /// Enables all the plugins
-        /// </summary>
-        public void StartPluginsExecution()
-        {
-            if (this.SelectedGraphicsPlugin != null)
-            {
-                this.SelectedGraphicsPlugin.EnablePlugin();
-            }
-
-            if (this.SelectedKeyboardPlugin != null)
-            {
-                this.SelectedKeyboardPlugin.EnablePlugin();
-            }
-
-            if (this.SelectedSoundPlugin != null)
-            {
-                this.SelectedSoundPlugin.EnablePlugin();
             }
         }
 

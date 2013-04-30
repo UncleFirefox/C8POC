@@ -1,4 +1,13 @@
-﻿namespace C8POC.Plugins.Keyboard.SystemWindowsKeyboard
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="SystemWindowsKeyboardPlugin.cs" company="AlFranco">
+//   Albert Rodriguez Franco 2013
+// </copyright>
+// <summary>
+//   Implementation of a keyboard plugin using Windows Hooks
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+namespace C8POC.Plugins.Keyboard.SystemWindowsKeyboard
 {
     using System;
     using System.Collections.Generic;
@@ -11,7 +20,7 @@
     using MouseKeyboardActivityMonitor.WinApi;
 
     /// <summary>
-    /// Implementation of a keyboard plugin using Windows Hooks
+    ///     Implementation of a keyboard plugin using Windows Hooks
     /// </summary>
     [Export(typeof(IKeyboardPlugin))]
     [ExportMetadata("Version", "0.1")]
@@ -19,34 +28,55 @@
     [ExportMetadata("Description", "Windows Hooks System Implementation of Key Input Plugin")]
     public class SystemWindowsKeyboardPlugin : IKeyboardPlugin
     {
+        #region Fields
+
         /// <summary>
-        /// Keyboard listener for hooks
+        ///     Local mapper between actual key codes and keys in the emulator
+        /// </summary>
+        private readonly Dictionary<int, byte> keyMap = new Dictionary<int, byte>();
+
+        /// <summary>
+        ///     Keyboard listener for hooks
         /// </summary>
         private readonly KeyboardHookListener keyboardHookManager = new KeyboardHookListener(new GlobalHooker());
 
-        /// <summary>
-        /// Local mapper between actual key codes and keys in the emulator
-        /// </summary>
-        private readonly Dictionary<int, byte> keyMap = new Dictionary<int, byte>(); 
+        #endregion
+
+        #region Constructors and Destructors
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SystemWindowsKeyboardPlugin"/> class.
+        ///     Initializes a new instance of the <see cref="SystemWindowsKeyboardPlugin" /> class.
         /// </summary>
         public SystemWindowsKeyboardPlugin()
         {
             this.SetUpDefaultKeyMap();
         }
 
-        /// <summary>
-        /// Creates a prompt for configuration
-        /// </summary>
-        public void Configure()
-        {
-            throw new NotImplementedException();
-        }
+        #endregion
+
+        #region Public Events
 
         /// <summary>
-        /// Gets an about message
+        ///     Event that will fire on key down
+        /// </summary>
+        public event KeyDownEventHandler KeyDown;
+
+        /// <summary>
+        ///     Event that will fire when the exit key is pressed
+        /// </summary>
+        public event KeyStopEmulationEventHandler KeyStopEmulation;
+
+        /// <summary>
+        ///     Event that will fire on key up
+        /// </summary>
+        public event KeyUpEventHandler KeyUp;
+
+        #endregion
+
+        #region Public Methods and Operators
+
+        /// <summary>
+        ///     Gets an about message
         /// </summary>
         public void AboutPlugin()
         {
@@ -54,17 +84,18 @@
         }
 
         /// <summary>
-        /// Start capturing key input
+        /// Creates a prompt for configuration
         /// </summary>
-        public void EnablePlugin()
+        /// <returns>
+        /// Dictionary containing parameters
+        /// </returns>
+        public IDictionary<string, string> Configure()
         {
-            this.keyboardHookManager.KeyUp += this.HookManagerOnKeyUp;
-            this.keyboardHookManager.KeyDown += this.HookManagerOnKeyDown;
-            this.keyboardHookManager.Enabled = true;
+            return null;
         }
 
         /// <summary>
-        /// Stop capturing key input
+        ///     Stop capturing key input
         /// </summary>
         public void DisablePlugin()
         {
@@ -74,19 +105,30 @@
         }
 
         /// <summary>
-        /// Event that will fire on key up
+        /// Enables the plugin
         /// </summary>
-        public event KeyUpEventHandler KeyUp;
+        /// <param name="parameters">
+        /// Plugin configuration parameters
+        /// </param>
+        public void EnablePlugin(IDictionary<string, string> parameters)
+        {
+            this.keyboardHookManager.KeyUp += this.HookManagerOnKeyUp;
+            this.keyboardHookManager.KeyDown += this.HookManagerOnKeyDown;
+            this.keyboardHookManager.Enabled = true;
+        }
 
         /// <summary>
-        /// Event that will fire on key down
+        ///     Gets the default configuration for the plugin
         /// </summary>
-        public event KeyDownEventHandler KeyDown;
+        /// <returns>The default plugin configuration</returns>
+        public IDictionary<string, string> GetDefaultPluginConfiguration()
+        {
+            return null;
+        }
 
-        /// <summary>
-        /// Event that will fire when the exit key is pressed
-        /// </summary>
-        public event KeyStopEmulationEventHandler KeyStopEmulation;
+        #endregion
+
+        #region Methods
 
         /// <summary>
         /// Hook for key pressing
@@ -123,8 +165,12 @@
         /// <summary>
         /// Hook for key releasing
         /// </summary>
-        /// <param name="sender">The sender</param>
-        /// <param name="e">Key event args</param>
+        /// <param name="sender">
+        /// The sender
+        /// </param>
+        /// <param name="e">
+        /// Key event args
+        /// </param>
         private void HookManagerOnKeyUp(object sender, KeyEventArgs e)
         {
             byte mappedKeyIndex;
@@ -139,7 +185,7 @@
         }
 
         /// <summary>
-        /// Sets a default keyboard in groups of four 1-4,Q-R,A-F,Z-V
+        ///     Sets a default keyboard in groups of four 1-4,Q-R,A-F,Z-V
         /// </summary>
         private void SetUpDefaultKeyMap()
         {
@@ -160,5 +206,7 @@
             this.keyMap.Add(67, 0xE);
             this.keyMap.Add(86, 0xF);
         }
+
+        #endregion
     }
 }

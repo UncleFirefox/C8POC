@@ -1,20 +1,36 @@
-﻿using System.Collections;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="IGraphicsPlugin.cs" company="AlFranco">
+//   Albert Rodriguez Franco 2013
+// </copyright>
+// <summary>
+//   Event handler for key input press
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
 namespace C8POC.Interfaces
 {
+    using System.Collections;
+
     /// <summary>
-    /// Event handler for key input press
+    ///     Event handler for key input press
     /// </summary>
     public delegate void GraphicsExitEventHandler();
 
     /// <summary>
-    /// Interface for graphics plugins
+    ///     Interface for graphics plugins
     /// </summary>
     public interface IGraphicsPlugin : IPlugin
     {
+        #region Public Events
+
         /// <summary>
-        /// Action that will stop emulation when the graphics screen is closed
+        ///     Action that will stop emulation when the graphics screen is closed
         /// </summary>
         event GraphicsExitEventHandler GraphicsExit;
+
+        #endregion
+
+        #region Public Methods and Operators
 
         /// <summary>
         /// Action to Draw
@@ -23,5 +39,7 @@ namespace C8POC.Interfaces
         /// The graphics array.
         /// </param>
         void Draw(BitArray graphics);
+
+        #endregion
     }
 }

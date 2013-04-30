@@ -14,6 +14,8 @@ namespace C8POC
     using System.Collections.Generic;
     using System.ComponentModel.Composition;
     using System.ComponentModel.Composition.Hosting;
+    using System.Configuration;
+    using System.IO;
     using System.Linq;
 
     using C8POC.Interfaces;
@@ -112,18 +114,70 @@ namespace C8POC
         /// </summary>
         /// <param name="plugin">The plugin to get the configuration from</param>
         /// <returns>A dictionary of parameters for the configuration</returns>
-        private IDictionary<string, string> GetPluginConfiguration(IPlugin plugin)
+        public IDictionary<string, string> GetPluginConfiguration(IPlugin plugin)
         {
-            return null;
+            var configurationFullPath = this.GetPluginConfigurationFullPath(plugin);
+
+            if (File.Exists(configurationFullPath))
+            {
+                Configuration pluginConfig =
+                    ConfigurationManager.OpenExeConfiguration(configurationFullPath);
+
+                return this.GetDictionaryFromAppSettings(pluginConfig.AppSettings);
+            }
+
+            return plugin.GetDefaultPluginConfiguration();
         }
 
         /// <summary>
         /// Save the plugin configuration to a storage
         /// </summary>
-        /// <param name="pluginConfiguration">Dictionary of parameters for the plugin</param>
-        public void SavePluginConfiguration(IDictionary<string, string> pluginConfiguration)
+        /// <param name="pluginConfiguration">
+        /// Dictionary of parameters for the plugin
+        /// </param>
+        /// <param name="plugin">
+        /// The plugin.
+        /// </param>
+        public void SavePluginConfiguration(IDictionary<string, string> pluginConfiguration, IPlugin plugin)
         {
-            
+            var pluginPath = this.GetPluginConfigurationFullPath(plugin);
+            var pluginConfig = ConfigurationManager.OpenExeConfiguration(pluginPath);
+
+            foreach (var keyvalue in pluginConfiguration)
+            {
+                pluginConfig.AppSettings.Settings.Add(keyvalue.Key, keyvalue.Value);
+            }
+
+            pluginConfig.Save();
+        }
+
+        /// <summary>
+        /// The get plugin configuration full path.
+        /// </summary>
+        /// <param name="plugin">
+        /// The plugin.
+        /// </param>
+        /// <returns>
+        /// Full path to save the plugin
+        /// </returns>
+        private string GetPluginConfigurationFullPath(IPlugin plugin)
+        {
+            string configurationFileName = string.Format("{0}{1}", plugin.GetType().Assembly.FullName, ".config");
+            string configurationFullPath =
+                Path.Combine(
+                    Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @"C8POC\" + configurationFileName);
+
+            return configurationFullPath;
+        }
+
+        /// <summary>
+        /// Gets a parsed dictionary from appSettings for plugin configuration
+        /// </summary>
+        /// <param name="appSettings">Application settings section</param>
+        /// <returns>A mapped dictionary</returns>
+        private IDictionary<string, string> GetDictionaryFromAppSettings(AppSettingsSection appSettings)
+        {
+            return appSettings.Settings.Cast<KeyValueConfigurationElement>().ToDictionary(variable => variable.Key, variable => variable.Value);
         }
 
         /// <summary>

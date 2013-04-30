@@ -1,5 +1,17 @@
+// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="IOpcodeProcessor.cs" company="AlFranco">
+//   Albert Rodriguez Franco 2013
+// </copyright>
+// <summary>
+//   Defines the IOpcodeProcessor type.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
 namespace C8POC.Interfaces
 {
+    /// <summary>
+    /// Interface for opcode processing
+    /// </summary>
     public interface IOpcodeProcessor
     {
         /// <summary>
