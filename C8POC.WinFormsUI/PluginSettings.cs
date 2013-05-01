@@ -1,6 +1,6 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="PluginSettings.cs" company="">
-//   
+// <copyright file="PluginSettings.cs" company="AlFranco">
+//   Albert Rodriguez Franco 2013
 // </copyright>
 // <summary>
 //   Plugin settings form
@@ -29,7 +29,7 @@ namespace C8POC.WinFormsUI
         public PluginSettings()
         {
             this.InitializeComponent();
-            this.LoadPluginAssemblies();
+            this.BindAssembliesToComboBox();
         }
 
         #endregion
@@ -47,7 +47,7 @@ namespace C8POC.WinFormsUI
         /// </param>
         private void ButtonGraphicsConfigClick(object sender, EventArgs e)
         {
-            this.ConfigurePlugin(this.comboBoxGraphics);
+            this.ConfigurePlugin<IGraphicsPlugin>(this.comboBoxGraphics);
         }
 
         /// <summary>
@@ -61,7 +61,7 @@ namespace C8POC.WinFormsUI
         /// </param>
         private void ButtonKeyInputConfigClick(object sender, EventArgs e)
         {
-            this.ConfigurePlugin(this.comboBoxKeyInput);
+            this.ConfigurePlugin<IKeyboardPlugin>(this.comboBoxKeyInput);
         }
 
         /// <summary>
@@ -75,52 +75,56 @@ namespace C8POC.WinFormsUI
         /// </param>
         private void ButtonSoundConfigClick(object sender, EventArgs e)
         {
-            this.ConfigurePlugin(this.comboBoxSound);
+            this.ConfigurePlugin<ISoundPlugin>(this.comboBoxSound);
         }
 
         /// <summary>
         /// Configures the plugin of a given combo box
         /// </summary>
-        /// <param name="comboBox"> Combo box in which plugins are contained
+        /// <typeparam name="T">
+        /// Type of plugin to configure
+        /// </typeparam>
+        /// <param name="comboBox">
+        /// Combo box in which plugins are contained
         /// </param>
-        private void ConfigurePlugin(ComboBox comboBox)
+        private void ConfigurePlugin<T>(ComboBox comboBox) where T : class, IPlugin
         {
-            var plugin = comboBox.SelectedValue as Lazy<IPlugin, IPluginMetadata>;
+            var plugin = comboBox.SelectedValue as Lazy<T, IPluginMetadata>;
 
             if (plugin != null)
             {
-                plugin.Value.Configure();
+                var parameters = plugin.Value.Configure(PluginManager.Instance.GetPluginConfiguration(plugin.Value));
+
+                if (parameters != null)
+                {
+                    PluginManager.Instance.SavePluginConfiguration(parameters, plugin.Value);
+                }
             }
         }
 
         /// <summary>
         ///     Loads plugins inside of combos
         /// </summary>
-        private void LoadPluginAssemblies()
+        private void BindAssembliesToComboBox()
         {
-            if (PluginManager.Instance.SoundPlugins.Any())
-            {
-                var plugins = PluginManager.Instance.SoundPlugins.ToDictionary(x => x, x => x.Metadata.Description);
-                this.comboBoxSound.DataSource = new BindingSource(plugins, null);
-                this.comboBoxSound.DisplayMember = "Value";
-                this.comboBoxSound.ValueMember = "Key";
-            }
+            this.BindPluginsToComboBox(this.comboBoxSound, PluginManager.Instance.SoundPlugins);
+            this.BindPluginsToComboBox(this.comboBoxGraphics, PluginManager.Instance.GraphicsPlugins);
+            this.BindPluginsToComboBox(this.comboBoxKeyInput, PluginManager.Instance.KeyboardPlugins);
+        }
 
-            if (PluginManager.Instance.GraphicsPlugins.Any())
-            {
-                var plugins = PluginManager.Instance.GraphicsPlugins.ToDictionary(x => x, x => x.Metadata.Description);
-                this.comboBoxGraphics.DataSource = new BindingSource(plugins, null);
-                this.comboBoxGraphics.DisplayMember = "Value";
-                this.comboBoxGraphics.ValueMember = "Key";
-            }
-
-            if (PluginManager.Instance.KeyboardPlugins.Any())
-            {
-                var plugins = PluginManager.Instance.KeyboardPlugins.ToDictionary(x => x, x => x.Metadata.Description);
-                this.comboBoxKeyInput.DataSource = new BindingSource(plugins, null);
-                this.comboBoxKeyInput.DisplayMember = "Value";
-                this.comboBoxKeyInput.ValueMember = "Key";
-            }
+        /// <summary>
+        /// Binds the collections of plugins to the combo box
+        /// </summary>
+        /// <typeparam name="T">Type of plugin</typeparam>
+        /// <param name="comboBox">The destination combo box</param>
+        /// <param name="pluginCollection">The collection of plugins</param>
+        private void BindPluginsToComboBox<T>(ComboBox comboBox, IEnumerable<Lazy<T, IPluginMetadata>> pluginCollection)
+            where T : class, IPlugin
+        {
+            var plugins = pluginCollection.ToDictionary(x => x, x => x.Metadata.Description);
+            comboBox.DataSource = new BindingSource(plugins, null);
+            comboBox.DisplayMember = "Value";
+            comboBox.ValueMember = "Key";
         }
 
         #endregion

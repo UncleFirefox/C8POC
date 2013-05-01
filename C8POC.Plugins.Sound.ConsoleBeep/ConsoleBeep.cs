@@ -34,12 +34,15 @@ namespace C8POC.Plugins.Sound.ConsoleBeep
         }
 
         /// <summary>
-        ///     Configuration for plugin
+        /// Configuration for plugin
         /// </summary>
+        /// <param name="currentConfiguration">
+        /// The current Configuration.
+        /// </param>
         /// <returns>
-        ///     Resulting configuration
+        /// Resulting configuration
         /// </returns>
-        public IDictionary<string, string> Configure()
+        public IDictionary<string, string> Configure(IDictionary<string, string> currentConfiguration)
         {
             return null;
         }

@@ -24,12 +24,15 @@ namespace C8POC.Interfaces
         void AboutPlugin();
 
         /// <summary>
-        ///     Boots up the configuration for the plugin
+        /// Boots up the configuration for the plugin
         /// </summary>
+        /// <param name="currentConfiguration">
+        /// The current configuration of the plugin.
+        /// </param>
         /// <returns>
-        ///     A dictionary with the resulting configuration
+        /// A dictionary with the resulting configuration
         /// </returns>
-        IDictionary<string, string> Configure();
+        IDictionary<string, string> Configure(IDictionary<string, string> currentConfiguration);
 
         /// <summary>
         ///     Action to disable a plugin when the emulator stops running

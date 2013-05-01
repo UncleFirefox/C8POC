@@ -1,6 +1,6 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="PluginManager.cs" company="AlFranco">
-//   Albert Rodríguez Franco 2013
+//   Albert Rodriguez Franco 2013
 // </copyright>
 // <summary>
 //   Class managing plugins,
@@ -120,8 +120,8 @@ namespace C8POC
 
             if (File.Exists(configurationFullPath))
             {
-                Configuration pluginConfig =
-                    ConfigurationManager.OpenExeConfiguration(configurationFullPath);
+                var map = new ExeConfigurationFileMap { ExeConfigFilename = configurationFullPath };
+                Configuration pluginConfig = ConfigurationManager.OpenMappedExeConfiguration(map, ConfigurationUserLevel.None);
 
                 return this.GetDictionaryFromAppSettings(pluginConfig.AppSettings);
             }
@@ -140,15 +140,16 @@ namespace C8POC
         /// </param>
         public void SavePluginConfiguration(IDictionary<string, string> pluginConfiguration, IPlugin plugin)
         {
-            var pluginPath = this.GetPluginConfigurationFullPath(plugin);
-            var pluginConfig = ConfigurationManager.OpenExeConfiguration(pluginPath);
+            var pluginConfig = ConfigurationManager.OpenExeConfiguration(plugin.GetType().Assembly.Location);
 
             foreach (var keyvalue in pluginConfiguration)
             {
                 pluginConfig.AppSettings.Settings.Add(keyvalue.Key, keyvalue.Value);
             }
 
-            pluginConfig.Save();
+            var pluginDestionationPath = this.GetPluginConfigurationFullPath(plugin);
+
+            pluginConfig.SaveAs(pluginDestionationPath);
         }
 
         /// <summary>
@@ -162,7 +163,7 @@ namespace C8POC
         /// </returns>
         private string GetPluginConfigurationFullPath(IPlugin plugin)
         {
-            string configurationFileName = string.Format("{0}{1}", plugin.GetType().Assembly.FullName, ".config");
+            string configurationFileName = string.Format("{0}{1}", plugin.GetType().Assembly.ManifestModule.ScopeName, ".config");
             string configurationFullPath =
                 Path.Combine(
                     Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @"C8POC\" + configurationFileName);

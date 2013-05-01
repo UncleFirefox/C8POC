@@ -73,10 +73,13 @@ namespace C8POC.Plugins.Graphics.GDIPlugin
         /// <summary>
         /// Prompts for a configuration
         /// </summary>
+        /// <param name="currentConfiguration">
+        /// The current Configuration.
+        /// </param>
         /// <returns>
         /// Dictionary containing parameters
         /// </returns>
-        public IDictionary<string, string> Configure()
+        public IDictionary<string, string> Configure(IDictionary<string, string> currentConfiguration)
         {
             return null;
         }

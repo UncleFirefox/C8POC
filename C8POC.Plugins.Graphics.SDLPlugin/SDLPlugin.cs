@@ -90,12 +90,15 @@ namespace C8POC.Plugins.Graphics.SDLPlugin
         /// <summary>
         /// Configures the plugin
         /// </summary>
+        /// <param name="currentConfiguration">
+        /// The current Configuration.
+        /// </param>
         /// <returns>
         /// Dictionary containing parameters
         /// </returns>
-        public IDictionary<string, string> Configure()
+        public IDictionary<string, string> Configure(IDictionary<string, string> currentConfiguration)
         {
-            throw new NotImplementedException();
+            return new Dictionary<string, string> { { "TruchaKey", "TruchaValue" } };
         }
 
         /// <summary>
