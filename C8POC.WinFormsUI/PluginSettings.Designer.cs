@@ -115,6 +115,7 @@
             // 
             // buttonSoundAbout
             // 
+            this.buttonSoundAbout.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.buttonSoundAbout.Location = new System.Drawing.Point(304, 26);
             this.buttonSoundAbout.Name = "buttonSoundAbout";
             this.buttonSoundAbout.Size = new System.Drawing.Size(55, 23);
@@ -212,12 +213,14 @@
             // 
             // buttonSettingsOk
             // 
+            this.buttonSettingsOk.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.buttonSettingsOk.Location = new System.Drawing.Point(216, 288);
             this.buttonSettingsOk.Name = "buttonSettingsOk";
             this.buttonSettingsOk.Size = new System.Drawing.Size(75, 23);
             this.buttonSettingsOk.TabIndex = 4;
             this.buttonSettingsOk.Text = "OK";
             this.buttonSettingsOk.UseVisualStyleBackColor = true;
+            this.buttonSettingsOk.Click += new System.EventHandler(this.ButtonSettingsOkClick);
             // 
             // PluginSettings
             // 
@@ -236,6 +239,7 @@
             this.Name = "PluginSettings";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Plugin Configuration";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.PluginSettingsFormClosing);
             this.groupBoxGraphics.ResumeLayout(false);
             this.groupBoxSound.ResumeLayout(false);
             this.groupBoxKeyInput.ResumeLayout(false);

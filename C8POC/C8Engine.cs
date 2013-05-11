@@ -1,6 +1,6 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="C8Engine.cs" company="">
-//   
+// <copyright file="C8Engine.cs" company="AlFranco">
+//   Albert Rodriguez Franco 2013
 // </copyright>
 // <summary>
 //   Engine for emulator and central piece of this application
@@ -12,8 +12,8 @@ namespace C8POC
     using System;
     using System.Collections;
     using System.Collections.Generic;
-    using System.ComponentModel;
     using System.Diagnostics;
+    using System.Diagnostics.CodeAnalysis;
     using System.IO;
     using System.Linq;
     using System.Threading;
@@ -25,8 +25,48 @@ namespace C8POC
     /// <summary>
     /// Engine for emulator and central piece of this application
     /// </summary>
+    [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "Opcode is a correct word...")]
     public class C8Engine
     {
+        #region Emulator Properties
+
+        /// <summary>
+        /// State of the machine (including registers etc)
+        /// </summary>
+        private IMachineState machineState;
+
+        /// <summary>
+        /// Object processing opcode
+        /// </summary>
+        private IOpcodeProcessor opcodeProcessor;
+
+        /// <summary>
+        /// Contains the mapping between an opcode and the function that should be executed
+        /// </summary>
+        private Dictionary<ushort, Action> instructionMap = new Dictionary<ushort, Action>();
+
+        /// <summary>
+        /// Gets or sets a value indicating whether if the emulator should be running, important to control the game loop
+        /// </summary>
+        private bool IsRunning { get; set; }
+
+        /// <summary>
+        /// Loaded graphics plugin
+        /// </summary>
+        private IGraphicsPlugin SelectedGraphicsPlugin { get; set; }
+
+        /// <summary>
+        /// Loaded sound plugin
+        /// </summary>
+        private ISoundPlugin SelectedSoundPlugin { get; set; }
+
+        /// <summary>
+        /// Loaded Keyboard plugin
+        /// </summary>
+        private IKeyboardPlugin SelectedKeyboardPlugin { get; set; }
+
+        #endregion
+
         #region Engine constructor
 
         /// <summary>
@@ -50,55 +90,16 @@ namespace C8POC
             // Injects the machine state
             this.machineState = machineState;
 
-            //Inject opcode processor and its machine state
+            // Inject opcode processor and its machine state
             this.opcodeProcessor = opcodeProcessor;
             this.opcodeProcessor.MachineState = machineState;
 
             // The InstructionMap is loaded once!!
             this.SetUpInstructionMap();
 
-            //Loads the plugins
+            // Loads the plugins
             this.LoadPlugins();
         }
-
-        #endregion
-
-        #region Emulator Properties
-
-        /// <summary>
-        /// Gets or sets a value indicating whether if the emulator should be running, important to control the game loop
-        /// </summary>
-        private bool IsRunning { get; set; }
-
-        /// <summary>
-        /// State of the machine (including registers etc)
-        /// </summary>
-        private IMachineState machineState;
-
-        /// <summary>
-        /// Object processing opcode
-        /// </summary>
-        private IOpcodeProcessor opcodeProcessor;
-
-        /// <summary>
-        /// Contains the mapping between an opcode and the function that should be executed
-        /// </summary>
-        private Dictionary<ushort, Action> instructionMap = new Dictionary<ushort, Action>();
-
-        /// <summary>
-        /// Loaded graphics plugin
-        /// </summary>
-        private IGraphicsPlugin SelectedGraphicsPlugin { get; set; }
-
-        /// <summary>
-        /// Loaded sound plugin
-        /// </summary>
-        private ISoundPlugin SelectedSoundPlugin { get; set; }
-
-        /// <summary>
-        /// Loaded Keyboard plugin
-        /// </summary>
-        private IKeyboardPlugin SelectedKeyboardPlugin { get; set; }
 
         #endregion
 
@@ -219,9 +220,11 @@ namespace C8POC
         /// </summary>
         private void LoadPlugins()
         {
-            this.SelectedGraphicsPlugin = PluginManager.Instance.GetPluginByNameSpace<IGraphicsPlugin>(Properties.Settings.Default.SelectedGraphicsPlugin);
-            this.SelectedSoundPlugin = PluginManager.Instance.GetPluginByNameSpace<ISoundPlugin>(Properties.Settings.Default.SelectedSoundPlugin);
-            this.SelectedKeyboardPlugin = PluginManager.Instance.GetPluginByNameSpace<IKeyboardPlugin>(Properties.Settings.Default.SelectedKeyboardPlugin);
+            this.UnLinkPluginEvents();
+
+            this.SelectedGraphicsPlugin = PluginManager.Instance.GetPluginByNameSpace<IGraphicsPlugin>(Settings.Default.SelectedGraphicsPlugin);
+            this.SelectedSoundPlugin = PluginManager.Instance.GetPluginByNameSpace<ISoundPlugin>(Settings.Default.SelectedSoundPlugin);
+            this.SelectedKeyboardPlugin = PluginManager.Instance.GetPluginByNameSpace<IKeyboardPlugin>(Settings.Default.SelectedKeyboardPlugin);
 
             this.LinkPluginEvents();
         }
@@ -250,6 +253,26 @@ namespace C8POC
             }
         }
 
+        /// <summary>
+        /// Unlinks all the events in the Engine class when plugins are reloaded
+        /// </summary>
+        private void UnLinkPluginEvents()
+        {
+            if (this.ScreenChanged != null)
+            {
+                this.ScreenChanged.GetInvocationList()
+                    .ToList()
+                    .ForEach(x => this.ScreenChanged -= x as ScreenChangeEventHandler);
+            }
+
+            if (this.SoundGenerated != null)
+            {
+                this.SoundGenerated.GetInvocationList()
+                    .ToList()
+                    .ForEach(x => this.SoundGenerated -= x as SoundGenerateEventHandler);
+            }
+        }
+
         #endregion
 
         #region Engine Actions
@@ -260,8 +283,8 @@ namespace C8POC
         /// <param name="filePath">The rom full path</param>
         public void LoadEmulator(string filePath)
         {
-            Initialize();
-            LoadGame(filePath);
+            this.Initialize();
+            this.LoadGame(filePath);
         }
 
         /// <summary>
@@ -269,35 +292,36 @@ namespace C8POC
         /// </summary>
         public void StartEmulation()
         {
-            if (!machineState.HasRomLoaded())
+            if (!this.machineState.HasRomLoaded())
             {
                 return;
             }
 
             this.StartPluginsExecution();
 
-            var engineExecutionTask = new Task(EmulatorTask);
-            engineExecutionTask.ContinueWith(task => StopPluginsExecution());
+            var engineExecutionTask = new Task(this.EmulatorTask);
+            engineExecutionTask.ContinueWith(task => this.StopPluginsExecution());
             engineExecutionTask.Start();
         }
 
+        /// <summary>
+        /// The emulator task.
+        /// </summary>
         private void EmulatorTask()
         {
             this.IsRunning = true;
 
             var cycleStopWatch = new Stopwatch();
-            var millisecondsperframe = 1.0/(Settings.Default.FramesPerSecond)*1000.0;
+            var millisecondsperframe = 1.0 / Settings.Default.FramesPerSecond * 1000.0;
 
             // Gets to the emulator loop
             while (this.IsRunning)
             {
                 cycleStopWatch.Restart();
 
-                EmulatorLoop();
+                this.EmulatorLoop();
 
-                Thread.Sleep((int) Math.Max(0.0,
-                                            millisecondsperframe - cycleStopWatch.ElapsedMilliseconds)
-                    );
+                Thread.Sleep((int)Math.Max(0.0, millisecondsperframe - cycleStopWatch.ElapsedMilliseconds));
             }
         }
 
@@ -352,19 +376,19 @@ namespace C8POC
         /// </summary>
         private void UpdateTimers()
         {
-            if (machineState.DelayTimer > 0)
+            if (this.machineState.DelayTimer > 0)
             {
-                --machineState.DelayTimer;
+                --this.machineState.DelayTimer;
             }
 
-            if (machineState.SoundTimer > 0)
+            if (this.machineState.SoundTimer > 0)
             {
-                if (machineState.SoundTimer == 1)
+                if (this.machineState.SoundTimer == 1)
                 {
-                    GenerateSound();
+                    this.GenerateSound();
                 }
 
-                --machineState.SoundTimer;
+                --this.machineState.SoundTimer;
             }
         }
 
@@ -375,12 +399,12 @@ namespace C8POC
         {
             try
             {
-                instructionMap[(ushort) (machineState.CurrentOpcode & 0xF000)]();
+                this.instructionMap[(ushort)(this.machineState.CurrentOpcode & 0xF000)]();
             }
             catch (KeyNotFoundException)
             {
-                throw new Exception(string.Format("Instruction with Opcode {0:X} is not implemented",
-                                                  machineState.CurrentOpcode));
+                throw new Exception(
+                    string.Format("Instruction with Opcode {0:X} is not implemented", this.machineState.CurrentOpcode));
             }
         }
 
@@ -402,7 +426,7 @@ namespace C8POC
                 // Load rom starting at 0x200
                 for (int i = 0; i < rom.Length; i++)
                 {
-                    this.machineState.Memory[C8Constants.StartRomAddress + i] = (byte) rom.ReadByte();
+                    this.machineState.Memory[C8Constants.StartRomAddress + i] = (byte)rom.ReadByte();
                 }
 
                 rom.Close();
@@ -426,43 +450,43 @@ namespace C8POC
         /// </summary>
         private void SetUpInstructionMap()
         {
-            instructionMap.Add(0x0000, GoToRoutineStartingWithZero);
-            instructionMap.Add(0x00E0, opcodeProcessor.ClearScreen);
-            instructionMap.Add(0x00EE, opcodeProcessor.ReturnFromSubRoutine);
-            instructionMap.Add(0x1000, opcodeProcessor.Jump);
-            instructionMap.Add(0x2000, opcodeProcessor.CallAtAdress);
-            instructionMap.Add(0x3000, opcodeProcessor.SkipNextInstructionIfRegisterEqualsImmediate);
-            instructionMap.Add(0x4000, opcodeProcessor.SkipNextInstructionIfRegisterNotEqualsImmediate);
-            instructionMap.Add(0x5000, opcodeProcessor.SkipNextInstructionIfRegisterEqualsRegister);
-            instructionMap.Add(0x6000, opcodeProcessor.LoadValueIntoRegister);
-            instructionMap.Add(0x7000, opcodeProcessor.AddValueIntoRegister);
-            instructionMap.Add(0x8000, GoToArithmeticLogicInstruction);
-            instructionMap.Add(0x8001, opcodeProcessor.OrRegistersIntoRegister);
-            instructionMap.Add(0x8002, opcodeProcessor.AndRegistersIntoRegiter);
-            instructionMap.Add(0x8003, opcodeProcessor.ExclusiveOrIntoRegister);
-            instructionMap.Add(0x8004, opcodeProcessor.AddRegistersIntoRegister);
-            instructionMap.Add(0x8005, opcodeProcessor.SubstractRegisters);
-            instructionMap.Add(0x8006, opcodeProcessor.ShiftRegisterRight);
-            instructionMap.Add(0x8007, opcodeProcessor.SubstractRegistersReverse);
-            instructionMap.Add(0x800E, opcodeProcessor.ShiftRegisterLeft);
-            instructionMap.Add(0x9000, opcodeProcessor.SkipNextInstructionIfRegisterNotEqualsRegister);
-            instructionMap.Add(0xA000, opcodeProcessor.LoadIntoIndexRegister);
-            instructionMap.Add(0xB000, opcodeProcessor.JumpToV0PlusImmediate);
-            instructionMap.Add(0xC000, opcodeProcessor.LoadRandomIntoRegister);
-            instructionMap.Add(0xD000, opcodeProcessor.DrawSprite);
-            instructionMap.Add(0xE000, GoToSkipRegisterInstruction);
-            instructionMap.Add(0xE09E, opcodeProcessor.SkipNextInstructionIfRegisterEqualsKeyPressed);
-            instructionMap.Add(0xE0A1, opcodeProcessor.SkipNextInstructionIfRegisterNotEqualsKeyPressed);
-            instructionMap.Add(0xF000, GoToMemoryOperationInstruction);
-            instructionMap.Add(0xF007, opcodeProcessor.LoadTimerValueIntoRegister);
-            instructionMap.Add(0xF00A, opcodeProcessor.LoadKeyIntoRegister);
-            instructionMap.Add(0xF015, opcodeProcessor.LoadRegisterIntoDelayTimer);
-            instructionMap.Add(0xF018, opcodeProcessor.LoadRegisterIntoSoundTimer);
-            instructionMap.Add(0xF01E, opcodeProcessor.AddRegisterToIndexRegister);
-            instructionMap.Add(0xF029, opcodeProcessor.LoadFontSpriteLocationFromValueInRegister);
-            instructionMap.Add(0xF033, opcodeProcessor.LoadBcdRepresentationFromRegister);
-            instructionMap.Add(0xF055, opcodeProcessor.LoadAllRegistersFromValueInRegister);
-            instructionMap.Add(0xF065, opcodeProcessor.LoadFromValueInRegisterIntoAllRegisters);
+            this.instructionMap.Add(0x0000, this.GoToRoutineStartingWithZero);
+            this.instructionMap.Add(0x00E0, this.opcodeProcessor.ClearScreen);
+            this.instructionMap.Add(0x00EE, this.opcodeProcessor.ReturnFromSubRoutine);
+            this.instructionMap.Add(0x1000, this.opcodeProcessor.Jump);
+            this.instructionMap.Add(0x2000, this.opcodeProcessor.CallAtAdress);
+            this.instructionMap.Add(0x3000, this.opcodeProcessor.SkipNextInstructionIfRegisterEqualsImmediate);
+            this.instructionMap.Add(0x4000, this.opcodeProcessor.SkipNextInstructionIfRegisterNotEqualsImmediate);
+            this.instructionMap.Add(0x5000, this.opcodeProcessor.SkipNextInstructionIfRegisterEqualsRegister);
+            this.instructionMap.Add(0x6000, this.opcodeProcessor.LoadValueIntoRegister);
+            this.instructionMap.Add(0x7000, this.opcodeProcessor.AddValueIntoRegister);
+            this.instructionMap.Add(0x8000, this.GoToArithmeticLogicInstruction);
+            this.instructionMap.Add(0x8001, this.opcodeProcessor.OrRegistersIntoRegister);
+            this.instructionMap.Add(0x8002, this.opcodeProcessor.AndRegistersIntoRegiter);
+            this.instructionMap.Add(0x8003, this.opcodeProcessor.ExclusiveOrIntoRegister);
+            this.instructionMap.Add(0x8004, this.opcodeProcessor.AddRegistersIntoRegister);
+            this.instructionMap.Add(0x8005, this.opcodeProcessor.SubstractRegisters);
+            this.instructionMap.Add(0x8006, this.opcodeProcessor.ShiftRegisterRight);
+            this.instructionMap.Add(0x8007, this.opcodeProcessor.SubstractRegistersReverse);
+            this.instructionMap.Add(0x800E, this.opcodeProcessor.ShiftRegisterLeft);
+            this.instructionMap.Add(0x9000, this.opcodeProcessor.SkipNextInstructionIfRegisterNotEqualsRegister);
+            this.instructionMap.Add(0xA000, this.opcodeProcessor.LoadIntoIndexRegister);
+            this.instructionMap.Add(0xB000, this.opcodeProcessor.JumpToV0PlusImmediate);
+            this.instructionMap.Add(0xC000, this.opcodeProcessor.LoadRandomIntoRegister);
+            this.instructionMap.Add(0xD000, this.opcodeProcessor.DrawSprite);
+            this.instructionMap.Add(0xE000, this.GoToSkipRegisterInstruction);
+            this.instructionMap.Add(0xE09E, this.opcodeProcessor.SkipNextInstructionIfRegisterEqualsKeyPressed);
+            this.instructionMap.Add(0xE0A1, this.opcodeProcessor.SkipNextInstructionIfRegisterNotEqualsKeyPressed);
+            this.instructionMap.Add(0xF000, this.GoToMemoryOperationInstruction);
+            this.instructionMap.Add(0xF007, this.opcodeProcessor.LoadTimerValueIntoRegister);
+            this.instructionMap.Add(0xF00A, this.opcodeProcessor.LoadKeyIntoRegister);
+            this.instructionMap.Add(0xF015, this.opcodeProcessor.LoadRegisterIntoDelayTimer);
+            this.instructionMap.Add(0xF018, this.opcodeProcessor.LoadRegisterIntoSoundTimer);
+            this.instructionMap.Add(0xF01E, this.opcodeProcessor.AddRegisterToIndexRegister);
+            this.instructionMap.Add(0xF029, this.opcodeProcessor.LoadFontSpriteLocationFromValueInRegister);
+            this.instructionMap.Add(0xF033, this.opcodeProcessor.LoadBcdRepresentationFromRegister);
+            this.instructionMap.Add(0xF055, this.opcodeProcessor.LoadAllRegistersFromValueInRegister);
+            this.instructionMap.Add(0xF065, this.opcodeProcessor.LoadFromValueInRegisterIntoAllRegisters);
         }
 
         #endregion
@@ -478,11 +502,11 @@ namespace C8POC
 
             if (fetchedOpcode == 0x0000)
             {
-                opcodeProcessor.JumpToRoutineAtAdress();
+                this.opcodeProcessor.JumpToRoutineAtAdress();
             }
             else
             {
-                instructionMap[(ushort) fetchedOpcode]();
+                this.instructionMap[(ushort)fetchedOpcode]();
             }
         }
 
@@ -491,15 +515,15 @@ namespace C8POC
         /// </summary>
         private void GoToArithmeticLogicInstruction()
         {
-            var filteredOpcode = (ushort) (machineState.CurrentOpcode & 0xF00F);
+            var filteredOpcode = (ushort)(this.machineState.CurrentOpcode & 0xF00F);
 
             if (filteredOpcode == 0x8000)
             {
-                opcodeProcessor.LoadRegisterIntoRegister();
+                this.opcodeProcessor.LoadRegisterIntoRegister();
             }
             else
             {
-                instructionMap[filteredOpcode]();
+                this.instructionMap[filteredOpcode]();
             }
         }
 
@@ -508,7 +532,7 @@ namespace C8POC
         /// </summary>
         private void GoToSkipRegisterInstruction()
         {
-            instructionMap[(ushort) (machineState.CurrentOpcode & 0xF0FF)]();
+            this.instructionMap[(ushort)(this.machineState.CurrentOpcode & 0xF0FF)]();
         }
 
         /// <summary>
@@ -516,23 +540,9 @@ namespace C8POC
         /// </summary>
         private void GoToMemoryOperationInstruction()
         {
-            instructionMap[(ushort) (machineState.CurrentOpcode & 0xF0FF)]();
+            this.instructionMap[(ushort)(this.machineState.CurrentOpcode & 0xF0FF)]();
         }
 
         #endregion
-
-        public static T GetTfromString<T>(string mystring)
-        {
-            var typeConverter = TypeDescriptor.GetConverter(typeof (T));
-            try
-            {
-                var returnValue = (T)(typeConverter.ConvertFromInvariantString(mystring));
-                return returnValue;
-            }
-            catch (Exception)
-            {
-                return default(T);
-            }
-        }
     }
 }

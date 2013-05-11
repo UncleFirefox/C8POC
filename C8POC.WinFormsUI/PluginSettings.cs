@@ -21,6 +21,11 @@ namespace C8POC.WinFormsUI
     /// </summary>
     public partial class PluginSettings : Form
     {
+        /// <summary>
+        /// Indicates if changes have to be saved
+        /// </summary>
+        private bool saveChanges;
+
         #region Constructors and Destructors
 
         /// <summary>
@@ -107,26 +112,73 @@ namespace C8POC.WinFormsUI
         /// </summary>
         private void BindAssembliesToComboBox()
         {
-            this.BindPluginsToComboBox(this.comboBoxSound, PluginManager.Instance.SoundPlugins);
-            this.BindPluginsToComboBox(this.comboBoxGraphics, PluginManager.Instance.GraphicsPlugins);
-            this.BindPluginsToComboBox(this.comboBoxKeyInput, PluginManager.Instance.KeyboardPlugins);
+            this.BindPluginsToComboBox(this.comboBoxSound, PluginManager.Instance.SoundPlugins, C8POC.Properties.Settings.Default.SelectedSoundPlugin);
+            this.BindPluginsToComboBox(this.comboBoxGraphics, PluginManager.Instance.GraphicsPlugins, C8POC.Properties.Settings.Default.SelectedGraphicsPlugin);
+            this.BindPluginsToComboBox(this.comboBoxKeyInput, PluginManager.Instance.KeyboardPlugins, C8POC.Properties.Settings.Default.SelectedKeyboardPlugin);
         }
 
         /// <summary>
         /// Binds the collections of plugins to the combo box
         /// </summary>
-        /// <typeparam name="T">Type of plugin</typeparam>
-        /// <param name="comboBox">The destination combo box</param>
-        /// <param name="pluginCollection">The collection of plugins</param>
-        private void BindPluginsToComboBox<T>(ComboBox comboBox, IEnumerable<Lazy<T, IPluginMetadata>> pluginCollection)
+        /// <typeparam name="T">
+        /// Type of plugin
+        /// </typeparam>
+        /// <param name="comboBox">
+        /// The destination combo box
+        /// </param>
+        /// <param name="pluginCollection">
+        /// The collection of plugins
+        /// </param>
+        /// <param name="selectedPluginNameSpace">
+        /// The selected Plugin Name Space.
+        /// </param>
+        private void BindPluginsToComboBox<T>(ComboBox comboBox, IEnumerable<Lazy<T, IPluginMetadata>> pluginCollection, string selectedPluginNameSpace)
             where T : class, IPlugin
         {
             var plugins = pluginCollection.ToDictionary(x => x, x => x.Metadata.Description);
+
             comboBox.DataSource = new BindingSource(plugins, null);
             comboBox.DisplayMember = "Value";
             comboBox.ValueMember = "Key";
+
+            if (!string.IsNullOrEmpty(selectedPluginNameSpace)
+                && plugins.Any(x => x.Key.Metadata.NameSpace == selectedPluginNameSpace))
+            {
+                comboBox.SelectedIndex = plugins.TakeWhile(x => x.Key.Metadata.NameSpace != selectedPluginNameSpace).Count();
+            }
         }
 
         #endregion
+
+        /// <summary>
+        /// The plugin settings form closing.
+        /// </summary>
+        /// <param name="sender">
+        /// The sender.
+        /// </param>
+        /// <param name="e">
+        /// The e.
+        /// </param>
+        private void PluginSettingsFormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (this.saveChanges)
+            {
+                // Do our stuff in here to save the selected plugins
+            }
+        }
+
+        /// <summary>
+        /// The button settings ok click.
+        /// </summary>
+        /// <param name="sender">
+        /// The sender.
+        /// </param>
+        /// <param name="e">
+        /// The e.
+        /// </param>
+        private void ButtonSettingsOkClick(object sender, EventArgs e)
+        {
+            this.saveChanges = true;
+        }
     }
 }

@@ -1,4 +1,13 @@
-﻿namespace C8POC.WinFormsUI
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="MainForm.cs" company="AlFranco">
+//   Albert Rodriguez Franco 2013
+// </copyright>
+// <summary>
+//   The main form.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+namespace C8POC.WinFormsUI
 {
     using System;
     using System.Windows.Forms;
