@@ -34,6 +34,7 @@
             this.numericUpDownCyclesPerFrame = new System.Windows.Forms.NumericUpDown();
             this.buttonCancel = new System.Windows.Forms.Button();
             this.buttonOK = new System.Windows.Forms.Button();
+            this.checkBoxDisassembler = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownFramesPerSecond)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownCyclesPerFrame)).BeginInit();
             this.SuspendLayout();
@@ -72,7 +73,8 @@
             // 
             // buttonCancel
             // 
-            this.buttonCancel.Location = new System.Drawing.Point(196, 98);
+            this.buttonCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.buttonCancel.Location = new System.Drawing.Point(196, 130);
             this.buttonCancel.Name = "buttonCancel";
             this.buttonCancel.Size = new System.Drawing.Size(75, 23);
             this.buttonCancel.TabIndex = 6;
@@ -81,7 +83,7 @@
             // 
             // buttonOK
             // 
-            this.buttonOK.Location = new System.Drawing.Point(115, 98);
+            this.buttonOK.Location = new System.Drawing.Point(115, 130);
             this.buttonOK.Name = "buttonOK";
             this.buttonOK.Size = new System.Drawing.Size(75, 23);
             this.buttonOK.TabIndex = 7;
@@ -89,12 +91,23 @@
             this.buttonOK.UseVisualStyleBackColor = true;
             this.buttonOK.Click += new System.EventHandler(this.ButtonOkClick);
             // 
+            // checkBoxDisassembler
+            // 
+            this.checkBoxDisassembler.AutoSize = true;
+            this.checkBoxDisassembler.Location = new System.Drawing.Point(15, 98);
+            this.checkBoxDisassembler.Name = "checkBoxDisassembler";
+            this.checkBoxDisassembler.Size = new System.Drawing.Size(122, 17);
+            this.checkBoxDisassembler.TabIndex = 8;
+            this.checkBoxDisassembler.Text = "Enable disassembler";
+            this.checkBoxDisassembler.UseVisualStyleBackColor = true;
+            // 
             // CoreSettingsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.buttonCancel;
-            this.ClientSize = new System.Drawing.Size(284, 133);
+            this.ClientSize = new System.Drawing.Size(284, 165);
+            this.Controls.Add(this.checkBoxDisassembler);
             this.Controls.Add(this.buttonOK);
             this.Controls.Add(this.buttonCancel);
             this.Controls.Add(this.numericUpDownCyclesPerFrame);
@@ -121,5 +134,6 @@
         private System.Windows.Forms.NumericUpDown numericUpDownCyclesPerFrame;
         private System.Windows.Forms.Button buttonCancel;
         private System.Windows.Forms.Button buttonOK;
+        private System.Windows.Forms.CheckBox checkBoxDisassembler;
     }
 }

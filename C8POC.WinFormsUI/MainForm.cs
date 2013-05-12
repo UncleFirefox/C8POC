@@ -100,7 +100,12 @@ namespace C8POC.WinFormsUI
         private void PluginSettingsToolStripMenuItemClick(object sender, EventArgs e)
         {
             var form = new PluginSettings();
-            form.ShowDialog();
+            
+            if (form.ShowDialog() == DialogResult.OK)
+            {
+                // We should tell the engine to reload the plugins
+                this.emulator.LoadPlugins();
+            }
         }
 
         #endregion
@@ -118,6 +123,21 @@ namespace C8POC.WinFormsUI
         {
             var form = new CoreSettingsForm();
             form.ShowDialog();
+        }
+
+        /// <summary>
+        /// The about tool strip menu item click.
+        /// </summary>
+        /// <param name="sender">
+        /// The sender.
+        /// </param>
+        /// <param name="e">
+        /// The e.
+        /// </param>
+        private void AboutToolStripMenuItemClick(object sender, EventArgs e)
+        {
+            var aboutForm = new AboutForm();
+            aboutForm.ShowDialog();
         }
     }
 }

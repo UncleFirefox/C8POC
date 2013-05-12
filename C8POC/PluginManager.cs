@@ -116,7 +116,7 @@ namespace C8POC
         /// <returns>A dictionary of parameters for the configuration</returns>
         public IDictionary<string, string> GetPluginConfiguration(IPlugin plugin)
         {
-            var configurationFullPath = this.GetPluginConfigurationFullPath(plugin);
+            var configurationFullPath = this.GetClassConfigurationFullPath(plugin.GetType());
 
             if (File.Exists(configurationFullPath))
             {
@@ -140,30 +140,82 @@ namespace C8POC
         /// </param>
         public void SavePluginConfiguration(IDictionary<string, string> pluginConfiguration, IPlugin plugin)
         {
-            var pluginConfig = ConfigurationManager.OpenExeConfiguration(plugin.GetType().Assembly.Location);
+            var pluginConfig = this.GetClassConfiguration(plugin.GetType());
 
             foreach (var keyvalue in pluginConfiguration)
             {
                 pluginConfig.AppSettings.Settings.Add(keyvalue.Key, keyvalue.Value);
             }
 
-            var pluginDestionationPath = this.GetPluginConfigurationFullPath(plugin);
-
-            pluginConfig.SaveAs(pluginDestionationPath);
+            pluginConfig.Save();
         }
 
         /// <summary>
-        /// The get plugin configuration full path.
+        /// Gets the saved configuration of the engine
         /// </summary>
-        /// <param name="plugin">
-        /// The plugin.
+        /// <returns>
+        /// Dictionary containing the configuration
+        /// </returns>
+        public IDictionary<string, string> GetEngineConfiguration()
+        {
+            var configurationFullPath = this.GetClassConfigurationFullPath(typeof(C8Engine));
+
+            if (File.Exists(configurationFullPath))
+            {
+                var map = new ExeConfigurationFileMap { ExeConfigFilename = configurationFullPath };
+                Configuration engineconfig = ConfigurationManager.OpenMappedExeConfiguration(map, ConfigurationUserLevel.None);
+
+                return this.GetDictionaryFromAppSettings(engineconfig.AppSettings); 
+            }
+
+            return new Dictionary<string, string>();
+        }
+
+        /// <summary>
+        /// Saves the engine configuration
+        /// </summary>
+        public void SaveEngineConfiguration()
+        {
+            var engineconfig = this.GetClassConfiguration(typeof(C8Engine));
+
+            foreach (SettingsProperty currentProperty in Properties.Settings.Default.Properties)
+            {
+                engineconfig.AppSettings.Settings.Add(currentProperty.Name, Properties.Settings.Default[currentProperty.Name].ToString());
+            }
+
+            engineconfig.Save();
+        }
+
+        /// <summary>
+        /// Gets the class configuration file
+        /// </summary>
+        /// <param name="classType">The class type</param>
+        /// <returns>A configuration structure with proper paths</returns>
+        private Configuration GetClassConfiguration(Type classType)
+        {
+            var map = new ExeConfigurationFileMap { ExeConfigFilename = this.GetClassConfigurationFullPath(classType) };
+            Configuration engineconfig = ConfigurationManager.OpenMappedExeConfiguration(map, ConfigurationUserLevel.None);
+
+            if (engineconfig.HasFile)
+            {
+                engineconfig.AppSettings.Settings.Clear();
+            }
+
+            return engineconfig;
+        }
+
+        /// <summary>
+        /// Gets the full path of a configuration file of a given class inside a DLL
+        /// </summary>
+        /// <param name="typeOfClass">
+        /// The type Of Class.
         /// </param>
         /// <returns>
         /// Full path to save the plugin
         /// </returns>
-        private string GetPluginConfigurationFullPath(IPlugin plugin)
+        private string GetClassConfigurationFullPath(Type typeOfClass)
         {
-            string configurationFileName = string.Format("{0}{1}", plugin.GetType().Assembly.ManifestModule.ScopeName, ".config");
+            string configurationFileName = string.Format("{0}{1}", typeOfClass.Assembly.ManifestModule.ScopeName, ".config");
             string configurationFullPath =
                 Path.Combine(
                     Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), @"C8POC\" + configurationFileName);

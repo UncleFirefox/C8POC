@@ -12,6 +12,8 @@ namespace C8POC
     using System;
     using System.Collections;
     using System.Collections.Generic;
+    using System.ComponentModel;
+    using System.Configuration;
     using System.Diagnostics;
     using System.Diagnostics.CodeAnalysis;
     using System.IO;
@@ -96,6 +98,9 @@ namespace C8POC
 
             // The InstructionMap is loaded once!!
             this.SetUpInstructionMap();
+
+            // Loads the user saved configuration
+            this.LoadSavedEngineSettings();
 
             // Loads the plugins
             this.LoadPlugins();
@@ -218,7 +223,7 @@ namespace C8POC
         /// <summary>
         /// Loads the plugins
         /// </summary>
-        private void LoadPlugins()
+        public void LoadPlugins()
         {
             this.UnLinkPluginEvents();
 
@@ -487,6 +492,40 @@ namespace C8POC
             this.instructionMap.Add(0xF033, this.opcodeProcessor.LoadBcdRepresentationFromRegister);
             this.instructionMap.Add(0xF055, this.opcodeProcessor.LoadAllRegistersFromValueInRegister);
             this.instructionMap.Add(0xF065, this.opcodeProcessor.LoadFromValueInRegisterIntoAllRegisters);
+        }
+
+        /// <summary>
+        /// Loads the saved settings by the user
+        /// </summary>
+        private void LoadSavedEngineSettings()
+        {
+            var savedSettings = PluginManager.Instance.GetEngineConfiguration();
+
+            var validSettings = savedSettings.Where(x => Settings.Default.Properties.Cast<SettingsProperty>().Any(setting => setting.Name == x.Key));
+
+            foreach (KeyValuePair<string, string> validSetting in validSettings)
+            {
+                Type valueType = Settings.Default[validSetting.Key].GetType();
+                Settings.Default[validSetting.Key] = this.GetValueWithGivenType(validSetting.Value, valueType);
+            }
+        }
+
+        /// <summary>
+        /// The get value with given type.
+        /// </summary>
+        /// <param name="value">
+        /// The value.
+        /// </param>
+        /// <param name="requiredType">
+        /// The required type.
+        /// </param>
+        /// <returns>
+        /// The <see cref="object"/>.
+        /// </returns>
+        private object GetValueWithGivenType(string value, Type requiredType)
+        {
+            var foo = TypeDescriptor.GetConverter(requiredType);
+            return foo.ConvertFromInvariantString(value);
         }
 
         #endregion

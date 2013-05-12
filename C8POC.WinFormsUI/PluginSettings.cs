@@ -164,7 +164,52 @@ namespace C8POC.WinFormsUI
             if (this.saveChanges)
             {
                 // Do our stuff in here to save the selected plugins
+                C8POC.Properties.Settings.Default.SelectedGraphicsPlugin = this.GetSelectedPluginNameSpace<IGraphicsPlugin>();
+                C8POC.Properties.Settings.Default.SelectedSoundPlugin = this.GetSelectedPluginNameSpace<ISoundPlugin>();
+                C8POC.Properties.Settings.Default.SelectedKeyboardPlugin = this.GetSelectedPluginNameSpace<IKeyboardPlugin>();
+
+                PluginManager.Instance.SaveEngineConfiguration();
+
+                this.DialogResult = DialogResult.OK;
             }
+        }
+
+        /// <summary>
+        /// The get selected plugin.
+        /// </summary>
+        /// <typeparam name="T"> Type of plugin to look for
+        /// </typeparam>
+        /// <returns>
+        /// The NameSpace of the selected plugin
+        /// </returns>
+        private string GetSelectedPluginNameSpace<T>() where T : class, IPlugin
+        {
+            var type = typeof(T);
+            string selectedPlugin = string.Empty;
+
+            Lazy<T, IPluginMetadata> loadedPlugin = null;
+
+            if (type == typeof(ISoundPlugin) && this.comboBoxSound.SelectedValue != null)
+            {
+                loadedPlugin = this.comboBoxSound.SelectedValue as Lazy<T, IPluginMetadata>;
+            }
+
+            if (type == typeof(IGraphicsPlugin) && this.comboBoxGraphics.SelectedValue != null)
+            {
+                loadedPlugin = this.comboBoxGraphics.SelectedValue as Lazy<T, IPluginMetadata>;
+            }
+
+            if (type == typeof(IKeyboardPlugin) && this.comboBoxKeyInput.SelectedValue != null)
+            {
+                loadedPlugin = this.comboBoxKeyInput.SelectedValue as Lazy<T, IPluginMetadata>;
+            }
+
+            if (loadedPlugin != null)
+            {
+                selectedPlugin = loadedPlugin.Metadata.NameSpace;
+            }
+
+            return selectedPlugin;
         }
 
         /// <summary>
