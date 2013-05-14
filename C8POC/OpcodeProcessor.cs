@@ -1,6 +1,6 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="OpcodeProcessor.cs" company="">
-//   
+// <copyright file="OpcodeProcessor.cs" company="AlFranco">
+//   Albert Rodriguez Franco 2013
 // </copyright>
 // <summary>
 //   Interprets instructions working with a given MachineState
@@ -10,39 +10,46 @@
 namespace C8POC
 {
     using System;
+    using System.Diagnostics.CodeAnalysis;
 
     using C8POC.Interfaces;
 
     /// <summary>
     /// Interprets instructions working with a given MachineState
     /// </summary>
+    [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "Mnemotechnical stuff is obviously not recognized by StyleCop")]
     public class OpcodeProcessor : IOpcodeProcessor
     {
-        #region Properties
-
-        /// <summary>
-        /// The machine state in which the instructions will operate
-        /// </summary>
-        public IMachineState MachineState { get; set; }
-
-        #endregion
-
         #region Constructor
 
         /// <summary>
+        /// Initializes a new instance of the <see cref="OpcodeProcessor"/> class. 
         /// Constructor injecting a machine state
         /// </summary>
-        /// <param name="machineState">A machine state</param>
+        /// <param name="machineState">
+        /// A machine state
+        /// </param>
         public OpcodeProcessor(IMachineState machineState)
         {
             this.MachineState = machineState;
         }
 
         /// <summary>
+        /// Initializes a new instance of the <see cref="OpcodeProcessor"/> class. 
         /// Constructor that will potentially have a machine state injected later
         /// </summary>
         public OpcodeProcessor()
-        {}
+        {
+        }
+
+        #endregion
+
+        #region Properties
+
+        /// <summary>
+        /// Gets or sets the machine state in which the instructions will operate
+        /// </summary>
+        public IMachineState MachineState { get; set; }
 
         #endregion
 
@@ -58,7 +65,7 @@ namespace C8POC
         /// </summary>
         public void JumpToRoutineAtAdress()
         {
-            //IGNORE! xD
+            // IGNORE! xD
         }
 
         /// <summary>
@@ -67,8 +74,8 @@ namespace C8POC
         /// </summary>
         public void ClearScreen()
         {
-            MachineState.Graphics.SetAll(false);
-            MachineState.IsDrawFlagSet = true;
+            this.MachineState.Graphics.SetAll(false);
+            this.MachineState.IsDrawFlagSet = true;
         }
 
         /// <summary>
@@ -79,7 +86,7 @@ namespace C8POC
         /// </summary>
         public void ReturnFromSubRoutine()
         {
-            MachineState.ProgramCounter = MachineState.Stack.Pop();
+            this.MachineState.ProgramCounter = this.MachineState.Stack.Pop();
         }
 
         /// <summary>
@@ -89,7 +96,7 @@ namespace C8POC
         /// </summary>
         public void Jump()
         {
-            MachineState.ProgramCounter = (ushort)(MachineState.CurrentOpcode & 0x0FFF);
+            this.MachineState.ProgramCounter = (ushort)(this.MachineState.CurrentOpcode & 0x0FFF);
         }
 
         /// <summary>
@@ -102,9 +109,9 @@ namespace C8POC
         {
             // Program counter will be increased right after the instruction fetch 
             // So theres no need to increase the program counter before pushing
-            MachineState.Stack.Push(MachineState.ProgramCounter);
+            this.MachineState.Stack.Push(this.MachineState.ProgramCounter);
 
-            MachineState.ProgramCounter = (ushort)(MachineState.CurrentOpcode & 0x0FFF);
+            this.MachineState.ProgramCounter = (ushort)(this.MachineState.CurrentOpcode & 0x0FFF);
         }
 
         /// <summary>
@@ -114,10 +121,10 @@ namespace C8POC
         /// </summary>
         public void SkipNextInstructionIfRegisterEqualsImmediate()
         {
-            if (MachineState.VRegisters[MachineState.XRegisterFromCurrentOpcode] ==
-                (MachineState.CurrentOpcode & 0x00FF))
+            if (this.MachineState.VRegisters[this.MachineState.XRegisterFromCurrentOpcode] ==
+                (this.MachineState.CurrentOpcode & 0x00FF))
             {
-                MachineState.IncreaseProgramCounter();
+                this.MachineState.IncreaseProgramCounter();
             }
         }
 
@@ -128,10 +135,10 @@ namespace C8POC
         /// </summary>
         public void SkipNextInstructionIfRegisterNotEqualsImmediate()
         {
-            if (MachineState.VRegisters[MachineState.XRegisterFromCurrentOpcode] !=
-                (MachineState.CurrentOpcode & 0x00FF))
+            if (this.MachineState.VRegisters[this.MachineState.XRegisterFromCurrentOpcode] !=
+                (this.MachineState.CurrentOpcode & 0x00FF))
             {
-                MachineState.IncreaseProgramCounter();
+                this.MachineState.IncreaseProgramCounter();
             }
         }
 
@@ -142,10 +149,10 @@ namespace C8POC
         /// </summary>
         public void SkipNextInstructionIfRegisterEqualsRegister()
         {
-            if (MachineState.VRegisters[MachineState.XRegisterFromCurrentOpcode] ==
-                MachineState.VRegisters[MachineState.YRegisterFromCurrentOpcode])
+            if (this.MachineState.VRegisters[this.MachineState.XRegisterFromCurrentOpcode] ==
+                this.MachineState.VRegisters[this.MachineState.YRegisterFromCurrentOpcode])
             {
-                MachineState.IncreaseProgramCounter();
+                this.MachineState.IncreaseProgramCounter();
             }
         }
 
@@ -156,8 +163,8 @@ namespace C8POC
         /// </summary>
         public void LoadValueIntoRegister()
         {
-            MachineState.VRegisters[MachineState.XRegisterFromCurrentOpcode] =
-                (ushort)(MachineState.CurrentOpcode & 0x00FF);
+            this.MachineState.VRegisters[this.MachineState.XRegisterFromCurrentOpcode] =
+                (ushort)(this.MachineState.CurrentOpcode & 0x00FF);
         }
 
         /// <summary>
@@ -167,8 +174,8 @@ namespace C8POC
         /// </summary>
         public void AddValueIntoRegister()
         {
-            MachineState.VRegisters[MachineState.XRegisterFromCurrentOpcode] +=
-                (ushort)(MachineState.CurrentOpcode & 0x00FF);
+            this.MachineState.VRegisters[this.MachineState.XRegisterFromCurrentOpcode] +=
+                (ushort)(this.MachineState.CurrentOpcode & 0x00FF);
         }
 
         /// <summary>
@@ -178,8 +185,8 @@ namespace C8POC
         /// </summary>
         public void LoadRegisterIntoRegister()
         {
-            MachineState.VRegisters[MachineState.XRegisterFromCurrentOpcode] +=
-                MachineState.VRegisters[MachineState.YRegisterFromCurrentOpcode];
+            this.MachineState.VRegisters[this.MachineState.XRegisterFromCurrentOpcode] +=
+                this.MachineState.VRegisters[this.MachineState.YRegisterFromCurrentOpcode];
         }
 
         /// <summary>
@@ -191,8 +198,8 @@ namespace C8POC
         /// </summary>
         public void OrRegistersIntoRegister()
         {
-            MachineState.VRegisters[MachineState.XRegisterFromCurrentOpcode] |=
-                MachineState.VRegisters[MachineState.YRegisterFromCurrentOpcode];
+            this.MachineState.VRegisters[this.MachineState.XRegisterFromCurrentOpcode] |=
+                this.MachineState.VRegisters[this.MachineState.YRegisterFromCurrentOpcode];
         }
 
         /// <summary>
@@ -204,8 +211,8 @@ namespace C8POC
         /// </summary>
         public void AndRegistersIntoRegiter()
         {
-            MachineState.VRegisters[MachineState.XRegisterFromCurrentOpcode] &=
-                MachineState.VRegisters[MachineState.YRegisterFromCurrentOpcode];
+            this.MachineState.VRegisters[this.MachineState.XRegisterFromCurrentOpcode] &=
+                this.MachineState.VRegisters[this.MachineState.YRegisterFromCurrentOpcode];
         }
 
         /// <summary>
@@ -217,8 +224,8 @@ namespace C8POC
         /// </summary>
         public void ExclusiveOrIntoRegister()
         {
-            MachineState.VRegisters[MachineState.XRegisterFromCurrentOpcode] ^=
-                MachineState.VRegisters[MachineState.YRegisterFromCurrentOpcode];
+            this.MachineState.VRegisters[this.MachineState.XRegisterFromCurrentOpcode] ^=
+                this.MachineState.VRegisters[this.MachineState.YRegisterFromCurrentOpcode];
         }
 
         /// <summary>
@@ -229,16 +236,16 @@ namespace C8POC
         /// </summary>
         public void AddRegistersIntoRegister()
         {
-            MachineState.VRegisters[MachineState.XRegisterFromCurrentOpcode] +=
-                MachineState.VRegisters[MachineState.YRegisterFromCurrentOpcode];
+            this.MachineState.VRegisters[this.MachineState.XRegisterFromCurrentOpcode] +=
+                this.MachineState.VRegisters[this.MachineState.YRegisterFromCurrentOpcode];
 
-            if (MachineState.VRegisters[MachineState.XRegisterFromCurrentOpcode] > 0xFF)
+            if (this.MachineState.VRegisters[this.MachineState.XRegisterFromCurrentOpcode] > 0xFF)
             {
-                MachineState.VRegisters[0xF] = 1;
+                this.MachineState.VRegisters[0xF] = 1;
             }
             else
             {
-                MachineState.VRegisters[0xF] = 0;
+                this.MachineState.VRegisters[0xF] = 0;
             }
         }
 
@@ -249,18 +256,18 @@ namespace C8POC
         /// </summary>
         public void SubstractRegisters()
         {
-            if (MachineState.VRegisters[MachineState.XRegisterFromCurrentOpcode] >
-                MachineState.VRegisters[MachineState.YRegisterFromCurrentOpcode])
+            if (this.MachineState.VRegisters[this.MachineState.XRegisterFromCurrentOpcode] >
+                this.MachineState.VRegisters[this.MachineState.YRegisterFromCurrentOpcode])
             {
-                MachineState.VRegisters[0xF] = 1;
+                this.MachineState.VRegisters[0xF] = 1;
             }
             else
             {
-                MachineState.VRegisters[0xF] = 0;
+                this.MachineState.VRegisters[0xF] = 0;
             }
 
-            MachineState.VRegisters[MachineState.XRegisterFromCurrentOpcode] -=
-                MachineState.VRegisters[MachineState.YRegisterFromCurrentOpcode];
+            this.MachineState.VRegisters[this.MachineState.XRegisterFromCurrentOpcode] -=
+                this.MachineState.VRegisters[this.MachineState.YRegisterFromCurrentOpcode];
         }
 
         /// <summary>
@@ -270,16 +277,16 @@ namespace C8POC
         /// </summary>
         public void ShiftRegisterRight()
         {
-            if ((MachineState.CurrentOpcode & 0x000F) == 1)
+            if ((this.MachineState.CurrentOpcode & 0x000F) == 1)
             {
-                MachineState.VRegisters[0xF] = 1;
+                this.MachineState.VRegisters[0xF] = 1;
             }
             else
             {
-                MachineState.VRegisters[0xF] = 0;
+                this.MachineState.VRegisters[0xF] = 0;
             }
 
-            MachineState.VRegisters[MachineState.XRegisterFromCurrentOpcode] >>= 1;
+            this.MachineState.VRegisters[this.MachineState.XRegisterFromCurrentOpcode] >>= 1;
         }
 
         /// <summary>
@@ -289,20 +296,20 @@ namespace C8POC
         /// </summary>
         public void SubstractRegistersReverse()
         {
-            if (MachineState.VRegisters[MachineState.YRegisterFromCurrentOpcode] >
-                MachineState.VRegisters[MachineState.XRegisterFromCurrentOpcode])
+            if (this.MachineState.VRegisters[this.MachineState.YRegisterFromCurrentOpcode]
+                > this.MachineState.VRegisters[this.MachineState.XRegisterFromCurrentOpcode])
             {
-                MachineState.VRegisters[0xF] = 1;
+                this.MachineState.VRegisters[0xF] = 1;
             }
             else
             {
-                MachineState.VRegisters[0xF] = 0;
+                this.MachineState.VRegisters[0xF] = 0;
             }
 
-            MachineState.VRegisters[MachineState.XRegisterFromCurrentOpcode] =
+            this.MachineState.VRegisters[this.MachineState.XRegisterFromCurrentOpcode] =
                 (ushort)
-                (MachineState.VRegisters[MachineState.YRegisterFromCurrentOpcode] -
-                 MachineState.VRegisters[MachineState.XRegisterFromCurrentOpcode]);
+                (this.MachineState.VRegisters[this.MachineState.YRegisterFromCurrentOpcode]
+                 - this.MachineState.VRegisters[this.MachineState.XRegisterFromCurrentOpcode]);
         }
 
         /// <summary>
@@ -312,16 +319,16 @@ namespace C8POC
         /// </summary>
         public void ShiftRegisterLeft()
         {
-            if ((MachineState.VRegisters[MachineState.XRegisterFromCurrentOpcode] & 0xF000) == 0x1000)
+            if ((this.MachineState.VRegisters[this.MachineState.XRegisterFromCurrentOpcode] & 0xF000) == 0x1000)
             {
-                MachineState.VRegisters[0xF] = 1;
+                this.MachineState.VRegisters[0xF] = 1;
             }
             else
             {
-                MachineState.VRegisters[0xF] = 0;
+                this.MachineState.VRegisters[0xF] = 0;
             }
 
-            MachineState.VRegisters[MachineState.XRegisterFromCurrentOpcode] <<= 1;
+            this.MachineState.VRegisters[this.MachineState.XRegisterFromCurrentOpcode] <<= 1;
         }
 
         /// <summary>
@@ -331,10 +338,10 @@ namespace C8POC
         /// </summary>
         public void SkipNextInstructionIfRegisterNotEqualsRegister()
         {
-            if (MachineState.VRegisters[MachineState.XRegisterFromCurrentOpcode] !=
-                MachineState.VRegisters[MachineState.YRegisterFromCurrentOpcode])
+            if (this.MachineState.VRegisters[this.MachineState.XRegisterFromCurrentOpcode] !=
+                this.MachineState.VRegisters[this.MachineState.YRegisterFromCurrentOpcode])
             {
-                MachineState.IncreaseProgramCounter();
+                this.MachineState.IncreaseProgramCounter();
             }
         }
 
@@ -345,7 +352,7 @@ namespace C8POC
         /// </summary>
         public void LoadIntoIndexRegister()
         {
-            MachineState.IndexRegister = (ushort)(MachineState.CurrentOpcode & 0x0FFF);
+            this.MachineState.IndexRegister = (ushort)(this.MachineState.CurrentOpcode & 0x0FFF);
         }
 
         /// <summary>
@@ -355,7 +362,7 @@ namespace C8POC
         /// </summary>
         public void JumpToV0PlusImmediate()
         {
-            MachineState.ProgramCounter = (ushort)(MachineState.VRegisters[0] + (MachineState.CurrentOpcode & 0x0FFF));
+            this.MachineState.ProgramCounter = (ushort)(this.MachineState.VRegisters[0] + (this.MachineState.CurrentOpcode & 0x0FFF));
         }
 
         /// <summary>
@@ -368,8 +375,8 @@ namespace C8POC
         {
             var randomnumber = (ushort)new Random().Next(0, 255);
 
-            MachineState.VRegisters[MachineState.XRegisterFromCurrentOpcode] =
-                (ushort)(randomnumber & (MachineState.CurrentOpcode & 0x00FF));
+            this.MachineState.VRegisters[this.MachineState.XRegisterFromCurrentOpcode] =
+                (ushort)(randomnumber & (this.MachineState.CurrentOpcode & 0x00FF));
         }
 
         /// <summary>
@@ -384,34 +391,35 @@ namespace C8POC
         /// </summary>
         public void DrawSprite()
         {
-            var numbytes = (ushort)(MachineState.CurrentOpcode & 0x000F);
-            var positionX = MachineState.VRegisters[MachineState.XRegisterFromCurrentOpcode];
-            var positionY = MachineState.VRegisters[MachineState.YRegisterFromCurrentOpcode];
+            var numbytes = (ushort)(this.MachineState.CurrentOpcode & 0x000F);
+            var positionX = this.MachineState.VRegisters[this.MachineState.XRegisterFromCurrentOpcode];
+            var positionY = this.MachineState.VRegisters[this.MachineState.YRegisterFromCurrentOpcode];
 
-            for (int rowNum = 0; rowNum < numbytes; rowNum++)
+            for (var rowNum = 0; rowNum < numbytes; rowNum++)
             {
-                ushort currentpixel = MachineState.Memory[MachineState.IndexRegister + rowNum];
+                ushort currentpixel = this.MachineState.Memory[this.MachineState.IndexRegister + rowNum];
 
-                for (int colNum = 0; colNum < 8; colNum++) //We assume sprites are always 8 pixels wide
+                // We assume sprites are always 8 pixels wide
+                for (var colNum = 0; colNum < 8; colNum++) 
                 {
                     if ((currentpixel & (0x80 >> colNum)) != 0)
                     {
                         int positioninGraphics = (positionX + colNum +
                                                   ((positionY + rowNum) * C8Constants.ResolutionWidth))
                                                  % (C8Constants.ResolutionWidth * C8Constants.ResolutionHeight);
-                        // Make sure we get a value inside boundaries
 
-                        if (MachineState.Graphics[positioninGraphics])
+                        // Make sure we get a value inside boundaries
+                        if (this.MachineState.Graphics[positioninGraphics])
                         {
-                            //Collision!
-                            MachineState.VRegisters[0xF] = 1;
+                            // Collision!
+                            this.MachineState.VRegisters[0xF] = 1;
                         }
 
-                        MachineState.Graphics[positioninGraphics] ^= true;
+                        this.MachineState.Graphics[positioninGraphics] ^= true;
                     }
                 }
 
-                MachineState.IsDrawFlagSet = true;
+                this.MachineState.IsDrawFlagSet = true;
             }
         }
 
@@ -423,9 +431,9 @@ namespace C8POC
         /// </summary>
         public void SkipNextInstructionIfRegisterEqualsKeyPressed()
         {
-            if (MachineState.Keys[MachineState.VRegisters[MachineState.XRegisterFromCurrentOpcode]])
+            if (this.MachineState.Keys[this.MachineState.VRegisters[this.MachineState.XRegisterFromCurrentOpcode]])
             {
-                MachineState.IncreaseProgramCounter();
+                this.MachineState.IncreaseProgramCounter();
             }
         }
 
@@ -437,9 +445,9 @@ namespace C8POC
         /// </summary>
         public void SkipNextInstructionIfRegisterNotEqualsKeyPressed()
         {
-            if (!MachineState.Keys[MachineState.VRegisters[MachineState.XRegisterFromCurrentOpcode]])
+            if (!this.MachineState.Keys[this.MachineState.VRegisters[this.MachineState.XRegisterFromCurrentOpcode]])
             {
-                MachineState.IncreaseProgramCounter();
+                this.MachineState.IncreaseProgramCounter();
             }
         }
 
@@ -450,7 +458,7 @@ namespace C8POC
         /// </summary>
         public void LoadTimerValueIntoRegister()
         {
-            MachineState.VRegisters[MachineState.XRegisterFromCurrentOpcode] = MachineState.DelayTimer;
+            this.MachineState.VRegisters[this.MachineState.XRegisterFromCurrentOpcode] = this.MachineState.DelayTimer;
         }
 
         /// <summary>
@@ -460,7 +468,7 @@ namespace C8POC
         /// </summary>
         public void LoadKeyIntoRegister()
         {
-            //TODO What do I do with this wait for key?
+            // TODO What do I do with this wait for key?
             /*while (!machineState.Keys.OfType<bool>().Any(x => x))
             {
 
@@ -474,7 +482,7 @@ namespace C8POC
         /// </summary>
         public void LoadRegisterIntoDelayTimer()
         {
-            MachineState.DelayTimer = MachineState.VRegisters[MachineState.XRegisterFromCurrentOpcode];
+            this.MachineState.DelayTimer = this.MachineState.VRegisters[this.MachineState.XRegisterFromCurrentOpcode];
         }
 
         /// <summary>
@@ -484,7 +492,7 @@ namespace C8POC
         /// </summary>
         public void LoadRegisterIntoSoundTimer()
         {
-            MachineState.SoundTimer = MachineState.VRegisters[MachineState.XRegisterFromCurrentOpcode];
+            this.MachineState.SoundTimer = this.MachineState.VRegisters[this.MachineState.XRegisterFromCurrentOpcode];
         }
 
         /// <summary>
@@ -494,7 +502,7 @@ namespace C8POC
         /// </summary>
         public void AddRegisterToIndexRegister()
         {
-            MachineState.IndexRegister += MachineState.VRegisters[MachineState.XRegisterFromCurrentOpcode];
+            this.MachineState.IndexRegister += this.MachineState.VRegisters[this.MachineState.XRegisterFromCurrentOpcode];
         }
 
         /// <summary>
@@ -522,11 +530,11 @@ namespace C8POC
 
               If you have to ask, that's because the draw instruction draws 8 bits at a time.*/
 
-            ushort character = MachineState.VRegisters[MachineState.XRegisterFromCurrentOpcode];
+            ushort character = this.MachineState.VRegisters[this.MachineState.XRegisterFromCurrentOpcode];
 
             // We assume that the value for character goes from 0x0 to 0xF and that each digit has size 5 (5 rows per digit)
             // Fonts are loaded starting at 0x0
-            MachineState.IndexRegister = (ushort)(5 * character);
+            this.MachineState.IndexRegister = (ushort)(5 * character);
         }
 
         /// <summary>
@@ -539,12 +547,14 @@ namespace C8POC
         /// </summary>
         public void LoadBcdRepresentationFromRegister()
         {
-            MachineState.Memory[MachineState.IndexRegister] =
-                (byte)(MachineState.VRegisters[MachineState.XRegisterFromCurrentOpcode] / 100); //Hundreds
-            MachineState.Memory[MachineState.IndexRegister + 1] =
-                (byte)((MachineState.VRegisters[MachineState.XRegisterFromCurrentOpcode] / 10) % 10); //Tens
-            MachineState.Memory[MachineState.IndexRegister + 2] =
-                (byte)(MachineState.VRegisters[MachineState.XRegisterFromCurrentOpcode] % 10); //Ones
+            this.MachineState.Memory[this.MachineState.IndexRegister] =
+                (byte)(this.MachineState.VRegisters[this.MachineState.XRegisterFromCurrentOpcode] / 100); // Hundreds
+
+            this.MachineState.Memory[this.MachineState.IndexRegister + 1] =
+                (byte)((this.MachineState.VRegisters[this.MachineState.XRegisterFromCurrentOpcode] / 10) % 10); // Tens
+
+            this.MachineState.Memory[this.MachineState.IndexRegister + 2] =
+                (byte)(this.MachineState.VRegisters[this.MachineState.XRegisterFromCurrentOpcode] % 10); // Ones
         }
 
         /// <summary>
@@ -554,9 +564,9 @@ namespace C8POC
         /// </summary>
         public void LoadAllRegistersFromValueInRegister()
         {
-            for (int i = 0; i <= MachineState.XRegisterFromCurrentOpcode; i++)
+            for (int i = 0; i <= this.MachineState.XRegisterFromCurrentOpcode; i++)
             {
-                MachineState.Memory[MachineState.IndexRegister + i] = (byte)MachineState.VRegisters[i];
+                this.MachineState.Memory[this.MachineState.IndexRegister + i] = (byte)this.MachineState.VRegisters[i];
             }
         }
 
@@ -567,9 +577,9 @@ namespace C8POC
         /// </summary>
         public void LoadFromValueInRegisterIntoAllRegisters()
         {
-            for (int i = 0; i <= MachineState.XRegisterFromCurrentOpcode; i++)
+            for (int i = 0; i <= this.MachineState.XRegisterFromCurrentOpcode; i++)
             {
-                MachineState.VRegisters[i] = MachineState.Memory[MachineState.IndexRegister + i];
+                this.MachineState.VRegisters[i] = this.MachineState.Memory[this.MachineState.IndexRegister + i];
             }
         }
 

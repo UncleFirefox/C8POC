@@ -26,14 +26,24 @@ namespace C8POC.WinFormsUI
         /// </summary>
         private bool saveChanges;
 
+        /// <summary>
+        /// A plugin service
+        /// </summary>
+        private IPluginService pluginService;
+
         #region Constructors and Destructors
 
         /// <summary>
-        ///     Initializes a new instance of the <see cref="PluginSettings" /> class.
+        /// Initializes a new instance of the <see cref="PluginSettings"/> class.
         /// </summary>
-        public PluginSettings()
+        /// <param name="pluginService">
+        /// The plugin Service.
+        /// </param>
+        public PluginSettings(IPluginService pluginService)
         {
             this.InitializeComponent();
+            this.pluginService = pluginService;
+
             this.BindAssembliesToComboBox();
         }
 
@@ -98,11 +108,11 @@ namespace C8POC.WinFormsUI
 
             if (plugin != null)
             {
-                var parameters = plugin.Value.Configure(PluginManager.Instance.GetPluginConfiguration(plugin.Value));
+                var parameters = plugin.Value.Configure(this.pluginService.GetPluginConfiguration(plugin.Value));
 
                 if (parameters != null)
                 {
-                    PluginManager.Instance.SavePluginConfiguration(parameters, plugin.Value);
+                    this.pluginService.SavePluginConfiguration(parameters, plugin.Value);
                 }
             }
         }
@@ -112,9 +122,9 @@ namespace C8POC.WinFormsUI
         /// </summary>
         private void BindAssembliesToComboBox()
         {
-            this.BindPluginsToComboBox(this.comboBoxSound, PluginManager.Instance.SoundPlugins, C8POC.Properties.Settings.Default.SelectedSoundPlugin);
-            this.BindPluginsToComboBox(this.comboBoxGraphics, PluginManager.Instance.GraphicsPlugins, C8POC.Properties.Settings.Default.SelectedGraphicsPlugin);
-            this.BindPluginsToComboBox(this.comboBoxKeyInput, PluginManager.Instance.KeyboardPlugins, C8POC.Properties.Settings.Default.SelectedKeyboardPlugin);
+            this.BindPluginsToComboBox(this.comboBoxSound, this.pluginService.GetPluginsOfType<ISoundPlugin>(), C8POC.Properties.Settings.Default.SelectedSoundPlugin);
+            this.BindPluginsToComboBox(this.comboBoxGraphics, this.pluginService.GetPluginsOfType<IGraphicsPlugin>(), C8POC.Properties.Settings.Default.SelectedGraphicsPlugin);
+            this.BindPluginsToComboBox(this.comboBoxKeyInput, this.pluginService.GetPluginsOfType<IKeyboardPlugin>(), C8POC.Properties.Settings.Default.SelectedKeyboardPlugin);
         }
 
         /// <summary>
@@ -135,6 +145,11 @@ namespace C8POC.WinFormsUI
         private void BindPluginsToComboBox<T>(ComboBox comboBox, IEnumerable<Lazy<T, IPluginMetadata>> pluginCollection, string selectedPluginNameSpace)
             where T : class, IPlugin
         {
+            if (pluginCollection == null)
+            {
+                return;
+            }
+
             var plugins = pluginCollection.ToDictionary(x => x, x => x.Metadata.Description);
 
             comboBox.DataSource = new BindingSource(plugins, null);
@@ -168,7 +183,7 @@ namespace C8POC.WinFormsUI
                 C8POC.Properties.Settings.Default.SelectedSoundPlugin = this.GetSelectedPluginNameSpace<ISoundPlugin>();
                 C8POC.Properties.Settings.Default.SelectedKeyboardPlugin = this.GetSelectedPluginNameSpace<IKeyboardPlugin>();
 
-                PluginManager.Instance.SaveEngineConfiguration();
+                this.pluginService.SaveEngineConfiguration();
 
                 this.DialogResult = DialogResult.OK;
             }

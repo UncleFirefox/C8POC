@@ -1,10 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1">
-  <Comment CommentText="Plugins are stored instances inside PluginManager using MEF">
-    <Position X="8.021" Y="0.511" Height="0.885" Width="1.273" />
+  <Comment CommentText="Plugins are stored instances inside PluginManager using MEF (Windows version)">
+    <Position X="1.365" Y="17.24" Height="0.979" Width="1.273" />
   </Comment>
   <Class Name="C8POC.C8Constants">
-    <Position X="12.5" Y="0.5" Width="1.5" />
+    <Position X="9.25" Y="0.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAEAABAAABAAAAAAAQAAAAAAAAAgAAIACAAAABAAAAA=</HashCode>
       <FileName>C8Constants.cs</FileName>
@@ -58,8 +58,16 @@
         <Position X="0.1" Y="0.581" />
       </MemberNameLabel>
     </AssociationLine>
+    <AssociationLine Name="PluginService" Type="C8POC.IPluginService" ManuallyRouted="true" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="4.562" Y="13.775" />
+        <Point X="4.562" Y="14.588" />
+        <Point X="2.125" Y="14.588" />
+        <Point X="2.125" Y="15" />
+      </Path>
+    </AssociationLine>
     <TypeIdentifier>
-      <HashCode>kBAMAEAEAAQAgSAAAEwAwAABAwFQBAAQDIBAggAAAGE=</HashCode>
+      <HashCode>kBAMAEAEBAQAgSAAAMwAwAABAwFQBAAQDIBAgAAAAGE=</HashCode>
       <FileName>C8Engine.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
@@ -68,17 +76,11 @@
       <Property Name="SelectedGraphicsPlugin" />
       <Property Name="SelectedSoundPlugin" />
       <Property Name="SelectedKeyboardPlugin" />
+      <Property Name="PluginService" />
     </ShowAsAssociation>
   </Class>
-  <Class Name="C8POC.PluginManager">
-    <Position X="9.5" Y="0.5" Width="2.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAQBAgAAAAAABgAgAAQAAABgAACAA=</HashCode>
-      <FileName>PluginManager.cs</FileName>
-    </TypeIdentifier>
-  </Class>
   <Class Name="C8POC.Properties.Settings">
-    <Position X="14.75" Y="0.5" Width="2" />
+    <Position X="11.25" Y="0.5" Width="2" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAACAAAAAAoAAAAAARQAAAAAAAAAABAAA=</HashCode>
     </TypeIdentifier>
@@ -123,6 +125,13 @@
     <TypeIdentifier>
       <HashCode>AEAQAAAAgkhIQSAQBQECIAAEMIADAREAAAASEIYAAAU=</HashCode>
       <FileName>Interfaces\IOpcodeProcessor.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="C8POC.IPluginService">
+    <Position X="1" Y="15" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAEAAAAACAAAABAAAAAAAAAAAkAAAAAABAAAAAA=</HashCode>
+      <FileName>IPluginService.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Font Name="Segoe UI" Size="9" />

@@ -99,7 +99,7 @@ namespace C8POC.WinFormsUI
         /// </param>
         private void PluginSettingsToolStripMenuItemClick(object sender, EventArgs e)
         {
-            var form = new PluginSettings();
+            var form = new PluginSettings(this.emulator.PluginService);
             
             if (form.ShowDialog() == DialogResult.OK)
             {
@@ -122,7 +122,11 @@ namespace C8POC.WinFormsUI
         private void CoreSettingsToolStripMenuItemClick(object sender, EventArgs e)
         {
             var form = new CoreSettingsForm();
-            form.ShowDialog();
+
+            if (form.ShowDialog() == DialogResult.OK)
+            {
+                this.emulator.PluginService.SaveEngineConfiguration();
+            }
         }
 
         /// <summary>

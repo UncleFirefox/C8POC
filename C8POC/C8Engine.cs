@@ -33,6 +33,11 @@ namespace C8POC
         #region Emulator Properties
 
         /// <summary>
+        /// Gets the plugin service.
+        /// </summary>
+        public IPluginService PluginService { get; private set; }
+
+        /// <summary>
         /// State of the machine (including registers etc)
         /// </summary>
         private IMachineState machineState;
@@ -53,17 +58,17 @@ namespace C8POC
         private bool IsRunning { get; set; }
 
         /// <summary>
-        /// Loaded graphics plugin
+        /// Gets or sets a loaded graphics plugin
         /// </summary>
         private IGraphicsPlugin SelectedGraphicsPlugin { get; set; }
 
         /// <summary>
-        /// Loaded sound plugin
+        /// Gets or sets a loaded sound plugin
         /// </summary>
         private ISoundPlugin SelectedSoundPlugin { get; set; }
 
         /// <summary>
-        /// Loaded Keyboard plugin
+        /// Gets or sets a loaded Keyboard plugin
         /// </summary>
         private IKeyboardPlugin SelectedKeyboardPlugin { get; set; }
 
@@ -75,7 +80,7 @@ namespace C8POC
         /// Initializes a new instance of the <see cref="C8Engine"/> class. 
         /// </summary>
         public C8Engine()
-            : this(new C8MachineState(), new OpcodeProcessor())
+            : this(new C8MachineState(), new OpcodeProcessor(), new PluginService())
         {
         }
 
@@ -86,8 +91,13 @@ namespace C8POC
         /// <param name="machineState">
         /// An injected machine state
         /// </param>
-        /// <param name="opcodeProcessor"> An injected opcode processor </param>
-        public C8Engine(IMachineState machineState, IOpcodeProcessor opcodeProcessor)
+        /// <param name="opcodeProcessor">
+        /// An injected opcode processor 
+        /// </param>
+        /// <param name="pluginService">
+        /// The plugin Service.
+        /// </param>
+        public C8Engine(IMachineState machineState, IOpcodeProcessor opcodeProcessor, IPluginService pluginService)
         {
             // Injects the machine state
             this.machineState = machineState;
@@ -95,6 +105,9 @@ namespace C8POC
             // Inject opcode processor and its machine state
             this.opcodeProcessor = opcodeProcessor;
             this.opcodeProcessor.MachineState = machineState;
+
+            // Inject the plugin service
+            this.PluginService = pluginService;
 
             // The InstructionMap is loaded once!!
             this.SetUpInstructionMap();
@@ -137,7 +150,7 @@ namespace C8POC
         /// <param name="keyIndex">The pressed key code</param>
         public void KeyDown(byte keyIndex)
         {
-            machineState.Keys[keyIndex] = true;
+            this.machineState.Keys[keyIndex] = true;
         }
 
         /// <summary>
@@ -146,7 +159,7 @@ namespace C8POC
         /// <param name="keyIndex">The released key code</param>
         public void KeyUp(byte keyIndex)
         {
-            machineState.Keys[keyIndex] = false;
+            this.machineState.Keys[keyIndex] = false;
         }
 
         /// <summary>
@@ -154,9 +167,9 @@ namespace C8POC
         /// </summary>
         private void DrawGraphics()
         {
-            if (ScreenChanged != null)
+            if (this.ScreenChanged != null)
             {
-                ScreenChanged(((BitArray) machineState.Graphics.Clone()));
+                this.ScreenChanged((BitArray)this.machineState.Graphics.Clone());
             }
         }
 
@@ -165,9 +178,9 @@ namespace C8POC
         /// </summary>
         private void GenerateSound()
         {
-            if (SoundGenerated != null)
+            if (this.SoundGenerated != null)
             {
-                SoundGenerated();
+                this.SoundGenerated();
             }
         }
 
@@ -204,19 +217,19 @@ namespace C8POC
             if (this.SelectedGraphicsPlugin != null)
             {
                 this.SelectedGraphicsPlugin.EnablePlugin(
-                    PluginManager.Instance.GetPluginConfiguration(this.SelectedGraphicsPlugin));
+                    this.PluginService.GetPluginConfiguration(this.SelectedGraphicsPlugin));
             }
 
             if (this.SelectedKeyboardPlugin != null)
             {
                 this.SelectedKeyboardPlugin.EnablePlugin(
-                    PluginManager.Instance.GetPluginConfiguration(this.SelectedKeyboardPlugin));
+                    this.PluginService.GetPluginConfiguration(this.SelectedKeyboardPlugin));
             }
 
             if (this.SelectedSoundPlugin != null)
             {
                 this.SelectedSoundPlugin.EnablePlugin(
-                    PluginManager.Instance.GetPluginConfiguration(this.SelectedSoundPlugin));
+                    this.PluginService.GetPluginConfiguration(this.SelectedSoundPlugin));
             }
         }
 
@@ -227,9 +240,9 @@ namespace C8POC
         {
             this.UnLinkPluginEvents();
 
-            this.SelectedGraphicsPlugin = PluginManager.Instance.GetPluginByNameSpace<IGraphicsPlugin>(Settings.Default.SelectedGraphicsPlugin);
-            this.SelectedSoundPlugin = PluginManager.Instance.GetPluginByNameSpace<ISoundPlugin>(Settings.Default.SelectedSoundPlugin);
-            this.SelectedKeyboardPlugin = PluginManager.Instance.GetPluginByNameSpace<IKeyboardPlugin>(Settings.Default.SelectedKeyboardPlugin);
+            this.SelectedGraphicsPlugin = this.PluginService.GetPluginByNameSpace<IGraphicsPlugin>(Settings.Default.SelectedGraphicsPlugin);
+            this.SelectedSoundPlugin = this.PluginService.GetPluginByNameSpace<ISoundPlugin>(Settings.Default.SelectedSoundPlugin);
+            this.SelectedKeyboardPlugin = this.PluginService.GetPluginByNameSpace<IKeyboardPlugin>(Settings.Default.SelectedKeyboardPlugin);
 
             this.LinkPluginEvents();
         }
@@ -499,13 +512,13 @@ namespace C8POC
         /// </summary>
         private void LoadSavedEngineSettings()
         {
-            var savedSettings = PluginManager.Instance.GetEngineConfiguration();
+            var savedSettings = this.PluginService.GetEngineConfiguration();
 
             var validSettings = savedSettings.Where(x => Settings.Default.Properties.Cast<SettingsProperty>().Any(setting => setting.Name == x.Key));
 
-            foreach (KeyValuePair<string, string> validSetting in validSettings)
+            foreach (var validSetting in validSettings)
             {
-                Type valueType = Settings.Default[validSetting.Key].GetType();
+                var valueType = Settings.Default[validSetting.Key].GetType();
                 Settings.Default[validSetting.Key] = this.GetValueWithGivenType(validSetting.Value, valueType);
             }
         }

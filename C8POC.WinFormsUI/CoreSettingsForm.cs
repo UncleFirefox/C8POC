@@ -42,7 +42,7 @@ namespace C8POC.WinFormsUI
             C8POC.Properties.Settings.Default.CyclesPerFrame = long.Parse(this.numericUpDownCyclesPerFrame.Text);
             C8POC.Properties.Settings.Default.FramesPerSecond = long.Parse(this.numericUpDownFramesPerSecond.Text);
 
-            PluginManager.Instance.SaveEngineConfiguration();
+            this.DialogResult = DialogResult.OK;
 
             this.Close();
         }
