@@ -7,26 +7,16 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace C8POC
+namespace C8POC.Interfaces
 {
     using System;
     using System.Collections.Generic;
 
-    using C8POC.Interfaces;
-
     /// <summary>
-    /// The PluginManager interface.
+    /// Plugin Service interface
     /// </summary>
     public interface IPluginService
     {
-        /// <summary>
-        ///     Gets the saved configuration of the engine
-        /// </summary>
-        /// <returns>
-        ///     Dictionary containing the configuration
-        /// </returns>
-        IDictionary<string, string> GetEngineConfiguration();
-
         /// <summary>
         /// Gets a plugin with a given Name Space
         /// </summary>
@@ -61,11 +51,6 @@ namespace C8POC
         /// The requested list of plugins
         /// </returns>
         IEnumerable<Lazy<T, IPluginMetadata>> GetPluginsOfType<T>() where T : class, IPlugin;
-
-        /// <summary>
-        ///     Saves the engine configuration
-        /// </summary>
-        void SaveEngineConfiguration();
 
         /// <summary>
         /// Save the plugin configuration to a storage

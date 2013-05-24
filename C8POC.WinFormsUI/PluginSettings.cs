@@ -31,6 +31,11 @@ namespace C8POC.WinFormsUI
         /// </summary>
         private IPluginService pluginService;
 
+        /// <summary>
+        /// A configuration service
+        /// </summary>
+        private IConfigurationService configurationService;
+
         #region Constructors and Destructors
 
         /// <summary>
@@ -39,10 +44,11 @@ namespace C8POC.WinFormsUI
         /// <param name="pluginService">
         /// The plugin Service.
         /// </param>
-        public PluginSettings(IPluginService pluginService)
+        public PluginSettings(IPluginService pluginService, IConfigurationService configurationService)
         {
             this.InitializeComponent();
             this.pluginService = pluginService;
+            this.configurationService = configurationService;
 
             this.BindAssembliesToComboBox();
         }
@@ -183,7 +189,7 @@ namespace C8POC.WinFormsUI
                 C8POC.Properties.Settings.Default.SelectedSoundPlugin = this.GetSelectedPluginNameSpace<ISoundPlugin>();
                 C8POC.Properties.Settings.Default.SelectedKeyboardPlugin = this.GetSelectedPluginNameSpace<IKeyboardPlugin>();
 
-                this.pluginService.SaveEngineConfiguration();
+                this.configurationService.SaveEngineConfiguration();
 
                 this.DialogResult = DialogResult.OK;
             }

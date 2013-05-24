@@ -1,5 +1,5 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
-// <copyright file="PluginService.cs" company="AlFranco">
+// <copyright file="WindowsPluginService.cs" company="AlFranco">
 //   Albert Rodriguez Franco 2013
 // </copyright>
 // <summary>
@@ -7,7 +7,7 @@
 //   It contains the plugins loaded and which ones are selected
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
-namespace C8POC
+namespace C8POC.WinFormsUI.Services
 {
     using System;
     using System.Collections.Generic;
@@ -23,14 +23,14 @@ namespace C8POC
     /// <summary>
     ///     Class managing plugins,
     /// </summary>
-    public class PluginService : IPluginService
+    public class WindowsPluginService : IPluginService
     {
         #region Constructors and Destructors
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="PluginService"/> class. 
+        /// Initializes a new instance of the <see cref="WindowsPluginService"/> class. 
         /// </summary>
-        public PluginService()
+        public WindowsPluginService()
         {
             this.LoadPluginsFromAssemblies();
         }

@@ -12,6 +12,8 @@ namespace C8POC.WinFormsUI
     using System;
     using System.Windows.Forms;
 
+    using Autofac;
+
     /// <summary>
     /// The main form.
     /// </summary>
@@ -34,7 +36,8 @@ namespace C8POC.WinFormsUI
         public MainForm()
         {
             this.InitializeComponent();
-            this.emulator = new C8Engine();
+            var container = new C8WindowsContainer().Build();
+            this.emulator = container.Resolve<C8Engine>();
         }
 
         #endregion
@@ -99,8 +102,8 @@ namespace C8POC.WinFormsUI
         /// </param>
         private void PluginSettingsToolStripMenuItemClick(object sender, EventArgs e)
         {
-            var form = new PluginSettings(this.emulator.PluginService);
-            
+            var form = new PluginSettings(this.emulator.PluginService, this.emulator.ConfigurationService);
+
             if (form.ShowDialog() == DialogResult.OK)
             {
                 // We should tell the engine to reload the plugins
@@ -125,7 +128,7 @@ namespace C8POC.WinFormsUI
 
             if (form.ShowDialog() == DialogResult.OK)
             {
-                this.emulator.PluginService.SaveEngineConfiguration();
+                this.emulator.ConfigurationService.SaveEngineConfiguration();
             }
         }
 

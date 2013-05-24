@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1">
   <Comment CommentText="Plugins are stored instances inside PluginManager using MEF (Windows version)">
-    <Position X="1.365" Y="17.24" Height="0.979" Width="1.273" />
+    <Position X="3.469" Y="15.251" Height="0.979" Width="1.273" />
   </Comment>
   <Class Name="C8POC.C8Constants">
     <Position X="9.25" Y="0.5" Width="1.5" />
@@ -27,6 +27,28 @@
         </TypeIdentifier>
       </Delegate>
     </NestedTypes>
+    <AssociationLine Name="PluginService" Type="C8POC.Interfaces.IPluginService" ManuallyRouted="true" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="4.562" Y="13.775" />
+        <Point X="4.562" Y="14.588" />
+        <Point X="2.125" Y="14.588" />
+        <Point X="2.125" Y="15" />
+      </Path>
+      <MemberNameLabel ManuallyPlaced="true">
+        <Position X="-1.786" Y="0.32" />
+      </MemberNameLabel>
+    </AssociationLine>
+    <AssociationLine Name="ConfigurationService" Type="C8POC.Interfaces.IConfigurationService" ManuallyRouted="true" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="5.938" Y="13.775" />
+        <Point X="5.938" Y="14.551" />
+        <Point X="8.417" Y="14.551" />
+        <Point X="8.417" Y="15" />
+      </Path>
+      <MemberNameLabel ManuallyPlaced="true">
+        <Position X="0.268" Y="0.349" />
+      </MemberNameLabel>
+    </AssociationLine>
     <AssociationLine Name="SelectedGraphicsPlugin" Type="C8POC.Interfaces.IGraphicsPlugin" ManuallyRouted="true" FixedFromPoint="true" FixedToPoint="true">
       <Path>
         <Point X="4.39" Y="6.25" />
@@ -58,25 +80,18 @@
         <Position X="0.1" Y="0.581" />
       </MemberNameLabel>
     </AssociationLine>
-    <AssociationLine Name="PluginService" Type="C8POC.IPluginService" ManuallyRouted="true" FixedFromPoint="true" FixedToPoint="true">
-      <Path>
-        <Point X="4.562" Y="13.775" />
-        <Point X="4.562" Y="14.588" />
-        <Point X="2.125" Y="14.588" />
-        <Point X="2.125" Y="15" />
-      </Path>
-    </AssociationLine>
     <TypeIdentifier>
-      <HashCode>kBAMAEAEBAQAgSAAAMwAwAABAwFQBAAQDIBAgAAAAGE=</HashCode>
+      <HashCode>kBAMAEAEBAQAgSAAAMwAwAABAwFQBAAQDIBAgAAEAGE=</HashCode>
       <FileName>C8Engine.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
       <Field Name="machineState" />
       <Field Name="opcodeProcessor" />
+      <Property Name="PluginService" />
+      <Property Name="ConfigurationService" />
       <Property Name="SelectedGraphicsPlugin" />
       <Property Name="SelectedSoundPlugin" />
       <Property Name="SelectedKeyboardPlugin" />
-      <Property Name="PluginService" />
     </ShowAsAssociation>
   </Class>
   <Class Name="C8POC.Properties.Settings">
@@ -127,11 +142,18 @@
       <FileName>Interfaces\IOpcodeProcessor.cs</FileName>
     </TypeIdentifier>
   </Interface>
-  <Interface Name="C8POC.IPluginService">
+  <Interface Name="C8POC.Interfaces.IPluginService">
     <Position X="1" Y="15" Width="2.25" />
     <TypeIdentifier>
-      <HashCode>AAAAAAEAAAAACAAAABAAAAAAAAAAAkAAAAAABAAAAAA=</HashCode>
-      <FileName>IPluginService.cs</FileName>
+      <HashCode>AAAAAAAAAAAAAAAAABAAAAAAAAAAAkAAAAAABAAAAAA=</HashCode>
+      <FileName>Interfaces\IPluginService.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="C8POC.Interfaces.IConfigurationService">
+    <Position X="7.5" Y="15" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAEAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Interfaces\IConfigurationService.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Font Name="Segoe UI" Size="9" />

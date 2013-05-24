@@ -27,7 +27,8 @@ namespace C8POC
     /// <summary>
     /// Engine for emulator and central piece of this application
     /// </summary>
-    [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "Opcode is a correct word...")]
+    [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly",
+        Justification = "Opcode is a correct word...")]
     public class C8Engine
     {
         #region Emulator Properties
@@ -36,6 +37,11 @@ namespace C8POC
         /// Gets the plugin service.
         /// </summary>
         public IPluginService PluginService { get; private set; }
+
+        /// <summary>
+        /// Gets the configuration service
+        /// </summary>
+        public IConfigurationService ConfigurationService { get; private set; }
 
         /// <summary>
         /// State of the machine (including registers etc)
@@ -78,14 +84,6 @@ namespace C8POC
 
         /// <summary>
         /// Initializes a new instance of the <see cref="C8Engine"/> class. 
-        /// </summary>
-        public C8Engine()
-            : this(new C8MachineState(), new OpcodeProcessor(), new PluginService())
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="C8Engine"/> class. 
         /// Engine constructor with an injected machine state
         /// </summary>
         /// <param name="machineState">
@@ -97,7 +95,14 @@ namespace C8POC
         /// <param name="pluginService">
         /// The plugin Service.
         /// </param>
-        public C8Engine(IMachineState machineState, IOpcodeProcessor opcodeProcessor, IPluginService pluginService)
+        /// <param name="configurationService">
+        /// The configuration Service.
+        /// </param>
+        public C8Engine(
+            IMachineState machineState,
+            IOpcodeProcessor opcodeProcessor,
+            IPluginService pluginService,
+            IConfigurationService configurationService)
         {
             // Injects the machine state
             this.machineState = machineState;
@@ -108,6 +113,9 @@ namespace C8POC
 
             // Inject the plugin service
             this.PluginService = pluginService;
+
+            // Inject the configuration service
+            this.ConfigurationService = configurationService;
 
             // The InstructionMap is loaded once!!
             this.SetUpInstructionMap();
@@ -240,9 +248,12 @@ namespace C8POC
         {
             this.UnLinkPluginEvents();
 
-            this.SelectedGraphicsPlugin = this.PluginService.GetPluginByNameSpace<IGraphicsPlugin>(Settings.Default.SelectedGraphicsPlugin);
-            this.SelectedSoundPlugin = this.PluginService.GetPluginByNameSpace<ISoundPlugin>(Settings.Default.SelectedSoundPlugin);
-            this.SelectedKeyboardPlugin = this.PluginService.GetPluginByNameSpace<IKeyboardPlugin>(Settings.Default.SelectedKeyboardPlugin);
+            this.SelectedGraphicsPlugin =
+                this.PluginService.GetPluginByNameSpace<IGraphicsPlugin>(Settings.Default.SelectedGraphicsPlugin);
+            this.SelectedSoundPlugin =
+                this.PluginService.GetPluginByNameSpace<ISoundPlugin>(Settings.Default.SelectedSoundPlugin);
+            this.SelectedKeyboardPlugin =
+                this.PluginService.GetPluginByNameSpace<IKeyboardPlugin>(Settings.Default.SelectedKeyboardPlugin);
 
             this.LinkPluginEvents();
         }
@@ -512,9 +523,11 @@ namespace C8POC
         /// </summary>
         private void LoadSavedEngineSettings()
         {
-            var savedSettings = this.PluginService.GetEngineConfiguration();
+            var savedSettings = this.ConfigurationService.GetEngineConfiguration();
 
-            var validSettings = savedSettings.Where(x => Settings.Default.Properties.Cast<SettingsProperty>().Any(setting => setting.Name == x.Key));
+            var validSettings =
+                savedSettings.Where(
+                    x => Settings.Default.Properties.Cast<SettingsProperty>().Any(setting => setting.Name == x.Key));
 
             foreach (var validSetting in validSettings)
             {
