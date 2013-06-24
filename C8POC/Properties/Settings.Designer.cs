@@ -82,5 +82,17 @@ namespace C8POC.Properties {
                 this["SelectedKeyboardPlugin"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool DisassemblerEnabled {
+            get {
+                return ((bool)(this["DisassemblerEnabled"]));
+            }
+            set {
+                this["DisassemblerEnabled"] = value;
+            }
+        }
     }
 }

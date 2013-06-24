@@ -1,4 +1,11 @@
-﻿using C8POC.Interfaces;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="C8MachineState.cs" company="AlFranco">
+//   Albert Rodriguez Franco 2013
+// </copyright>
+// <summary>
+//   Class that wraps the Chip8 Machine State
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
 
 namespace C8POC
 {
@@ -7,10 +14,12 @@ namespace C8POC
     using System.Collections.Generic;
     using System.Linq;
 
+    using C8POC.Interfaces;
+
     /// <summary>
     /// Class that wraps the Chip8 Machine State
     /// </summary>
-    public class C8MachineState :IMachineState
+    public class C8MachineState : IMachineState
     {
         #region Constructor
 

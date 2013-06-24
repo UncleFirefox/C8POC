@@ -17,5 +17,8 @@
     <Setting Name="SelectedKeyboardPlugin" Type="System.String" Scope="User">
       <Value Profile="(Default)">C8POC.Plugins.Keyboard.SystemWindowsKeyboard.SystemWindowsKeyboardPlugin</Value>
     </Setting>
+    <Setting Name="DisassemblerEnabled" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

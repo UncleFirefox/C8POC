@@ -31,55 +31,6 @@ namespace C8POC
         Justification = "Opcode is a correct word...")]
     public class C8Engine
     {
-        #region Emulator Properties
-
-        /// <summary>
-        /// Gets the plugin service.
-        /// </summary>
-        public IPluginService PluginService { get; private set; }
-
-        /// <summary>
-        /// Gets the configuration service
-        /// </summary>
-        public IConfigurationService ConfigurationService { get; private set; }
-
-        /// <summary>
-        /// State of the machine (including registers etc)
-        /// </summary>
-        private IMachineState machineState;
-
-        /// <summary>
-        /// Object processing opcode
-        /// </summary>
-        private IOpcodeProcessor opcodeProcessor;
-
-        /// <summary>
-        /// Contains the mapping between an opcode and the function that should be executed
-        /// </summary>
-        private Dictionary<ushort, Action> instructionMap = new Dictionary<ushort, Action>();
-
-        /// <summary>
-        /// Gets or sets a value indicating whether if the emulator should be running, important to control the game loop
-        /// </summary>
-        private bool IsRunning { get; set; }
-
-        /// <summary>
-        /// Gets or sets a loaded graphics plugin
-        /// </summary>
-        private IGraphicsPlugin SelectedGraphicsPlugin { get; set; }
-
-        /// <summary>
-        /// Gets or sets a loaded sound plugin
-        /// </summary>
-        private ISoundPlugin SelectedSoundPlugin { get; set; }
-
-        /// <summary>
-        /// Gets or sets a loaded Keyboard plugin
-        /// </summary>
-        private IKeyboardPlugin SelectedKeyboardPlugin { get; set; }
-
-        #endregion
-
         #region Engine constructor
 
         /// <summary>
@@ -107,9 +58,8 @@ namespace C8POC
             // Injects the machine state
             this.machineState = machineState;
 
-            // Inject opcode processor and its machine state
+            // Inject opcode processor
             this.opcodeProcessor = opcodeProcessor;
-            this.opcodeProcessor.MachineState = machineState;
 
             // Inject the plugin service
             this.PluginService = pluginService;
@@ -126,6 +76,55 @@ namespace C8POC
             // Loads the plugins
             this.LoadPlugins();
         }
+
+        #endregion
+
+        #region Emulator Properties
+
+        /// <summary>
+        /// Gets the plugin service.
+        /// </summary>
+        public IPluginService PluginService { get; private set; }
+
+        /// <summary>
+        /// Gets the configuration service
+        /// </summary>
+        public IConfigurationService ConfigurationService { get; private set; }
+
+        /// <summary>
+        /// State of the machine (including registers etc)
+        /// </summary>
+        private IMachineState machineState;
+
+        /// <summary>
+        /// Object processing opcode
+        /// </summary>
+        private IOpcodeProcessor opcodeProcessor;
+
+        /// <summary>
+        /// Contains the mapping between an opcode and the function that should be executed
+        /// </summary>
+        private Dictionary<ushort, Action<IMachineState>> instructionMap = new Dictionary<ushort, Action<IMachineState>>();
+
+        /// <summary>
+        /// Gets or sets a value indicating whether if the emulator should be running, important to control the game loop
+        /// </summary>
+        private bool IsRunning { get; set; }
+
+        /// <summary>
+        /// Gets or sets a loaded graphics plugin
+        /// </summary>
+        private IGraphicsPlugin SelectedGraphicsPlugin { get; set; }
+
+        /// <summary>
+        /// Gets or sets a loaded sound plugin
+        /// </summary>
+        private ISoundPlugin SelectedSoundPlugin { get; set; }
+
+        /// <summary>
+        /// Gets or sets a loaded Keyboard plugin
+        /// </summary>
+        private IKeyboardPlugin SelectedKeyboardPlugin { get; set; }
 
         #endregion
 
@@ -428,7 +427,7 @@ namespace C8POC
         {
             try
             {
-                this.instructionMap[(ushort)(this.machineState.CurrentOpcode & 0xF000)]();
+                this.instructionMap[(ushort)(this.machineState.CurrentOpcode & 0xF000)](this.machineState);
             }
             catch (KeyNotFoundException)
             {
@@ -556,56 +555,68 @@ namespace C8POC
 
         #endregion
 
-        #region Instruction Map Set
+        #region Internal Instruction Map Set
 
         /// <summary>
         /// Discriminates further into the instruction mapper for instructions starting with 0x0
         /// </summary>
-        private void GoToRoutineStartingWithZero()
+        /// <param name="machineState">
+        /// The machine State.
+        /// </param>
+        private void GoToRoutineStartingWithZero(IMachineState machineState)
         {
             var fetchedOpcode = this.machineState.CurrentOpcode & 0xF0FF;
 
             if (fetchedOpcode == 0x0000)
             {
-                this.opcodeProcessor.JumpToRoutineAtAdress();
+                this.opcodeProcessor.JumpToRoutineAtAdress(machineState);
             }
             else
             {
-                this.instructionMap[(ushort)fetchedOpcode]();
+                this.instructionMap[(ushort)fetchedOpcode](machineState);
             }
         }
 
         /// <summary>
         /// Discriminates further into the instruction mapper for instructions starting with 0x8
         /// </summary>
-        private void GoToArithmeticLogicInstruction()
+        /// <param name="machineState">
+        /// The machine State.
+        /// </param>
+        private void GoToArithmeticLogicInstruction(IMachineState machineState)
         {
             var filteredOpcode = (ushort)(this.machineState.CurrentOpcode & 0xF00F);
 
             if (filteredOpcode == 0x8000)
             {
-                this.opcodeProcessor.LoadRegisterIntoRegister();
+                this.opcodeProcessor.LoadRegisterIntoRegister(machineState);
             }
             else
             {
-                this.instructionMap[filteredOpcode]();
+                this.instructionMap[filteredOpcode](machineState);
             }
         }
 
         /// <summary>
         /// Discriminates instructions starting with 0xE
         /// </summary>
-        private void GoToSkipRegisterInstruction()
+        /// <param name="machineState">
+        /// The machine State.
+        /// </param>
+        private void GoToSkipRegisterInstruction(IMachineState machineState)
         {
-            this.instructionMap[(ushort)(this.machineState.CurrentOpcode & 0xF0FF)]();
+            this.instructionMap[(ushort)(this.machineState.CurrentOpcode & 0xF0FF)](machineState);
         }
 
         /// <summary>
         /// Discriminates better for instructionmap opcodes starting with 0xF
         /// </summary>
-        private void GoToMemoryOperationInstruction()
+        /// <param name="machineState">
+        /// The machine State.
+        /// </param>
+        private void GoToMemoryOperationInstruction(IMachineState machineState)
         {
-            this.instructionMap[(ushort)(this.machineState.CurrentOpcode & 0xF0FF)]();
+            this.instructionMap[(ushort)(this.machineState.CurrentOpcode & 0xF0FF)](machineState);
         }
 
         #endregion

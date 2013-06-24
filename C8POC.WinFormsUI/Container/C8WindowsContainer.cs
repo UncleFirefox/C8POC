@@ -7,11 +7,14 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace C8POC.WinFormsUI
+namespace C8POC.WinFormsUI.Container
 {
     using Autofac;
+    using Autofac.Extras.DynamicProxy2;
 
     using C8POC.Interfaces;
+    using C8POC.WinFormsUI.Disassembly;
+    using C8POC.WinFormsUI.Forms;
     using C8POC.WinFormsUI.Services;
 
     /// <summary>
@@ -26,9 +29,25 @@ namespace C8POC.WinFormsUI
         {
             this.RegisterType<C8Engine>().As<C8Engine>();
             this.RegisterType<C8MachineState>().As<IMachineState>();
-            this.RegisterType<OpcodeProcessor>().As<IOpcodeProcessor>();
             this.RegisterType<WindowsConfigurationService>().As<IConfigurationService>();
             this.RegisterType<WindowsPluginService>().As<IPluginService>();
+            this.RegisterType<OpcodeProcessor>().As<IOpcodeProcessor>();
+        }
+
+        /// <summary>
+        /// Enables the disassembler with the given container
+        /// </summary>
+        /// <param name="disassemblerForm">
+        /// The disassembler form.
+        /// </param>
+        public void EnableDisassembler(DisassemblerForm disassemblerForm)
+        {
+            this.Register(x => new MachineDisassemblerInterceptor(disassemblerForm));
+
+            this.RegisterType<OpcodeProcessor>()
+                .As<IOpcodeProcessor>()
+                .EnableInterfaceInterceptors()
+                .InterceptedBy(typeof(MachineDisassemblerInterceptor));
         }
 
         ///// <summary>

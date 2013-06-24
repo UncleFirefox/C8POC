@@ -18,6 +18,17 @@ namespace C8POC.WinFormsUI
     public partial class CoreSettingsForm : Form
     {
         /// <summary>
+        /// Gets a value indicating whether is disassembler enabled.
+        /// </summary>
+        public bool IsDisassemblerEnabled
+        {
+            get
+            {
+                return this.checkBoxDisassembler.Checked;
+            }
+        }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="CoreSettingsForm"/> class. 
         /// </summary>
         public CoreSettingsForm()
@@ -26,6 +37,7 @@ namespace C8POC.WinFormsUI
 
             this.numericUpDownCyclesPerFrame.Value = C8POC.Properties.Settings.Default.CyclesPerFrame;
             this.numericUpDownFramesPerSecond.Value = C8POC.Properties.Settings.Default.FramesPerSecond;
+            this.checkBoxDisassembler.Checked = C8POC.Properties.Settings.Default.DisassemblerEnabled;
         }
 
         /// <summary>
@@ -41,6 +53,7 @@ namespace C8POC.WinFormsUI
         {
             C8POC.Properties.Settings.Default.CyclesPerFrame = long.Parse(this.numericUpDownCyclesPerFrame.Text);
             C8POC.Properties.Settings.Default.FramesPerSecond = long.Parse(this.numericUpDownFramesPerSecond.Text);
+            C8POC.Properties.Settings.Default.DisassemblerEnabled = this.checkBoxDisassembler.Checked;
 
             this.DialogResult = DialogResult.OK;
 

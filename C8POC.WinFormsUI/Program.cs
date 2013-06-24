@@ -12,6 +12,8 @@ namespace C8POC.WinFormsUI
     using System;
     using System.Windows.Forms;
 
+    using C8POC.WinFormsUI.Forms;
+
     /// <summary>
     /// The program.
     /// </summary>

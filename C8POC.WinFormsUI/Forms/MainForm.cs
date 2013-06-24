@@ -7,12 +7,15 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace C8POC.WinFormsUI
+namespace C8POC.WinFormsUI.Forms
 {
     using System;
     using System.Windows.Forms;
 
     using Autofac;
+
+    using C8POC.WinFormsUI.Container;
+    using C8POC.WinFormsUI.Services;
 
     /// <summary>
     /// The main form.
@@ -24,7 +27,12 @@ namespace C8POC.WinFormsUI
         /// <summary>
         /// The emulator.
         /// </summary>
-        private readonly C8Engine emulator;
+        private C8Engine emulator;
+
+        /// <summary>
+        /// The disassembler form
+        /// </summary>
+        private DisassemblerForm disassemblerForm;
 
         #endregion
 
@@ -36,13 +44,40 @@ namespace C8POC.WinFormsUI
         public MainForm()
         {
             this.InitializeComponent();
-            var container = new C8WindowsContainer().Build();
-            this.emulator = container.Resolve<C8Engine>();
+            this.disassemblerForm = new DisassemblerForm();
+
+            // The first time we have to notice if the disassembler was enabled or not
+            var windowsConfigurationService = new WindowsConfigurationService();
+            var engineConfiguration = windowsConfigurationService.GetEngineConfiguration();
+
+            var enableDisassembler = engineConfiguration.ContainsKey("DisassemblerEnabled")
+                                     && engineConfiguration["DisassemblerEnabled"] == "True";
+
+            this.ResolveEngine(enableDisassembler);
         }
 
         #endregion
 
         #region Methods
+
+        /// <summary>
+        /// Resolves the engine via Dependency Injection
+        /// </summary>
+        /// <param name="disassemblerEnabled">
+        /// Indicates if the disassembler should be enabled
+        /// </param>
+        private void ResolveEngine(bool disassemblerEnabled)
+        {
+            var builder = new C8WindowsContainer();
+
+            if (disassemblerEnabled)
+            {
+                builder.EnableDisassembler(this.disassemblerForm);
+            }
+
+            var container = builder.Build();
+            this.emulator = container.Resolve<C8Engine>();
+        }
 
         /// <summary>
         /// The exit tool strip menu item click.
@@ -60,7 +95,7 @@ namespace C8POC.WinFormsUI
         }
 
         /// <summary>
-        /// The main form_ form closing.
+        /// Event raised when the main form is closed
         /// </summary>
         /// <param name="sender">
         /// The sender.
@@ -111,8 +146,6 @@ namespace C8POC.WinFormsUI
             }
         }
 
-        #endregion
-
         /// <summary>
         /// Opens a core settings form
         /// </summary>
@@ -129,6 +162,16 @@ namespace C8POC.WinFormsUI
             if (form.ShowDialog() == DialogResult.OK)
             {
                 this.emulator.ConfigurationService.SaveEngineConfiguration();
+
+                if (form.IsDisassemblerEnabled && !this.disassemblerForm.Visible)
+                {
+                    this.ResolveEngine(true);
+                }
+                else if (!form.IsDisassemblerEnabled && this.disassemblerForm.Visible)
+                {
+                    this.disassemblerForm.Hide();
+                    this.ResolveEngine(false);
+                }
             }
         }
 
@@ -146,5 +189,7 @@ namespace C8POC.WinFormsUI
             var aboutForm = new AboutForm();
             aboutForm.ShowDialog();
         }
+
+        #endregion
     }
 }

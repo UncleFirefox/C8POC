@@ -7,7 +7,7 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace C8POC.WinFormsUI
+namespace C8POC.WinFormsUI.Forms
 {
     using System;
     using System.Collections.Generic;
@@ -43,6 +43,9 @@ namespace C8POC.WinFormsUI
         /// </summary>
         /// <param name="pluginService">
         /// The plugin Service.
+        /// </param>
+        /// <param name="configurationService">
+        /// The configuration Service.
         /// </param>
         public PluginSettings(IPluginService pluginService, IConfigurationService configurationService)
         {
@@ -169,8 +172,6 @@ namespace C8POC.WinFormsUI
             }
         }
 
-        #endregion
-
         /// <summary>
         /// The plugin settings form closing.
         /// </summary>
@@ -246,5 +247,7 @@ namespace C8POC.WinFormsUI
         {
             this.saveChanges = true;
         }
+
+        #endregion
     }
 }
