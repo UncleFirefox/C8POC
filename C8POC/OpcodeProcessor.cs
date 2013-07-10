@@ -152,7 +152,7 @@ namespace C8POC
         /// </summary>
         public void LoadRegisterIntoRegister(IMachineState machineState)
         {
-            machineState.VRegisters[machineState.XRegisterFromCurrentOpcode] +=
+            machineState.VRegisters[machineState.XRegisterFromCurrentOpcode] =
                 machineState.VRegisters[machineState.YRegisterFromCurrentOpcode];
         }
 

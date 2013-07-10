@@ -45,7 +45,7 @@ namespace C8POC.WinFormsUI.Forms
         /// <summary>
         /// Internal list of values that will be bound to the data grid view
         /// </summary>
-        private IList<Tuple<string, string>> opcodeList;
+        private IList<Tuple<string, string, string>> opcodeList;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DisassemblerForm"/> class.
@@ -53,7 +53,7 @@ namespace C8POC.WinFormsUI.Forms
         public DisassemblerForm()
         {
             this.InitializeComponent();
-            this.opcodeList = new List<Tuple<string, string>>();
+            this.opcodeList = new List<Tuple<string, string, string>>();
             this.buttonList = this.GetInnerControlsOfType<Panel>(this.groupBoxKeys);
             this.registerList = this.GetInnerControlsOfType<TextBox>(this.groupBoxRegisters);
             this.stackList = this.GetInnerControlsOfType<TextBox>(this.groupBoxStack);
@@ -143,8 +143,9 @@ namespace C8POC.WinFormsUI.Forms
         public void BindOpcodeList(IMachineState machineState)
         {
             this.opcodeList = this.GetDecodedInstructionsFromMemory(machineState.Memory);
-            this.RawOpcodeColumn.DataPropertyName = "Item1";
-            this.MnemonicColumn.DataPropertyName = "Item2";
+            this.MemoryAddressColumn.DataPropertyName = "Item1";
+            this.RawOpcodeColumn.DataPropertyName = "Item2";
+            this.MnemonicColumn.DataPropertyName = "Item3";
             this.dataGridViewOpcodes.DataSource = this.opcodeList;
         }
 
@@ -254,7 +255,7 @@ namespace C8POC.WinFormsUI.Forms
         {
             for (int i = 0; i < this.registerList.Count(); i++)
             {
-                this.registerList.ElementAt(i).Text = machineState.VRegisters[i].ToString(CultureInfo.InvariantCulture);
+                this.registerList.ElementAt(i).Text = machineState.VRegisters[i].ToString("X");
             }
         }
 
@@ -271,7 +272,7 @@ namespace C8POC.WinFormsUI.Forms
             for (int i = 0; i < machineState.Stack.Count; i++)
             {
                 this.stackList.ElementAt(i).Text =
-                    machineState.Stack.ElementAtOrDefault(i).ToString(CultureInfo.InvariantCulture);
+                    machineState.Stack.ElementAtOrDefault(i).ToString("X");
             }
         }
 
@@ -283,8 +284,8 @@ namespace C8POC.WinFormsUI.Forms
         /// </param>
         private void SetTimerValues(IMachineState machineState)
         {
-            this.textBoxDelayTimer.Text = machineState.DelayTimer.ToString(CultureInfo.InvariantCulture);
-            this.textBoxSoundTimer.Text = machineState.SoundTimer.ToString(CultureInfo.InvariantCulture);
+            this.textBoxDelayTimer.Text = machineState.DelayTimer.ToString("X");
+            this.textBoxSoundTimer.Text = machineState.SoundTimer.ToString("X");
         }
 
         /// <summary>
@@ -295,7 +296,7 @@ namespace C8POC.WinFormsUI.Forms
         /// </param>
         private void SetProgramCounter(IMachineState machineState)
         {
-            this.textBoxProgramCounter.Text = machineState.ProgramCounter.ToString(CultureInfo.InvariantCulture);
+            this.textBoxProgramCounter.Text = machineState.ProgramCounter.ToString("X");
         }
 
         /// <summary>
@@ -339,9 +340,9 @@ namespace C8POC.WinFormsUI.Forms
         /// <returns>
         /// List of sorted opcodes and mnemonics
         /// </returns>
-        private List<Tuple<string, string>> GetDecodedInstructionsFromMemory(IEnumerable<byte> memory)
+        private List<Tuple<string, string, string>> GetDecodedInstructionsFromMemory(IEnumerable<byte> memory)
         {
-            var result = new List<Tuple<string, string>>();
+            var result = new List<Tuple<string, string, string>>();
 
             for (var i = C8Constants.StartRomAddress; i < memory.Count(); i += 2)
             {
@@ -354,7 +355,9 @@ namespace C8POC.WinFormsUI.Forms
                 //    break;
                 //}
 
-                result.Add(new Tuple<string, string>(opcode.ToString("X"), this.GetDecodedInstruction(opcode)));
+                result.Add(
+                    new Tuple<string, string, string>(
+                        i.ToString("X"), opcode.ToString("X"), this.GetDecodedInstruction(opcode)));
             }
 
             return result;
@@ -378,28 +381,28 @@ namespace C8POC.WinFormsUI.Forms
                 case 0x0:
                     switch (opcode & 0x00FF)
                     {
-                        case 0xe0:
+                        case 0xE0:
                             return string.Format("{0}", "CLS");
-                        case 0xee:
-                            return string.Format("{0}", "RTS");
+                        case 0xEE:
+                            return string.Format("{0}", "RET");
                         default:
                             return string.Format("UNKNOWN 0");
                     }
 
                 case 0x1:
-                    return string.Format("{0} ${1:X}{2:X}", "JUMP", opcode & 0x0F00 >> 8, opcode & 0x00FF);
+                    return string.Format("{0} ${1:X}", "JP", opcode & 0x0FFF);
                 case 0x2:
-                    return string.Format("{0} ${1:X}{2:X}", "CALL", opcode & 0x0F00 >> 8, opcode & 0x00FF);
+                    return string.Format("{0} ${1:X}", "CALL", opcode & 0x0FFF);
                 case 0x3:
-                    return string.Format("{0} V{1:X},#${2:X}", "SKIP.EQ", opcode & 0x0F00 >> 8, opcode & 0x00FF);
+                    return string.Format("{0} V{1:X}, #${2:X}", "SE", (opcode & 0x0F00) >> 8, opcode & 0x00FF);
                 case 0x4:
-                    return string.Format("{0} V{1:X},#${2:X}", "SKIP.NE", opcode & 0x0F00 >> 8, opcode & 0x00FF);
+                    return string.Format("{0} V{1:X}, #${2:X}", "SNE", (opcode & 0x0F00) >> 8, opcode & 0x00FF);
                 case 0x5:
-                    return string.Format("{0} V{1:X},V{2:X}", "SKIP.EQ", opcode & 0x0F00 >> 8, opcode & 0x00FF >> 4);
+                    return string.Format("{0} V{1:X}, V{2:X}", "SE", (opcode & 0x0F00) >> 8, (opcode & 0x00FF) >> 4);
                 case 0x6:
-                    return string.Format("{0} V{1:X},#${2:X}", "MVI", opcode & 0x0F00 >> 8, opcode & 0x00FF);
+                    return string.Format("{0} V{1:X}, #${2:X}", "LD", (opcode & 0x0F00) >> 8, opcode & 0x00FF);
                 case 0x7:
-                    return string.Format("{0} V{1:X},#${2:X}", "ADI", opcode & 0x0F00 >> 8, opcode & 0x00FF);
+                    return string.Format("{0} V{1:X}, #${2:X}", "ADD", (opcode & 0x0F00) >> 8, opcode & 0x00FF);
                 case 0x8:
                     {
                         var lastnib = (byte)(opcode & 0x000F);
@@ -408,91 +411,83 @@ namespace C8POC.WinFormsUI.Forms
                         {
                             case 0:
                                 return string.Format(
-                                    "{0} V{1:X},V{2:X}", "MOV.", opcode & 0x0F00 >> 8, opcode & 0x00FF >> 4);
+                                    "{0} V{1:X}, V{2:X}", "LD", (opcode & 0x0F00) >> 8, (opcode & 0x00FF) >> 4);
                             case 1:
                                 return string.Format(
-                                    "{0} V{1:X},V{2:X}", "OR.", opcode & 0x0F00 >> 8, opcode & 0x00FF >> 4);
+                                    "{0} V{1:X}, V{2:X}", "OR", (opcode & 0x0F00) >> 8, (opcode & 0x00FF) >> 4);
                             case 2:
                                 return string.Format(
-                                    "{0} V{1:X},V{2:X}", "AND.", opcode & 0x0F00 >> 8, opcode & 0x00FF >> 4);
+                                    "{0} V{1:X}, V{2:X}", "AND", (opcode & 0x0F00) >> 8, (opcode & 0x00FF) >> 4);
                             case 3:
                                 return string.Format(
-                                    "{0} V{1:X},V{2:X}", "XOR.", opcode & 0x0F00 >> 8, opcode & 0x00FF >> 4);
+                                    "{0} V{1:X}, V{2:X}", "XOR", (opcode & 0x0F00) >> 8, (opcode & 0x00FF) >> 4);
                             case 4:
                                 return string.Format(
-                                    "{0} V{1:X},V{2:X}", "ADD.", opcode & 0x0F00 >> 8, opcode & 0x00FF >> 4);
+                                    "{0} V{1:X}, V{2:X}", "ADD", (opcode & 0x0F00) >> 8, (opcode & 0x00FF) >> 4);
                             case 5:
                                 return string.Format(
-                                    "{0} V{1:X},V{2:X},V{3:X}",
-                                    "SUB.",
-                                    opcode & 0x0F00 >> 8,
-                                    opcode & 0x0F00 >> 8,
-                                    opcode & 0x00FF >> 4);
+                                    "{0} V{1:X}, V{2:X}", "SUB", (opcode & 0x0F00) >> 8, (opcode & 0x00F0) >> 4);
                             case 6:
                                 return string.Format(
-                                    "{0} V{1:X},V{2:X}", "SHR.", opcode & 0x0F00 >> 8, opcode & 0x00FF >> 4);
+                                    "{0} V{1:X}, V{2:X}", "SHR", (opcode & 0x0F00) >> 8, (opcode & 0x00FF) >> 4);
                             case 7:
                                 return string.Format(
-                                    "{0} V{1:X},V{2:X},V{3:X}",
-                                    "SUB.",
-                                    opcode & 0x0F00 >> 8,
-                                    opcode & 0x00FF >> 4,
-                                    opcode & 0x00FF >> 4);
+                                    "{0} V{1:X}, V{2:X}", "SUBN", (opcode & 0x0F00) >> 8, (opcode & 0x00FF) >> 4);
                             case 0xe:
                                 return string.Format(
-                                    "{0} V{1:X},V{2:X}", "SHL.", opcode & 0x0F00 >> 8, opcode & 0x00FF >> 4);
+                                    "{0} V{1:X}, V{2:X}", "SHL", (opcode & 0x0F00) >> 8, (opcode & 0x00FF) >> 4);
                             default:
                                 return string.Format("UNKNOWN 8");
                         }
                     }
 
                 case 0x9:
-                    return string.Format("{0} V{1:X},V{2:X}", "SKIP.NE", opcode & 0x0F00 >> 8, opcode & 0x00FF >> 4);
-                case 0xa:
-                    return string.Format("{0} I,#${1:X}{2:X}", "MVI", opcode & 0x0F00 >> 8, opcode & 0x00FF);
-                case 0xb:
-                    return string.Format("{0} ${1:X}{2:X}(V0)", "JUMP", opcode & 0x0F00 >> 8, opcode & 0x00FF);
-                case 0xc:
-                    return string.Format("{0} V{1:X},#${2:X}", "RNDMSK", opcode & 0x0F00 >> 8, opcode & 0x00FF);
-                case 0xd:
+                    return string.Format("{0} V{1:X}, V{2:X}", "SNE", (opcode & 0x0F00) >> 8, (opcode & 0x00FF) >> 4);
+                case 0xA:
+                    return string.Format("{0} I, #${1:X}", "LD", opcode & 0x0FFF);
+                case 0xB:
+                    return string.Format("{0} ${1:X}(V0)", "JP", opcode & 0x0FFF);
+                case 0xC:
+                    return string.Format("{0} V{1:X}, #${2:X}", "RND", (opcode & 0x0F00) >> 8, opcode & 0x00FF);
+                case 0xD:
                     return string.Format(
-                        "{0} V{1:X},V{2:X},#${3:X}",
-                        "SPRITE",
-                        opcode & 0x0F00 >> 8,
-                        opcode & 0x00FF >> 4,
+                        "{0} V{1:X}, V{2:X}, #${3:X}",
+                        "DRW",
+                        (opcode & 0x0F00) >> 8,
+                        (opcode & 0x00FF) >> 4,
                         opcode & 0x00FF & 0xf);
-                case 0xe:
+                case 0xE:
                     switch (opcode & 0x00FF)
                     {
                         case 0x9E:
-                            return string.Format("{0} V{1:X}", "SKIPKEY.Y", opcode & 0x0F00 >> 8);
+                            return string.Format("{0} V{1:X}", "SKP", (opcode & 0x0F00) >> 8);
                         case 0xA1:
-                            return string.Format("{0} V{1:X}", "SKIPKEY.N", opcode & 0x0F00 >> 8);
+                            return string.Format("{0} V{1:X}", "SKNP", (opcode & 0x0F00) >> 8);
                         default:
                             return string.Format("UNKNOWN E");
                     }
 
-                case 0xf:
+                case 0xF:
                     switch (opcode & 0x00FF)
                     {
                         case 0x07:
-                            return string.Format("{0} V{1:X},DELAY", "MOV", opcode & 0x0F00 >> 8);
+                            return string.Format("{0} V{1:X}, DT", "LD", (opcode & 0x0F00) >> 8);
                         case 0x0a:
-                            return string.Format("{0} V{1:X}", "KEY", opcode & 0x0F00 >> 8);
+                            return string.Format("{0} V{1:X} K", "LD", (opcode & 0x0F00) >> 8);
                         case 0x15:
-                            return string.Format("{0} DELAY,V{1:X}", "MOV", opcode & 0x0F00 >> 8);
+                            return string.Format("{0} DT, V{1:X}", "LD", (opcode & 0x0F00) >> 8);
                         case 0x18:
-                            return string.Format("{0} SOUND,V{1:X}", "MOV", opcode & 0x0F00 >> 8);
+                            return string.Format("{0} ST, V{1:X}", "LD", (opcode & 0x0F00) >> 8);
                         case 0x1e:
-                            return string.Format("{0} I,V{1:X}", "ADI", opcode & 0x0F00 >> 8);
+                            return string.Format("{0} I, V{1:X}", "ADD", (opcode & 0x0F00) >> 8);
                         case 0x29:
-                            return string.Format("{0} I,V{1:X}", "SPRITECHAR", opcode & 0x0F00 >> 8);
+                            return string.Format("{0} F, V{1:X}", "LD", (opcode & 0x0F00) >> 8);
                         case 0x33:
-                            return string.Format("{0} (I),V{1:X}", "MOVBCD", opcode & 0x0F00 >> 8);
+                            return string.Format("{0} B, V{1:X}", "LD", (opcode & 0x0F00) >> 8);
                         case 0x55:
-                            return string.Format("{0} (I),V0-V{1:X}", "MOVM", opcode & 0x0F00 >> 8);
+                            return string.Format("{0} [I], V0-V{1:X}", "LD", (opcode & 0x0F00) >> 8);
                         case 0x65:
-                            return string.Format("{0} V0-V{1:X},(I)", "MOVM", opcode & 0x0F00 >> 8);
+                            return string.Format("{0} V0-V{1:X}, [I]", "LD", (opcode & 0x0F00) >> 8);
                         default:
                             return string.Format("UNKNOWN F");
                     }

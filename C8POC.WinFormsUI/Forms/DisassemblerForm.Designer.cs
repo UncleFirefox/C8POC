@@ -124,6 +124,7 @@
             this.checkBoxDrawFlag = new System.Windows.Forms.CheckBox();
             this.BreakPointStateColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.BreakPointColumn = new System.Windows.Forms.DataGridViewImageColumn();
+            this.MemoryAddressColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.RawOpcodeColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.MnemonicColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.groupBoxKeys.SuspendLayout();
@@ -858,6 +859,7 @@
             this.dataGridViewOpcodes.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.BreakPointStateColumn,
             this.BreakPointColumn,
+            this.MemoryAddressColumn,
             this.RawOpcodeColumn,
             this.MnemonicColumn});
             this.dataGridViewOpcodes.Location = new System.Drawing.Point(7, 20);
@@ -1166,21 +1168,28 @@
             // 
             // BreakPointColumn
             // 
-            this.BreakPointColumn.FillWeight = 10F;
+            this.BreakPointColumn.FillWeight = 18.43204F;
             this.BreakPointColumn.HeaderText = "BreakPoint";
             this.BreakPointColumn.Name = "BreakPointColumn";
             this.BreakPointColumn.ReadOnly = true;
             // 
+            // MemoryAddressColumn
+            // 
+            this.MemoryAddressColumn.FillWeight = 24.11168F;
+            this.MemoryAddressColumn.HeaderText = "Memory Address";
+            this.MemoryAddressColumn.Name = "MemoryAddressColumn";
+            this.MemoryAddressColumn.ReadOnly = true;
+            // 
             // RawOpcodeColumn
             // 
-            this.RawOpcodeColumn.FillWeight = 40F;
+            this.RawOpcodeColumn.FillWeight = 73.72814F;
             this.RawOpcodeColumn.HeaderText = "Opcode";
             this.RawOpcodeColumn.Name = "RawOpcodeColumn";
             this.RawOpcodeColumn.ReadOnly = true;
             // 
             // MnemonicColumn
             // 
-            this.MnemonicColumn.FillWeight = 40F;
+            this.MnemonicColumn.FillWeight = 73.72814F;
             this.MnemonicColumn.HeaderText = "Mnemonic";
             this.MnemonicColumn.Name = "MnemonicColumn";
             this.MnemonicColumn.ReadOnly = true;
@@ -1348,6 +1357,7 @@
         private System.Windows.Forms.CheckBox checkBoxDrawFlag;
         private System.Windows.Forms.DataGridViewTextBoxColumn BreakPointStateColumn;
         private System.Windows.Forms.DataGridViewImageColumn BreakPointColumn;
+        private System.Windows.Forms.DataGridViewTextBoxColumn MemoryAddressColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn RawOpcodeColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn MnemonicColumn;
     }

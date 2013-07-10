@@ -3,7 +3,7 @@
 //   Albert Rodriguez Franco 2013
 // </copyright>
 // <summary>
-//   Defines the OpcodeDisassembler type.
+//   Defines the MachineDisassemblerInterceptor type.
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
@@ -103,33 +103,24 @@ namespace C8POC.WinFormsUI.Disassembly
         {
             var wait = new ManualResetEvent(false);
             var keyPressed = Keys.None;
-
-            this.disassemblerForm.KeyUp += (o, e) =>
+            
+            KeyEventHandler keyUpEvent = delegate(object sender, KeyEventArgs args)
                 {
-                    if (e.KeyCode != Keys.F10 && e.KeyCode != Keys.F5)
+                    if (args.KeyCode != Keys.F10 && args.KeyCode != Keys.F5)
                     {
                         return;
                     }
 
-                    keyPressed = e.KeyCode;
+                    keyPressed = args.KeyCode;
                     wait.Set();
                 };
 
+            this.disassemblerForm.KeyUp += keyUpEvent;
+
             wait.WaitOne();
 
-            // ReSharper disable EventUnsubscriptionViaAnonymousDelegate
-            this.disassemblerForm.KeyUp -= (o, e) =>
-            {
-                if (e.KeyCode != Keys.F10 && e.KeyCode != Keys.F5)
-                {
-                    return;
-                }
+            this.disassemblerForm.KeyUp -= keyUpEvent;
 
-                keyPressed = e.KeyCode;
-                wait.Set();
-            };
-
-            // ReSharper restore EventUnsubscriptionViaAnonymousDelegate
             return keyPressed == Keys.F10 ? DebugOptions.StepOver : DebugOptions.Continue;
         }
     }
