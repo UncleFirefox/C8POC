@@ -105,7 +105,9 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\WindowsConfigurationService.cs" />
+    <Compile Include="Services\WindowsOpcodeMapService.cs" />
     <Compile Include="Services\WindowsPluginService.cs" />
+    <Compile Include="Services\WindowsRomService.cs" />
     <EmbeddedResource Include="Forms\AboutForm.resx">
       <DependentUpon>AboutForm.cs</DependentUpon>
     </EmbeddedResource>

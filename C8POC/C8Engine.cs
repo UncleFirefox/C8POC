@@ -16,7 +16,6 @@ namespace C8POC
     using System.Configuration;
     using System.Diagnostics;
     using System.Diagnostics.CodeAnalysis;
-    using System.IO;
     using System.Linq;
     using System.Threading;
     using System.Threading.Tasks;
@@ -49,17 +48,18 @@ namespace C8POC
         /// <param name="configurationService">
         /// The configuration Service.
         /// </param>
+        /// <param name="romService">
+        /// The rom Service.
+        /// </param>
         public C8Engine(
             IMachineState machineState,
-            IOpcodeProcessor opcodeProcessor,
             IPluginService pluginService,
-            IConfigurationService configurationService)
+            IConfigurationService configurationService,
+            IRomService romService,
+            IOpcodeMapService opcodeMapService)
         {
             // Injects the machine state
             this.machineState = machineState;
-
-            // Inject opcode processor
-            this.opcodeProcessor = opcodeProcessor;
 
             // Inject the plugin service
             this.PluginService = pluginService;
@@ -67,8 +67,14 @@ namespace C8POC
             // Inject the configuration service
             this.ConfigurationService = configurationService;
 
-            // The InstructionMap is loaded once!!
-            this.SetUpInstructionMap();
+            // Inject the ROM Service
+            this.RomService = romService;
+
+            // Inject the opcode map service
+            this.OpcodeMapService = opcodeMapService;
+
+            // Gets the instruction map
+            this.instructionMap = this.OpcodeMapService.GetInstructionMap();
 
             // Loads the user saved configuration
             this.LoadSavedEngineSettings();
@@ -92,19 +98,25 @@ namespace C8POC
         public IConfigurationService ConfigurationService { get; private set; }
 
         /// <summary>
+        /// Gets the rom service.
+        /// </summary>
+        public IRomService RomService { get; private set; }
+
+        /// <summary>
+        /// Gets the opcode map service.
+        /// </summary>
+        public IOpcodeMapService OpcodeMapService { get; private set; }
+
+        /// <summary>
         /// State of the machine (including registers etc)
         /// </summary>
         private IMachineState machineState;
 
         /// <summary>
-        /// Object processing opcode
-        /// </summary>
-        private IOpcodeProcessor opcodeProcessor;
-
-        /// <summary>
         /// Contains the mapping between an opcode and the function that should be executed
         /// </summary>
-        private Dictionary<ushort, Action<IMachineState>> instructionMap = new Dictionary<ushort, Action<IMachineState>>();
+        private Dictionary<ushort, Action<IMachineState>> instructionMap =
+            new Dictionary<ushort, Action<IMachineState>>();
 
         /// <summary>
         /// Gets or sets a value indicating whether if the emulator should be running, important to control the game loop
@@ -308,11 +320,13 @@ namespace C8POC
         /// <summary>
         /// Loads the emulator
         /// </summary>
-        /// <param name="filePath">The rom full path</param>
+        /// <param name="filePath">
+        /// The rom full path
+        /// </param>
         public void LoadEmulator(string filePath)
         {
             this.Initialize();
-            this.LoadGame(filePath);
+            this.RomService.LoadRom(filePath, this.machineState);
         }
 
         /// <summary>
@@ -437,84 +451,11 @@ namespace C8POC
         }
 
         /// <summary>
-        /// Loads a Chip8 ROM file in machineState.Memory
-        /// </summary>
-        /// <param name="filePath">Full path of rom</param>
-        private void LoadGame(string filePath)
-        {
-            if (File.Exists(filePath))
-            {
-                var rom = new FileStream(filePath, FileMode.Open);
-
-                if (rom.Length == 0)
-                {
-                    throw new Exception(string.Format("File '{0}' empty or damaged", filePath));
-                }
-
-                // Load rom starting at 0x200
-                for (int i = 0; i < rom.Length; i++)
-                {
-                    this.machineState.Memory[C8Constants.StartRomAddress + i] = (byte)rom.ReadByte();
-                }
-
-                rom.Close();
-            }
-            else
-            {
-                throw new FileNotFoundException(string.Format("The file '{0}' does not exist", filePath));
-            }
-        }
-
-        /// <summary>
         /// Set the emulator to a clean start state
         /// </summary>
         private void Initialize()
         {
             this.machineState.CleanMachineState();
-        }
-
-        /// <summary>
-        /// Sets the instruction map up for fast opcode decoding
-        /// </summary>
-        private void SetUpInstructionMap()
-        {
-            this.instructionMap.Add(0x0000, this.GoToRoutineStartingWithZero);
-            this.instructionMap.Add(0x00E0, this.opcodeProcessor.ClearScreen);
-            this.instructionMap.Add(0x00EE, this.opcodeProcessor.ReturnFromSubRoutine);
-            this.instructionMap.Add(0x1000, this.opcodeProcessor.Jump);
-            this.instructionMap.Add(0x2000, this.opcodeProcessor.CallAtAdress);
-            this.instructionMap.Add(0x3000, this.opcodeProcessor.SkipNextInstructionIfRegisterEqualsImmediate);
-            this.instructionMap.Add(0x4000, this.opcodeProcessor.SkipNextInstructionIfRegisterNotEqualsImmediate);
-            this.instructionMap.Add(0x5000, this.opcodeProcessor.SkipNextInstructionIfRegisterEqualsRegister);
-            this.instructionMap.Add(0x6000, this.opcodeProcessor.LoadValueIntoRegister);
-            this.instructionMap.Add(0x7000, this.opcodeProcessor.AddValueIntoRegister);
-            this.instructionMap.Add(0x8000, this.GoToArithmeticLogicInstruction);
-            this.instructionMap.Add(0x8001, this.opcodeProcessor.OrRegistersIntoRegister);
-            this.instructionMap.Add(0x8002, this.opcodeProcessor.AndRegistersIntoRegiter);
-            this.instructionMap.Add(0x8003, this.opcodeProcessor.ExclusiveOrIntoRegister);
-            this.instructionMap.Add(0x8004, this.opcodeProcessor.AddRegistersIntoRegister);
-            this.instructionMap.Add(0x8005, this.opcodeProcessor.SubstractRegisters);
-            this.instructionMap.Add(0x8006, this.opcodeProcessor.ShiftRegisterRight);
-            this.instructionMap.Add(0x8007, this.opcodeProcessor.SubstractRegistersReverse);
-            this.instructionMap.Add(0x800E, this.opcodeProcessor.ShiftRegisterLeft);
-            this.instructionMap.Add(0x9000, this.opcodeProcessor.SkipNextInstructionIfRegisterNotEqualsRegister);
-            this.instructionMap.Add(0xA000, this.opcodeProcessor.LoadIntoIndexRegister);
-            this.instructionMap.Add(0xB000, this.opcodeProcessor.JumpToV0PlusImmediate);
-            this.instructionMap.Add(0xC000, this.opcodeProcessor.LoadRandomIntoRegister);
-            this.instructionMap.Add(0xD000, this.opcodeProcessor.DrawSprite);
-            this.instructionMap.Add(0xE000, this.GoToSkipRegisterInstruction);
-            this.instructionMap.Add(0xE09E, this.opcodeProcessor.SkipNextInstructionIfRegisterEqualsKeyPressed);
-            this.instructionMap.Add(0xE0A1, this.opcodeProcessor.SkipNextInstructionIfRegisterNotEqualsKeyPressed);
-            this.instructionMap.Add(0xF000, this.GoToMemoryOperationInstruction);
-            this.instructionMap.Add(0xF007, this.opcodeProcessor.LoadTimerValueIntoRegister);
-            this.instructionMap.Add(0xF00A, this.opcodeProcessor.LoadKeyIntoRegister);
-            this.instructionMap.Add(0xF015, this.opcodeProcessor.LoadRegisterIntoDelayTimer);
-            this.instructionMap.Add(0xF018, this.opcodeProcessor.LoadRegisterIntoSoundTimer);
-            this.instructionMap.Add(0xF01E, this.opcodeProcessor.AddRegisterToIndexRegister);
-            this.instructionMap.Add(0xF029, this.opcodeProcessor.LoadFontSpriteLocationFromValueInRegister);
-            this.instructionMap.Add(0xF033, this.opcodeProcessor.LoadBcdRepresentationFromRegister);
-            this.instructionMap.Add(0xF055, this.opcodeProcessor.LoadAllRegistersFromValueInRegister);
-            this.instructionMap.Add(0xF065, this.opcodeProcessor.LoadFromValueInRegisterIntoAllRegisters);
         }
 
         /// <summary>
@@ -551,72 +492,6 @@ namespace C8POC
         {
             var foo = TypeDescriptor.GetConverter(requiredType);
             return foo.ConvertFromInvariantString(value);
-        }
-
-        #endregion
-
-        #region Internal Instruction Map Set
-
-        /// <summary>
-        /// Discriminates further into the instruction mapper for instructions starting with 0x0
-        /// </summary>
-        /// <param name="machineState">
-        /// The machine State.
-        /// </param>
-        private void GoToRoutineStartingWithZero(IMachineState machineState)
-        {
-            var fetchedOpcode = this.machineState.CurrentOpcode & 0xF0FF;
-
-            if (fetchedOpcode == 0x0000)
-            {
-                this.opcodeProcessor.JumpToRoutineAtAdress(machineState);
-            }
-            else
-            {
-                this.instructionMap[(ushort)fetchedOpcode](machineState);
-            }
-        }
-
-        /// <summary>
-        /// Discriminates further into the instruction mapper for instructions starting with 0x8
-        /// </summary>
-        /// <param name="machineState">
-        /// The machine State.
-        /// </param>
-        private void GoToArithmeticLogicInstruction(IMachineState machineState)
-        {
-            var filteredOpcode = (ushort)(this.machineState.CurrentOpcode & 0xF00F);
-
-            if (filteredOpcode == 0x8000)
-            {
-                this.opcodeProcessor.LoadRegisterIntoRegister(machineState);
-            }
-            else
-            {
-                this.instructionMap[filteredOpcode](machineState);
-            }
-        }
-
-        /// <summary>
-        /// Discriminates instructions starting with 0xE
-        /// </summary>
-        /// <param name="machineState">
-        /// The machine State.
-        /// </param>
-        private void GoToSkipRegisterInstruction(IMachineState machineState)
-        {
-            this.instructionMap[(ushort)(this.machineState.CurrentOpcode & 0xF0FF)](machineState);
-        }
-
-        /// <summary>
-        /// Discriminates better for instructionmap opcodes starting with 0xF
-        /// </summary>
-        /// <param name="machineState">
-        /// The machine State.
-        /// </param>
-        private void GoToMemoryOperationInstruction(IMachineState machineState)
-        {
-            this.instructionMap[(ushort)(this.machineState.CurrentOpcode & 0xF0FF)](machineState);
         }
 
         #endregion

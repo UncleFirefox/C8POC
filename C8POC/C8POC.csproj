@@ -48,6 +48,8 @@
     <Compile Include="Interfaces\IPluginMetadata.cs" />
     <Compile Include="Interfaces\ISoundPlugin.cs" />
     <Compile Include="Interfaces\IPluginService.cs" />
+    <Compile Include="Interfaces\IRomService.cs" />
+    <Compile Include="Interfaces\IOpcodeMapService.cs" />
     <Compile Include="OpcodeProcessor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Settings.Designer.cs">

@@ -32,6 +32,8 @@ namespace C8POC.WinFormsUI.Container
             this.RegisterType<WindowsConfigurationService>().As<IConfigurationService>();
             this.RegisterType<WindowsPluginService>().As<IPluginService>();
             this.RegisterType<OpcodeProcessor>().As<IOpcodeProcessor>();
+            this.RegisterType<WindowsRomService>().As<IRomService>();
+            this.RegisterType<WindowsOpcodeMapService>().As<IOpcodeMapService>();
         }
 
         /// <summary>
@@ -49,16 +51,5 @@ namespace C8POC.WinFormsUI.Container
                 .EnableInterfaceInterceptors()
                 .InterceptedBy(typeof(MachineDisassemblerInterceptor));
         }
-
-        ///// <summary>
-        ///// Initializes a new instance of the <see cref="C8WindowsContainer"/> class.
-        ///// </summary>
-        //public C8WindowsContainer()
-        //{
-        //    this.RegisterType<IMachineState, C8MachineState>();
-        //    this.RegisterType<IOpcodeProcessor, OpcodeProcessor>();
-        //    this.RegisterType<IConfigurationService, WindowsConfigurationService>();
-        //    this.RegisterType<IPluginService, WindowsPluginService>();
-        //}
     }
 }

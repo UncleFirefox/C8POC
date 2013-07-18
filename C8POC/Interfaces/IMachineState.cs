@@ -84,6 +84,11 @@ namespace C8POC.Interfaces
         /// </summary>
         ushort YRegisterFromCurrentOpcode { get; }
 
+        /// <summary>
+        /// Gets or sets the number of bytes in memory for opcodes
+        /// </summary>
+        int NumberOfOpcodeBytes { get; set; }
+
         #endregion
 
         #region Public Methods and Operators

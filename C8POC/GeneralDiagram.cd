@@ -1,10 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1">
   <Comment CommentText="Plugins are stored instances inside PluginManager using MEF (Windows version)">
-    <Position X="3.469" Y="15.251" Height="0.979" Width="1.273" />
+    <Position X="0.5" Y="13.747" Height="0.979" Width="1.273" />
   </Comment>
   <Class Name="C8POC.C8Constants">
-    <Position X="9.25" Y="0.5" Width="1.5" />
+    <Position X="12" Y="0.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAEAABAAABAAAAAAAQAAAAAAAAAgAAIACAAAABAAAAA=</HashCode>
       <FileName>C8Constants.cs</FileName>
@@ -29,7 +29,7 @@
     </NestedTypes>
     <AssociationLine Name="PluginService" Type="C8POC.Interfaces.IPluginService" ManuallyRouted="true" FixedFromPoint="true" FixedToPoint="true">
       <Path>
-        <Point X="4.562" Y="13.775" />
+        <Point X="4.562" Y="12.621" />
         <Point X="4.562" Y="14.588" />
         <Point X="2.125" Y="14.588" />
         <Point X="2.125" Y="15" />
@@ -40,13 +40,22 @@
     </AssociationLine>
     <AssociationLine Name="ConfigurationService" Type="C8POC.Interfaces.IConfigurationService" ManuallyRouted="true" FixedFromPoint="true" FixedToPoint="true">
       <Path>
-        <Point X="5.938" Y="13.775" />
+        <Point X="5.938" Y="12.621" />
         <Point X="5.938" Y="14.551" />
         <Point X="8.417" Y="14.551" />
         <Point X="8.417" Y="15" />
       </Path>
       <MemberNameLabel ManuallyPlaced="true">
         <Position X="0.268" Y="0.349" />
+      </MemberNameLabel>
+    </AssociationLine>
+    <AssociationLine Name="RomService" Type="C8POC.Interfaces.IRomService" FixedToPoint="true">
+      <Path>
+        <Point X="5.25" Y="12.622" />
+        <Point X="5.25" Y="15.25" />
+      </Path>
+      <MemberNameLabel ManuallyPlaced="true">
+        <Position X="-0.388" Y="0.347" />
       </MemberNameLabel>
     </AssociationLine>
     <AssociationLine Name="SelectedGraphicsPlugin" Type="C8POC.Interfaces.IGraphicsPlugin" ManuallyRouted="true" FixedFromPoint="true" FixedToPoint="true">
@@ -80,24 +89,30 @@
         <Position X="0.1" Y="0.581" />
       </MemberNameLabel>
     </AssociationLine>
+    <AssociationLine Name="OpcodeMapService" Type="C8POC.Interfaces.IOpcodeMapService">
+      <MemberNameLabel ManuallyPlaced="true">
+        <Position X="0.237" Y="0.12" />
+      </MemberNameLabel>
+    </AssociationLine>
     <TypeIdentifier>
-      <HashCode>kBAMAEAEBAQAgSAAAMwAwAABAwFQBAAQDIBAgAAEAGE=</HashCode>
+      <HashCode>kBAIAEAUBAQAgSAAAIwAwAABAwEQBAAADAAggAAEAGA=</HashCode>
       <FileName>C8Engine.cs</FileName>
     </TypeIdentifier>
     <ShowAsAssociation>
       <Field Name="machineState" />
-      <Field Name="opcodeProcessor" />
       <Property Name="PluginService" />
       <Property Name="ConfigurationService" />
+      <Property Name="RomService" />
       <Property Name="SelectedGraphicsPlugin" />
       <Property Name="SelectedSoundPlugin" />
       <Property Name="SelectedKeyboardPlugin" />
+      <Property Name="OpcodeMapService" />
     </ShowAsAssociation>
   </Class>
   <Class Name="C8POC.Properties.Settings">
-    <Position X="11.25" Y="0.5" Width="2" />
+    <Position X="14" Y="0.5" Width="2" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAACAAAAAAoAAAAAARQAAAAAAAAAABAAA=</HashCode>
+      <HashCode>AAAAAAAAAAAAACAAAAAAoAAAAAARQAAAACAAAAABAAA=</HashCode>
     </TypeIdentifier>
   </Class>
   <Interface Name="C8POC.Interfaces.IGraphicsPlugin">
@@ -131,12 +146,12 @@
   <Interface Name="C8POC.Interfaces.IMachineState">
     <Position X="0.5" Y="6.5" Width="2.25" />
     <TypeIdentifier>
-      <HashCode>AAEAAAQAAAAAAAKAGAAIAEAAikBAAAAAAgAAAALgAAQ=</HashCode>
+      <HashCode>AAEAAAQAAAAAAAKAGAAIAEAAimBAAAAAAgAAAALgAAQ=</HashCode>
       <FileName>Interfaces\IMachineState.cs</FileName>
     </TypeIdentifier>
   </Interface>
   <Interface Name="C8POC.Interfaces.IOpcodeProcessor">
-    <Position X="8" Y="6.25" Width="3.5" />
+    <Position X="11.25" Y="6.25" Width="3.5" />
     <TypeIdentifier>
       <HashCode>AEAQAAAAgkhIQSAQBQECIAAEMIADAREAAAASEIYAAAU=</HashCode>
       <FileName>Interfaces\IOpcodeProcessor.cs</FileName>
@@ -155,6 +170,23 @@
       <HashCode>AAAAAAEAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Interfaces\IConfigurationService.cs</FileName>
     </TypeIdentifier>
+  </Interface>
+  <Interface Name="C8POC.Interfaces.IRomService">
+    <Position X="4.5" Y="15.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAA=</HashCode>
+      <FileName>Interfaces\IRomService.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="C8POC.Interfaces.IOpcodeMapService">
+    <Position X="8.25" Y="8.5" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAQAEAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Interfaces\IOpcodeMapService.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="OpcodeProcessor" />
+    </ShowAsAssociation>
   </Interface>
   <Font Name="Segoe UI" Size="9" />
 </ClassDiagram>

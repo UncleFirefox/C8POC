@@ -142,7 +142,7 @@ namespace C8POC.WinFormsUI.Forms
         /// </param>
         public void BindOpcodeList(IMachineState machineState)
         {
-            this.opcodeList = this.GetDecodedInstructionsFromMemory(machineState.Memory);
+            this.opcodeList = this.GetDecodedInstructionsFromMemory(machineState);
             this.MemoryAddressColumn.DataPropertyName = "Item1";
             this.RawOpcodeColumn.DataPropertyName = "Item2";
             this.MnemonicColumn.DataPropertyName = "Item3";
@@ -282,7 +282,7 @@ namespace C8POC.WinFormsUI.Forms
         /// <param name="machineState">
         /// The machine state.
         /// </param>
-        private void SetTimerValues(IMachineState machineState)
+        public void SetTimerValues(IMachineState machineState)
         {
             this.textBoxDelayTimer.Text = machineState.DelayTimer.ToString("X");
             this.textBoxSoundTimer.Text = machineState.SoundTimer.ToString("X");
@@ -334,26 +334,22 @@ namespace C8POC.WinFormsUI.Forms
         /// <summary>
         /// Gets a dictionary with the list of instructions
         /// </summary>
-        /// <param name="memory">
-        /// Memory containing instructions
+        /// <param name="machineState">
+        /// A machine state
         /// </param>
         /// <returns>
         /// List of sorted opcodes and mnemonics
         /// </returns>
-        private List<Tuple<string, string, string>> GetDecodedInstructionsFromMemory(IEnumerable<byte> memory)
+        private List<Tuple<string, string, string>> GetDecodedInstructionsFromMemory(IMachineState machineState)
         {
             var result = new List<Tuple<string, string, string>>();
+            var numberOfIterations = C8Constants.StartRomAddress + machineState.NumberOfOpcodeBytes;
 
-            for (var i = C8Constants.StartRomAddress; i < memory.Count(); i += 2)
+            for (var i = C8Constants.StartRomAddress; i < numberOfIterations; i += 2)
             {
-                ushort opcode = memory.ElementAt(i);
+                ushort opcode = machineState.Memory.ElementAt(i);
                 opcode <<= 8;
-                opcode |= memory.ElementAt(i + 1);
-
-                //if (opcode == 0x0000)
-                //{
-                //    break;
-                //}
+                opcode |= machineState.Memory.ElementAt(i + 1);
 
                 result.Add(
                     new Tuple<string, string, string>(
@@ -485,9 +481,9 @@ namespace C8POC.WinFormsUI.Forms
                         case 0x33:
                             return string.Format("{0} B, V{1:X}", "LD", (opcode & 0x0F00) >> 8);
                         case 0x55:
-                            return string.Format("{0} [I], V0-V{1:X}", "LD", (opcode & 0x0F00) >> 8);
+                            return string.Format("{0} [I], V{1:X}", "LD", (opcode & 0x0F00) >> 8);
                         case 0x65:
-                            return string.Format("{0} V0-V{1:X}, [I]", "LD", (opcode & 0x0F00) >> 8);
+                            return string.Format("{0} V{1:X}, [I]", "LD", (opcode & 0x0F00) >> 8);
                         default:
                             return string.Format("UNKNOWN F");
                     }

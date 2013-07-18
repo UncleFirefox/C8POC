@@ -50,10 +50,15 @@ namespace C8POC.WinFormsUI.Disassembly
         {
             var machineState = invocation.GetArgumentValue(0) as IMachineState;
 
+            // Bind the grid with the opcodes if its empty
             if (this.disassemblerForm.IsOpcodeGridViewEmpty())
             {
                 this.disassemblerForm.Invoke(new Action(() => this.disassemblerForm.BindOpcodeList(machineState)));
             }
+
+            // Refresh the timer status since it's incremented after a cycle
+            this.disassemblerForm.Invoke(
+               new Action(() => this.disassemblerForm.RefreshDisassemblerStatus(machineState)));
 
             var currentRowPosition = this.disassemblerForm.GetGridRowPositionFromProgramCounter(
                 machineState.ProgramCounter - 2);

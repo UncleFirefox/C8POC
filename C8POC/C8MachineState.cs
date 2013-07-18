@@ -110,7 +110,7 @@ namespace C8POC
         /// </summary>
         public ushort XRegisterFromCurrentOpcode
         {
-            get { return (ushort)((CurrentOpcode & 0x0F00) >> 8); }
+            get { return (ushort)((this.CurrentOpcode & 0x0F00) >> 8); }
         }
 
         /// <summary>
@@ -118,11 +118,16 @@ namespace C8POC
         /// </summary>
         public ushort YRegisterFromCurrentOpcode
         {
-            get { return (ushort)((CurrentOpcode & 0x00F0) >> 4); }
+            get { return (ushort)((this.CurrentOpcode & 0x00F0) >> 4); }
         }
 
         /// <summary>
-        /// Gets or sets the draw flag
+        /// Gets or sets the number of bytes in memory for opcodes
+        /// </summary>
+        public int NumberOfOpcodeBytes { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether if the draw flag is set
         /// </summary>
         public bool IsDrawFlagSet { get; set; }
 
@@ -181,9 +186,14 @@ namespace C8POC
             // Cleans the input memory
             this.Keys.SetAll(false);
 
-            this.ProgramCounter = C8Constants.StartRomAddress; // Program counter starts at 0x200
-            this.CurrentOpcode = 0; // Reset current currentOpcode	
-            this.IndexRegister = 0; // Reset index register
+            // Program counter starts at 0x200
+            this.ProgramCounter = C8Constants.StartRomAddress;
+            
+            // Reset current current opcode	
+            this.CurrentOpcode = 0;
+            
+            // Reset index register
+            this.IndexRegister = 0; 
 
             // Clear stack
             this.Stack.Clear();
@@ -196,7 +206,7 @@ namespace C8POC
 
             // Reset timers
             this.SoundTimer = 0;
-            this.SoundTimer = 0;
+            this.DelayTimer = 0;
         }
 
         /// <summary>

@@ -30,6 +30,9 @@ namespace C8POC
         /// This instruction is only used on the old computers on which Chip-8 was originally implemented. 
         /// It is ignored by modern interpreters.
         /// </summary>
+        /// <param name="machineState">
+        /// The machine State.
+        /// </param>
         public void JumpToRoutineAtAdress(IMachineState machineState)
         {
             // IGNORE! xD
@@ -39,6 +42,9 @@ namespace C8POC
         /// 00E0 - CLS
         /// Clear the display.
         /// </summary>
+        /// <param name="machineState">
+        /// The machine State.
+        /// </param>
         public void ClearScreen(IMachineState machineState)
         {
             machineState.Graphics.SetAll(false);
@@ -51,6 +57,9 @@ namespace C8POC
         /// The interpreter sets the program counter to the address at the top of the machineState.Stack, 
         /// then subtracts 1 from the machineState.Stack pointer
         /// </summary>
+        /// <param name="machineState">
+        /// The machine State.
+        /// </param>
         public void ReturnFromSubRoutine(IMachineState machineState)
         {
             machineState.ProgramCounter = machineState.Stack.Pop();
@@ -61,6 +70,9 @@ namespace C8POC
         /// Jump to location nnn.
         /// The interpreter sets the program counter to nnn.
         /// </summary>
+        /// <param name="machineState">
+        /// The machine State.
+        /// </param>
         public void Jump(IMachineState machineState)
         {
             machineState.ProgramCounter = (ushort)(machineState.CurrentOpcode & 0x0FFF);
@@ -72,6 +84,9 @@ namespace C8POC
         /// The interpreter increments the machineState.Stack pointer, then puts the current PC on the top of the machineState.Stack. 
         /// The PC is then set to nnn.
         /// </summary>
+        /// <param name="machineState">
+        /// The machine State.
+        /// </param>
         public void CallAtAdress(IMachineState machineState)
         {
             // Program counter will be increased right after the instruction fetch 
@@ -86,6 +101,9 @@ namespace C8POC
         /// Skip next instruction if Vx = kk.
         /// The interpreter compares register Vx to kk, and if they are equal, increments the program counter by 2.
         /// </summary>
+        /// <param name="machineState">
+        /// The machine State.
+        /// </param>
         public void SkipNextInstructionIfRegisterEqualsImmediate(IMachineState machineState)
         {
             if (machineState.VRegisters[machineState.XRegisterFromCurrentOpcode] ==
@@ -100,6 +118,9 @@ namespace C8POC
         /// Skip next instruction if Vx != kk.
         /// The interpreter compares register Vx to kk, and if they are not equal, increments the program counter by 2.
         /// </summary>
+        /// <param name="machineState">
+        /// The machine State.
+        /// </param>
         public void SkipNextInstructionIfRegisterNotEqualsImmediate(IMachineState machineState)
         {
             if (machineState.VRegisters[machineState.XRegisterFromCurrentOpcode] !=
@@ -114,6 +135,9 @@ namespace C8POC
         /// Skip next instruction if Vx = Vy.
         /// The interpreter compares register Vx to register Vy, and if they are equal, increments the program counter by 2.
         /// </summary>
+        /// <param name="machineState">
+        /// The machine State.
+        /// </param>
         public void SkipNextInstructionIfRegisterEqualsRegister(IMachineState machineState)
         {
             if (machineState.VRegisters[machineState.XRegisterFromCurrentOpcode] ==
@@ -128,6 +152,9 @@ namespace C8POC
         /// Set Vx = kk.
         /// The interpreter puts the value kk into register Vx.
         /// </summary>
+        /// <param name="machineState">
+        /// The machine State.
+        /// </param>
         public void LoadValueIntoRegister(IMachineState machineState)
         {
             machineState.VRegisters[machineState.XRegisterFromCurrentOpcode] =
@@ -139,6 +166,9 @@ namespace C8POC
         /// Set Vx = Vx + kk.
         /// Adds the value kk to the value of register Vx, then stores the result in Vx.
         /// </summary>
+        /// <param name="machineState">
+        /// The machine State.
+        /// </param>
         public void AddValueIntoRegister(IMachineState machineState)
         {
             machineState.VRegisters[machineState.XRegisterFromCurrentOpcode] +=
@@ -150,6 +180,9 @@ namespace C8POC
         /// Set Vx = Vy.
         /// Stores the value of register Vy in register Vx.
         /// </summary>
+        /// <param name="machineState">
+        /// The machine State.
+        /// </param>
         public void LoadRegisterIntoRegister(IMachineState machineState)
         {
             machineState.VRegisters[machineState.XRegisterFromCurrentOpcode] =
@@ -163,6 +196,9 @@ namespace C8POC
         /// A bitwise OR compares the corrseponding bits from two values, and if either bit is 1, 
         /// then the same bit in the result is also 1. Otherwise, it is 0. 
         /// </summary>
+        /// <param name="machineState">
+        /// The machine State.
+        /// </param>
         public void OrRegistersIntoRegister(IMachineState machineState)
         {
             machineState.VRegisters[machineState.XRegisterFromCurrentOpcode] |=
@@ -176,6 +212,9 @@ namespace C8POC
         /// A bitwise AND compares the corrseponding bits from two values, and if both bits are 1, 
         /// then the same bit in the result is also 1. Otherwise, it is 0.
         /// </summary>
+        /// <param name="machineState">
+        /// The machine State.
+        /// </param>
         public void AndRegistersIntoRegiter(IMachineState machineState)
         {
             machineState.VRegisters[machineState.XRegisterFromCurrentOpcode] &=
@@ -189,6 +228,9 @@ namespace C8POC
         /// An exclusive OR compares the corrseponding bits from two values, and if the bits are not both the same, 
         /// then the corresponding bit in the result is set to 1. Otherwise, it is 0. 
         /// </summary>
+        /// <param name="machineState">
+        /// The machine State.
+        /// </param>
         public void ExclusiveOrIntoRegister(IMachineState machineState)
         {
             machineState.VRegisters[machineState.XRegisterFromCurrentOpcode] ^=
@@ -198,9 +240,12 @@ namespace C8POC
         /// <summary>
         /// 8xy4 - ADD Vx, Vy
         /// Set Vx = Vx + Vy, set VF = carry.
-        /// The values of Vx and Vy are added together. If the result is greater than 8 bits (i.e., > 255,) VF is set to 1, 
+        /// The values of Vx and Vy are added together. If the result is greater than 8 bits (i.e., &gt; 255,) VF is set to 1, 
         /// otherwise 0. Only the lowest 8 bits of the result are kept, and stored in Vx.
         /// </summary>
+        /// <param name="machineState">
+        /// The machine State.
+        /// </param>
         public void AddRegistersIntoRegister(IMachineState machineState)
         {
             machineState.VRegisters[machineState.XRegisterFromCurrentOpcode] +=
@@ -219,8 +264,11 @@ namespace C8POC
         /// <summary>
         /// 8xy5 - SUB Vx, Vy
         /// Set Vx = Vx - Vy, set VF = NOT borrow.
-        /// If Vx > Vy, then VF is set to 1, otherwise 0. Then Vy is subtracted from Vx, and the results stored in Vx.
+        /// If Vx &gt; Vy, then VF is set to 1, otherwise 0. Then Vy is subtracted from Vx, and the results stored in Vx.
         /// </summary>
+        /// <param name="machineState">
+        /// The machine State.
+        /// </param>
         public void SubstractRegisters(IMachineState machineState)
         {
             if (machineState.VRegisters[machineState.XRegisterFromCurrentOpcode] >
@@ -242,6 +290,9 @@ namespace C8POC
         /// Set Vx = Vx SHR 1.
         /// If the least-significant bit of Vx is 1, then VF is set to 1, otherwise 0. Then Vx is divided by 2.
         /// </summary>
+        /// <param name="machineState">
+        /// The machine State.
+        /// </param>
         public void ShiftRegisterRight(IMachineState machineState)
         {
             if ((machineState.CurrentOpcode & 0x000F) == 1)
@@ -259,8 +310,11 @@ namespace C8POC
         /// <summary>
         /// 8xy7 - SUBN Vx, Vy
         /// Set Vx = Vy - Vx, set VF = NOT borrow.
-        /// If Vy > Vx, then VF is set to 1, otherwise 0. Then Vx is subtracted from Vy, and the results stored in Vx.
+        /// If Vy &gt; Vx, then VF is set to 1, otherwise 0. Then Vx is subtracted from Vy, and the results stored in Vx.
         /// </summary>
+        /// <param name="machineState">
+        /// The machine State.
+        /// </param>
         public void SubstractRegistersReverse(IMachineState machineState)
         {
             if (machineState.VRegisters[machineState.YRegisterFromCurrentOpcode]
@@ -284,6 +338,9 @@ namespace C8POC
         /// Set Vx = Vx SHL 1.
         /// If the most-significant bit of Vx is 1, then VF is set to 1, otherwise to 0. Then Vx is multiplied by 2.
         /// </summary>
+        /// <param name="machineState">
+        /// The machine State.
+        /// </param>
         public void ShiftRegisterLeft(IMachineState machineState)
         {
             if ((machineState.VRegisters[machineState.XRegisterFromCurrentOpcode] & 0xF000) == 0x1000)
@@ -303,6 +360,9 @@ namespace C8POC
         /// Skip next instruction if Vx != Vy.
         /// The values of Vx and Vy are compared, and if they are not equal, the program counter is increased by 2.
         /// </summary>
+        /// <param name="machineState">
+        /// The machine State.
+        /// </param>
         public void SkipNextInstructionIfRegisterNotEqualsRegister(IMachineState machineState)
         {
             if (machineState.VRegisters[machineState.XRegisterFromCurrentOpcode] !=
@@ -317,6 +377,9 @@ namespace C8POC
         /// Set I = nnn.
         /// The value of register I is set to nnn.
         /// </summary>
+        /// <param name="machineState">
+        /// The machine State.
+        /// </param>
         public void LoadIntoIndexRegister(IMachineState machineState)
         {
             machineState.IndexRegister = (ushort)(machineState.CurrentOpcode & 0x0FFF);
@@ -327,6 +390,9 @@ namespace C8POC
         /// Jump to location nnn + V0.
         /// The program counter is set to nnn plus the value of V0.
         /// </summary>
+        /// <param name="machineState">
+        /// The machine State.
+        /// </param>
         public void JumpToV0PlusImmediate(IMachineState machineState)
         {
             machineState.ProgramCounter = (ushort)(machineState.VRegisters[0] + (machineState.CurrentOpcode & 0x0FFF));
@@ -338,6 +404,9 @@ namespace C8POC
         /// The interpreter generates a random number from 0 to 255, which is then ANDed with the value kk. 
         /// The results are stored in Vx. See instruction 8xy2 for more information on AND.
         /// </summary>
+        /// <param name="machineState">
+        /// The machine State.
+        /// </param>
         public void LoadRandomIntoRegister(IMachineState machineState)
         {
             var randomnumber = (ushort)new Random().Next(0, 255);
@@ -356,6 +425,9 @@ namespace C8POC
         /// If the sprite is positioned so part of it is outside the coordinates of the display, it wraps around to the opposite side of the screen. 
         /// See instruction 8xy3 for more information on XOR, and section 2.4, Display, for more information on the Chip-8 screen and sprites.
         /// </summary>
+        /// <param name="machineState">
+        /// The machine State.
+        /// </param>
         public void DrawSprite(IMachineState machineState)
         {
             var numbytes = (ushort)(machineState.CurrentOpcode & 0x000F);
@@ -396,6 +468,9 @@ namespace C8POC
         /// Checks the keyboard, and if the key corresponding to the value of Vx is currently in the down position, 
         /// PC is increased by 2.
         /// </summary>
+        /// <param name="machineState">
+        /// The machine State.
+        /// </param>
         public void SkipNextInstructionIfRegisterEqualsKeyPressed(IMachineState machineState)
         {
             if (machineState.Keys[machineState.VRegisters[machineState.XRegisterFromCurrentOpcode]])
@@ -410,6 +485,9 @@ namespace C8POC
         /// Checks the keyboard, and if the key corresponding to the value of Vx is currently in the up position, 
         /// PC is increased by 2.
         /// </summary>
+        /// <param name="machineState">
+        /// The machine State.
+        /// </param>
         public void SkipNextInstructionIfRegisterNotEqualsKeyPressed(IMachineState machineState)
         {
             if (!machineState.Keys[machineState.VRegisters[machineState.XRegisterFromCurrentOpcode]])
@@ -423,6 +501,9 @@ namespace C8POC
         /// Set Vx = delay timer value.
         /// The value of DT is placed into Vx.
         /// </summary>
+        /// <param name="machineState">
+        /// The machine State.
+        /// </param>
         public void LoadTimerValueIntoRegister(IMachineState machineState)
         {
             machineState.VRegisters[machineState.XRegisterFromCurrentOpcode] = machineState.DelayTimer;
@@ -433,6 +514,9 @@ namespace C8POC
         /// Wait for a key press, store the value of the key in Vx.
         /// All execution stops until a key is pressed, then the value of that key is stored in Vx.
         /// </summary>
+        /// <param name="machineState">
+        /// The machine State.
+        /// </param>
         public void LoadKeyIntoRegister(IMachineState machineState)
         {
             // TODO What do I do with this wait for key?
@@ -447,6 +531,9 @@ namespace C8POC
         /// Set delay timer = Vx.
         /// DT is set equal to the value of Vx.
         /// </summary>
+        /// <param name="machineState">
+        /// The machine State.
+        /// </param>
         public void LoadRegisterIntoDelayTimer(IMachineState machineState)
         {
             machineState.DelayTimer = machineState.VRegisters[machineState.XRegisterFromCurrentOpcode];
@@ -457,6 +544,9 @@ namespace C8POC
         /// Set sound timer = Vx.
         /// ST is set equal to the value of Vx.
         /// </summary>
+        /// <param name="machineState">
+        /// The machine State.
+        /// </param>
         public void LoadRegisterIntoSoundTimer(IMachineState machineState)
         {
             machineState.SoundTimer = machineState.VRegisters[machineState.XRegisterFromCurrentOpcode];
@@ -467,6 +557,9 @@ namespace C8POC
         /// Set I = I + Vx.
         /// The values of I and Vx are added, and the results are stored in I.
         /// </summary>
+        /// <param name="machineState">
+        /// The machine State.
+        /// </param>
         public void AddRegisterToIndexRegister(IMachineState machineState)
         {
             machineState.IndexRegister += machineState.VRegisters[machineState.XRegisterFromCurrentOpcode];
@@ -478,6 +571,9 @@ namespace C8POC
         /// The value of I is set to the location for the hexadecimal sprite corresponding to the value of Vx. 
         /// See section 2.4, Display, for more information on the Chip-8 hexadecimal font.
         /// </summary>
+        /// <param name="machineState">
+        /// The machine State.
+        /// </param>
         public void LoadFontSpriteLocationFromValueInRegister(IMachineState machineState)
         {
             // Comments from NGEmu about this opcode
@@ -512,6 +608,9 @@ namespace C8POC
         /// the tens digit at location I+1, 
         /// and the ones digit at location I+2.
         /// </summary>
+        /// <param name="machineState">
+        /// The machine State.
+        /// </param>
         public void LoadBcdRepresentationFromRegister(IMachineState machineState)
         {
             machineState.Memory[machineState.IndexRegister] =
@@ -529,6 +628,9 @@ namespace C8POC
         /// Store registers V0 through Vx in machineState.Memory starting at location I.
         /// The interpreter copies the values of registers V0 through Vx into machineState.Memory, starting at the address in I.
         /// </summary>
+        /// <param name="machineState">
+        /// The machine State.
+        /// </param>
         public void LoadAllRegistersFromValueInRegister(IMachineState machineState)
         {
             for (int i = 0; i <= machineState.XRegisterFromCurrentOpcode; i++)
@@ -542,6 +644,9 @@ namespace C8POC
         /// Read registers V0 through Vx from machineState.Memory starting at location I.
         /// The interpreter reads values from machineState.Memory starting at location I into registers V0 through Vx.
         /// </summary>
+        /// <param name="machineState">
+        /// The machine State.
+        /// </param>
         public void LoadFromValueInRegisterIntoAllRegisters(IMachineState machineState)
         {
             for (int i = 0; i <= machineState.XRegisterFromCurrentOpcode; i++)

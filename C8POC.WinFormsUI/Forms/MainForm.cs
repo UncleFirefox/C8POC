@@ -76,6 +76,8 @@ namespace C8POC.WinFormsUI.Forms
             }
 
             var container = builder.Build();
+
+            // TODO: Make the engine an injectable interface (architecture changes)
             this.emulator = container.Resolve<C8Engine>();
         }
 
@@ -123,6 +125,7 @@ namespace C8POC.WinFormsUI.Forms
             {
                 this.emulator.LoadEmulator(this.openFileDialogRom.FileName);
                 this.emulator.StartEmulation();
+                // this.Hide();
             }
         }
 
