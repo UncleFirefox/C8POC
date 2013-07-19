@@ -1,6 +1,6 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "C8POC", "C8POC\C8POC.csproj", "{13D18A20-EFB2-45F1-AFCE-5AB37A102E1C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "C8POC.WinFormsUI", "C8POC.WinFormsUI\C8POC.WinFormsUI.csproj", "{97F1A082-9035-4501-BBE1-BCCD0B02B30B}"
@@ -12,6 +12,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "C8POC.Plugins.Keyboard.SystemWindowsKeyboardPlugin", "C8POC.Plugins.Keyboard.SystemWindowsKeyboard\C8POC.Plugins.Keyboard.SystemWindowsKeyboardPlugin.csproj", "{453CE10A-1081-4DB3-82FB-4AF70B7ECBAD}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "C8POC.Plugins.Graphics.SDLPlugin", "C8POC.Plugins.Graphics.SDLPlugin\C8POC.Plugins.Graphics.SDLPlugin.csproj", "{23956A69-415D-4DE6-9D74-F1B950011CB4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "C8POC.Plugins.Graphics.WPFPlugin", "C8POC.Plugins.Graphics.WPFPlugin\C8POC.Plugins.Graphics.WPFPlugin.csproj", "{4A605939-27CB-440B-9139-7B7493427A21}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -83,6 +85,16 @@ Global
 		{23956A69-415D-4DE6-9D74-F1B950011CB4}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{23956A69-415D-4DE6-9D74-F1B950011CB4}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{23956A69-415D-4DE6-9D74-F1B950011CB4}.Release|x86.ActiveCfg = Release|Any CPU
+		{4A605939-27CB-440B-9139-7B7493427A21}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{4A605939-27CB-440B-9139-7B7493427A21}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{4A605939-27CB-440B-9139-7B7493427A21}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{4A605939-27CB-440B-9139-7B7493427A21}.Debug|x86.ActiveCfg = Debug|x86
+		{4A605939-27CB-440B-9139-7B7493427A21}.Debug|x86.Build.0 = Debug|x86
+		{4A605939-27CB-440B-9139-7B7493427A21}.Release|Any CPU.ActiveCfg = Release|x86
+		{4A605939-27CB-440B-9139-7B7493427A21}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{4A605939-27CB-440B-9139-7B7493427A21}.Release|Mixed Platforms.Build.0 = Release|x86
+		{4A605939-27CB-440B-9139-7B7493427A21}.Release|x86.ActiveCfg = Release|x86
+		{4A605939-27CB-440B-9139-7B7493427A21}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

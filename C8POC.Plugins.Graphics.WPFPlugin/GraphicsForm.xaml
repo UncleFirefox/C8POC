@@ -1,0 +1,8 @@
+﻿<Window x:Class="C8POC.Plugins.Graphics.WPFPlugin.GraphicsForm"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="MainWindow" Height="360" Width="680" WindowStartupLocation="CenterScreen" ResizeMode="NoResize">
+    <Grid Height="320" Width="640">
+        <Canvas Name="canvas" Height="320" Width="640" Background="Black"/>
+    </Grid>
+</Window>
