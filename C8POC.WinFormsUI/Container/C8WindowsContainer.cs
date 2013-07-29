@@ -12,6 +12,7 @@ namespace C8POC.WinFormsUI.Container
     using Autofac;
     using Autofac.Extras.DynamicProxy2;
 
+    using C8POC.Engines;
     using C8POC.Interfaces;
     using C8POC.WinFormsUI.Disassembly;
     using C8POC.WinFormsUI.Forms;
@@ -34,6 +35,12 @@ namespace C8POC.WinFormsUI.Container
             this.RegisterType<OpcodeProcessor>().As<IOpcodeProcessor>();
             this.RegisterType<WindowsRomService>().As<IRomService>();
             this.RegisterType<WindowsOpcodeMapService>().As<IOpcodeMapService>();
+
+            // Mediator
+            this.RegisterType<EngineMediator>().As<IEngineMediator>();
+            this.RegisterType<InputOutputEngine>().As<IInputOutputEngine>();
+            this.RegisterType<ExecutionEngine>().As<IExecutionEngine>();
+            this.RegisterType<ConfigurationEngine>().As<IConfigurationEngine>();
         }
 
         /// <summary>

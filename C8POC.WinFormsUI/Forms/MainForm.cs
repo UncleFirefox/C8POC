@@ -14,6 +14,7 @@ namespace C8POC.WinFormsUI.Forms
 
     using Autofac;
 
+    using C8POC.Interfaces;
     using C8POC.WinFormsUI.Container;
     using C8POC.WinFormsUI.Services;
 
@@ -25,9 +26,9 @@ namespace C8POC.WinFormsUI.Forms
         #region Constants and Fields
 
         /// <summary>
-        /// The emulator.
+        /// The engine mediator.
         /// </summary>
-        private C8Engine emulator;
+        private IEngineMediator engineMediator;
 
         /// <summary>
         /// The disassembler form
@@ -77,8 +78,7 @@ namespace C8POC.WinFormsUI.Forms
 
             var container = builder.Build();
 
-            // TODO: Make the engine an injectable interface (architecture changes)
-            this.emulator = container.Resolve<C8Engine>();
+            this.engineMediator = container.Resolve<IEngineMediator>();
         }
 
         /// <summary>
@@ -92,7 +92,7 @@ namespace C8POC.WinFormsUI.Forms
         /// </param>
         private void ExitToolStripMenuItemClick(object sender, EventArgs e)
         {
-            this.emulator.StopEmulator();
+            this.engineMediator.StopEmulation();
             this.Close();
         }
 
@@ -107,7 +107,7 @@ namespace C8POC.WinFormsUI.Forms
         /// </param>
         private void MainFormFormClosing(object sender, FormClosingEventArgs e)
         {
-            this.emulator.StopEmulator();
+            this.engineMediator.StopEmulation();
         }
 
         /// <summary>
@@ -123,8 +123,15 @@ namespace C8POC.WinFormsUI.Forms
         {
             if (this.openFileDialogRom.ShowDialog() == DialogResult.OK)
             {
-                this.emulator.LoadEmulator(this.openFileDialogRom.FileName);
-                this.emulator.StartEmulation();
+                this.engineMediator.LoadRomToEngine(this.openFileDialogRom.FileName);
+
+                if (this.disassemblerForm.Visible)
+                {
+                    // TODO: Clean the gridview :)
+                    this.disassemblerForm.CleanGridView();
+                }
+
+                this.engineMediator.StartEmulation();
                 // this.Hide();
             }
         }
@@ -140,12 +147,12 @@ namespace C8POC.WinFormsUI.Forms
         /// </param>
         private void PluginSettingsToolStripMenuItemClick(object sender, EventArgs e)
         {
-            var form = new PluginSettings(this.emulator.PluginService, this.emulator.ConfigurationService);
+            var form = new PluginSettings(this.engineMediator.InputOutputEngine.PluginService, this.engineMediator.ConfigurationEngine.ConfigurationService);
 
             if (form.ShowDialog() == DialogResult.OK)
             {
                 // We should tell the engine to reload the plugins
-                this.emulator.LoadPlugins();
+                this.engineMediator.InputOutputEngine.LoadPlugins();
             }
         }
 
@@ -164,7 +171,7 @@ namespace C8POC.WinFormsUI.Forms
 
             if (form.ShowDialog() == DialogResult.OK)
             {
-                this.emulator.ConfigurationService.SaveEngineConfiguration();
+                this.engineMediator.ConfigurationEngine.ConfigurationService.SaveEngineConfiguration();
 
                 if (form.IsDisassemblerEnabled && !this.disassemblerForm.Visible)
                 {

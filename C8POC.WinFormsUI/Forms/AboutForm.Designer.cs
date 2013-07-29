@@ -82,6 +82,7 @@
             this.Controls.Add(this.linkLabelGithubProject);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.labelTitle);
+            this.MaximizeBox = false;
             this.Name = "AboutForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "AboutForm";

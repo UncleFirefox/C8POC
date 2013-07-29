@@ -13,7 +13,6 @@ namespace C8POC.WinFormsUI.Forms
     using System.Collections.Generic;
     using System.Diagnostics.CodeAnalysis;
     using System.Drawing;
-    using System.Globalization;
     using System.Linq;
     using System.Windows.Forms;
 
@@ -566,19 +565,19 @@ namespace C8POC.WinFormsUI.Forms
             switch (breakPointStates)
             {
                 case BreakPointStates.None:
-                    rowToEdit.Cells[BreakPointStateColumn.Index].Value = BreakPointStates.None;
-                    rowToEdit.Cells[BreakPointColumn.Index].Value = null;
+                    rowToEdit.Cells[this.BreakPointStateColumn.Index].Value = BreakPointStates.None;
+                    rowToEdit.Cells[this.BreakPointColumn.Index].Value = null;
                     rowToEdit.DefaultCellStyle.BackColor = Color.White;
                     rowToEdit.DefaultCellStyle.ForeColor = Color.Black;
                     rowToEdit.DefaultCellStyle.SelectionBackColor =
-                        dataGridViewOpcodes.DefaultCellStyle.SelectionBackColor;
+                        this.dataGridViewOpcodes.DefaultCellStyle.SelectionBackColor;
                     rowToEdit.DefaultCellStyle.SelectionForeColor =
-                        dataGridViewOpcodes.DefaultCellStyle.SelectionForeColor;
+                        this.dataGridViewOpcodes.DefaultCellStyle.SelectionForeColor;
                     this.SetValueOfBreakPointColumn(rowToEdit);
                     break;
                 case BreakPointStates.Hit:
-                    rowToEdit.Cells[BreakPointStateColumn.Index].Value = BreakPointStates.Hit;
-                    rowToEdit.Cells[BreakPointColumn.Index].Value = Properties.Resources.BreakPointHit;
+                    rowToEdit.Cells[this.BreakPointStateColumn.Index].Value = BreakPointStates.Hit;
+                    rowToEdit.Cells[this.BreakPointColumn.Index].Value = Properties.Resources.BreakPointHit;
                     rowToEdit.DefaultCellStyle.BackColor = Color.Yellow;
                     rowToEdit.DefaultCellStyle.ForeColor = Color.Black;
                     rowToEdit.DefaultCellStyle.SelectionBackColor = Color.Yellow;
@@ -586,8 +585,8 @@ namespace C8POC.WinFormsUI.Forms
                     this.SetValueOfBreakPointColumn(rowToEdit);
                     break;
                 case BreakPointStates.Set:
-                    rowToEdit.Cells[BreakPointStateColumn.Index].Value = BreakPointStates.Set;
-                    rowToEdit.Cells[BreakPointColumn.Index].Value = Properties.Resources.BreakPointSet;
+                    rowToEdit.Cells[this.BreakPointStateColumn.Index].Value = BreakPointStates.Set;
+                    rowToEdit.Cells[this.BreakPointColumn.Index].Value = Properties.Resources.BreakPointSet;
                     rowToEdit.DefaultCellStyle.BackColor = Color.IndianRed;
                     rowToEdit.DefaultCellStyle.ForeColor = Color.Black;
                     rowToEdit.DefaultCellStyle.SelectionBackColor = Color.IndianRed;
@@ -595,8 +594,8 @@ namespace C8POC.WinFormsUI.Forms
                     this.SetValueOfBreakPointColumn(rowToEdit);
                     break;
                 case BreakPointStates.Step:
-                    rowToEdit.Cells[BreakPointStateColumn.Index].Value = BreakPointStates.Step;
-                    rowToEdit.Cells[BreakPointColumn.Index].Value = Properties.Resources.BreakPointStep;
+                    rowToEdit.Cells[this.BreakPointStateColumn.Index].Value = BreakPointStates.Step;
+                    rowToEdit.Cells[this.BreakPointColumn.Index].Value = Properties.Resources.BreakPointStep;
                     rowToEdit.DefaultCellStyle.BackColor = Color.Yellow;
                     rowToEdit.DefaultCellStyle.ForeColor = Color.Black;
                     rowToEdit.DefaultCellStyle.SelectionBackColor = Color.Yellow;
@@ -616,6 +615,14 @@ namespace C8POC.WinFormsUI.Forms
         {
             rowToEdit.Cells[this.BreakPointColumn.Index].Style.BackColor = Color.White;
             rowToEdit.Cells[this.BreakPointColumn.Index].Style.SelectionBackColor = Color.White;
+        }
+
+        /// <summary>
+        /// Cleans the grid view containing opcodes
+        /// </summary>
+        public void CleanGridView()
+        {
+            this.dataGridViewOpcodes.DataSource = null;
         }
     }
 }

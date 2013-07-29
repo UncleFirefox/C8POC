@@ -179,6 +179,9 @@
     <Content Include="Plugins\C8POC.Plugins.Graphics.SDLPlugin.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Plugins\C8POC.Plugins.Graphics.SDLPlugin.pdb">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Plugins\C8POC.Plugins.Graphics.WPFPlugin.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

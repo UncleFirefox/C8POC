@@ -39,9 +39,6 @@ namespace C8POC
         /// <param name="machineState">
         /// An injected machine state
         /// </param>
-        /// <param name="opcodeProcessor">
-        /// An injected opcode processor 
-        /// </param>
         /// <param name="pluginService">
         /// The plugin Service.
         /// </param>
@@ -50,6 +47,9 @@ namespace C8POC
         /// </param>
         /// <param name="romService">
         /// The rom Service.
+        /// </param>
+        /// <param name="opcodeMapService">
+        /// The opcode Map Service.
         /// </param>
         public C8Engine(
             IMachineState machineState,
