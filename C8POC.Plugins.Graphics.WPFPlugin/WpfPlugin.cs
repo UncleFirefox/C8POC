@@ -40,6 +40,11 @@ namespace C8POC.Plugins.Graphics.WPFPlugin
         /// </summary>
         private GraphicsForm graphicsForm;
 
+        /// <summary>
+        /// Gets or sets a value indicating whether the form has been closed by code
+        /// </summary>
+        private bool FormClosedByCode { get; set; }
+
         #endregion
 
         #region IGraphicsPlugin Members
@@ -77,6 +82,10 @@ namespace C8POC.Plugins.Graphics.WPFPlugin
         /// </summary>
         public void DisablePlugin()
         {
+            if (this.graphicsForm != null)
+            {
+                this.graphicsForm.Close();
+            }
         }
 
         /// <summary>
@@ -178,11 +187,6 @@ namespace C8POC.Plugins.Graphics.WPFPlugin
         {
             return graphics[x + (C8Constants.ResolutionWidth * y)]; //C8Constants.ResolutionWidth is the resolution width of the screen
         }
-
-        /// <summary>
-        /// Gets or sets a value indicating whether the form has been closed by code
-        /// </summary>
-        private bool FormClosedByCode { get; set; }
 
         #endregion
     }

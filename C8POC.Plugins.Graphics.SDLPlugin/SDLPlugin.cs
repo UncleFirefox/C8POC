@@ -106,7 +106,7 @@ namespace C8POC.Plugins.Graphics.SDLPlugin
         /// </summary>
         public void DisablePlugin()
         {
-            if (!this.FormClosedByCode && this.GraphicsExit != null)
+            if (this.RenderForm != null && this.IsFormOpen(this.RenderForm))
             {
                 this.FormClosedByCode = true;
 
@@ -165,6 +165,8 @@ namespace C8POC.Plugins.Graphics.SDLPlugin
         /// </param>
         public void EnablePlugin(IDictionary<string, string> parameters)
         {
+            this.FormClosedByCode = false;
+
             this.RenderForm = new RenderForm();
             this.RenderSurface = Video.CreateRgbSurface(
                 C8Constants.ResolutionWidth * PixelWidth, C8Constants.ResolutionHeight * PixelHeight);
@@ -236,9 +238,9 @@ namespace C8POC.Plugins.Graphics.SDLPlugin
         /// </param>
         private void RenderFormClosed(object sender, EventArgs e)
         {
-            if (this.GraphicsExit != null && this.IsFormOpen(this.RenderForm))
+            if (!this.FormClosedByCode && this.GraphicsExit != null)
             {
-                this.FormClosedByCode = true;
+                this.FormClosedByCode = false;
                 this.GraphicsExit();
             }
         }
