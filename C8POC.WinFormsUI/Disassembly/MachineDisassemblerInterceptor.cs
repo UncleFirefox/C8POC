@@ -13,7 +13,7 @@ namespace C8POC.WinFormsUI.Disassembly
     using System.Threading;
     using System.Windows.Forms;
 
-    using C8POC.Interfaces;
+    using C8POC.Interfaces.Domain.Entities;
     using C8POC.WinFormsUI.Forms;
 
     using Castle.DynamicProxy;

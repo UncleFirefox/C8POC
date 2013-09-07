@@ -7,7 +7,7 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace C8POC
+namespace C8POC.Infrastructure
 {
     /// <summary>
     /// The configuration parameters.

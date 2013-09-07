@@ -12,7 +12,7 @@ namespace C8POC.Plugins.Sound.ConsoleBeep
     using System.Collections.Generic;
     using System.ComponentModel.Composition;
 
-    using C8POC.Interfaces;
+    using C8POC.Interfaces.Domain.Plugins;
 
     /// <summary>
     ///     Early implementation of a Sound Class

@@ -14,7 +14,9 @@ namespace C8POC.WinFormsUI.Forms
     using System.Linq;
     using System.Windows.Forms;
 
-    using C8POC.Interfaces;
+    using C8POC.Interfaces.Domain.Plugins;
+    using C8POC.Interfaces.Domain.Services;
+    using C8POC.Interfaces.Infrastructure.Services;
 
     /// <summary>
     ///     Plugin settings form

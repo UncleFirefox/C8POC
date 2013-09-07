@@ -7,8 +7,10 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace C8POC.Interfaces
+namespace C8POC.Interfaces.Domain.Services
 {
+    using C8POC.Interfaces.Domain.Entities;
+
     /// <summary>
     /// Interface for opcode processing
     /// </summary>

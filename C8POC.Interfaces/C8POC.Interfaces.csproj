@@ -1,15 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>8.0.30703</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{8D633DEB-08C0-4BF5-AD8F-D5247C0301A8}</ProjectGuid>
+    <ProjectGuid>{F466A5B5-172F-4AC8-8897-04E58813F510}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>C8POC.Plugins.Sound.ConsoleBeep</RootNamespace>
-    <AssemblyName>C8POC.Plugins.Sound.ConsoleBeep</AssemblyName>
+    <RootNamespace>C8POC.Interfaces</RootNamespace>
+    <AssemblyName>C8POC.Interfaces</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -34,21 +33,31 @@
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ConsoleBeep.cs" />
+    <Compile Include="Domain\Engines\IConfigurationEngine.cs" />
+    <Compile Include="Domain\Engines\IEngineMediator.cs" />
+    <Compile Include="Domain\Engines\IExecutionEngine.cs" />
+    <Compile Include="Domain\Engines\IInputOutputEngine.cs" />
+    <Compile Include="Domain\Entities\IMachineState.cs" />
+    <Compile Include="Domain\Plugins\IGraphicsPlugin.cs" />
+    <Compile Include="Domain\Plugins\IKeyboardPlugin.cs" />
+    <Compile Include="Domain\Plugins\IPlugin.cs" />
+    <Compile Include="Domain\Plugins\IPluginMetadata.cs" />
+    <Compile Include="Domain\Plugins\ISoundPlugin.cs" />
+    <Compile Include="Domain\Services\IOpcodeMapService.cs" />
+    <Compile Include="Domain\Services\IOpcodeProcessor.cs" />
+    <Compile Include="Domain\Services\IPluginService.cs" />
+    <Compile Include="Infrastructure\Services\IConfigurationService.cs" />
+    <Compile Include="Infrastructure\Services\IRomService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\C8POC.Interfaces\C8POC.Interfaces.csproj">
-      <Project>{F466A5B5-172F-4AC8-8897-04E58813F510}</Project>
-      <Name>C8POC.Interfaces</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\C8POC\C8POC.csproj">
-      <Project>{13D18A20-EFB2-45F1-AFCE-5AB37A102E1C}</Project>
-      <Name>C8POC</Name>
-    </ProjectReference>
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

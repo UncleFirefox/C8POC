@@ -36,30 +36,15 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="C8Constants.cs" />
-    <Compile Include="C8Engine.cs" />
-    <Compile Include="C8MachineState.cs" />
-    <Compile Include="ConfigurationParameters.cs" />
-    <Compile Include="Engines\ConfigurationEngine.cs" />
-    <Compile Include="Engines\EngineMediator.cs" />
-    <Compile Include="Engines\ExecutionEngine.cs" />
-    <Compile Include="Interfaces\IConfigurationEngine.cs" />
-    <Compile Include="Engines\InputOutputEngine.cs" />
-    <Compile Include="Interfaces\IConfigurationService.cs" />
-    <Compile Include="Interfaces\IEngineMediator.cs" />
-    <Compile Include="Interfaces\IExecutionEngine.cs" />
-    <Compile Include="Interfaces\IInputOutputEngine.cs" />
-    <Compile Include="Interfaces\IMachineState.cs" />
-    <Compile Include="Interfaces\IGraphicsPlugin.cs" />
-    <Compile Include="Interfaces\IKeyboardPlugin.cs" />
-    <Compile Include="Interfaces\IOpcodeProcessor.cs" />
-    <Compile Include="Interfaces\IPlugin.cs" />
-    <Compile Include="Interfaces\IPluginMetadata.cs" />
-    <Compile Include="Interfaces\ISoundPlugin.cs" />
-    <Compile Include="Interfaces\IPluginService.cs" />
-    <Compile Include="Interfaces\IRomService.cs" />
-    <Compile Include="Interfaces\IOpcodeMapService.cs" />
-    <Compile Include="OpcodeProcessor.cs" />
+    <Compile Include="Infrastructure\C8Constants.cs" />
+    <Compile Include="Domain\Engines\C8Engine.cs" />
+    <Compile Include="Domain\Entities\C8MachineState.cs" />
+    <Compile Include="Infrastructure\ConfigurationParameters.cs" />
+    <Compile Include="Domain\Engines\ConfigurationEngine.cs" />
+    <Compile Include="Domain\Engines\EngineMediator.cs" />
+    <Compile Include="Domain\Engines\ExecutionEngine.cs" />
+    <Compile Include="Domain\Engines\InputOutputEngine.cs" />
+    <Compile Include="Domain\Services\OpcodeProcessor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -74,6 +59,12 @@
       <Generator>PublicSettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\C8POC.Interfaces\C8POC.Interfaces.csproj">
+      <Project>{F466A5B5-172F-4AC8-8897-04E58813F510}</Project>
+      <Name>C8POC.Interfaces</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

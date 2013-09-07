@@ -12,7 +12,8 @@ namespace C8POC.WinFormsUI.Services
     using System;
     using System.Collections.Generic;
 
-    using C8POC.Interfaces;
+    using C8POC.Interfaces.Domain.Entities;
+    using C8POC.Interfaces.Domain.Services;
 
     /// <summary>
     /// The windows opcode map service.

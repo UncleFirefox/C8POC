@@ -7,7 +7,7 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace C8POC.Interfaces
+namespace C8POC.Interfaces.Domain.Entities
 {
     using System.Collections;
     using System.Collections.Generic;

@@ -17,7 +17,8 @@ namespace C8POC.Plugins.Graphics.SDLPlugin
     using System.Linq;
     using System.Windows.Forms;
 
-    using C8POC.Interfaces;
+    using C8POC.Infrastructure;
+    using C8POC.Interfaces.Domain.Plugins;
 
     using SdlDotNet.Graphics;
 

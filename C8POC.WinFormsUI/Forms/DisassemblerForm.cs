@@ -16,7 +16,9 @@ namespace C8POC.WinFormsUI.Forms
     using System.Linq;
     using System.Windows.Forms;
 
+    using C8POC.Infrastructure;
     using C8POC.Interfaces;
+    using C8POC.Interfaces.Domain.Entities;
     using C8POC.WinFormsUI.Disassembly;
 
     using Castle.Core.Internal;

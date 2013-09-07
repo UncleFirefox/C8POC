@@ -7,7 +7,7 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace C8POC.WinFormsUI
+namespace C8POC.WinFormsUI.Forms
 {
     using System;
     using System.Windows.Forms;

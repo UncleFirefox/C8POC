@@ -14,7 +14,7 @@ namespace C8POC.Plugins.Keyboard.SystemWindowsKeyboard
     using System.ComponentModel.Composition;
     using System.Windows.Forms;
 
-    using C8POC.Interfaces;
+    using C8POC.Interfaces.Domain.Plugins;
 
     using MouseKeyboardActivityMonitor;
     using MouseKeyboardActivityMonitor.WinApi;

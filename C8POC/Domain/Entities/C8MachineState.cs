@@ -7,14 +7,16 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace C8POC
+namespace C8POC.Domain.Entities
 {
     using System;
     using System.Collections;
     using System.Collections.Generic;
     using System.Linq;
 
+    using C8POC.Infrastructure;
     using C8POC.Interfaces;
+    using C8POC.Interfaces.Domain.Entities;
 
     /// <summary>
     /// Class that wraps the Chip8 Machine State

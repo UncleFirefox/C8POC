@@ -1,5 +1,17 @@
-﻿namespace C8POC.WinFormsUI
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="CoreSettingsForm.Designer.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   Defines the CoreSettingsForm type.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+namespace C8POC.WinFormsUI.Forms
 {
+    /// <summary>
+    /// The core settings form.
+    /// </summary>
     partial class CoreSettingsForm
     {
         /// <summary>
@@ -13,9 +25,9 @@
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
-            if (disposing && (components != null))
+            if (disposing && (this.components != null))
             {
-                components.Dispose();
+                this.components.Dispose();
             }
             base.Dispose(disposing);
         }

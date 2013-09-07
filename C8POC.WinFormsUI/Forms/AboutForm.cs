@@ -1,15 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Windows.Forms;
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="AboutForm.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   Defines the AboutForm type.
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
 
 namespace C8POC.WinFormsUI
 {
     using System.Diagnostics;
+    using System.Windows.Forms;
 
+    /// <summary>
+    /// The about form.
+    /// </summary>
     public partial class AboutForm : Form
     {
         public AboutForm()
@@ -17,9 +22,18 @@ namespace C8POC.WinFormsUI
             InitializeComponent();
         }
 
+        /// <summary>
+        /// The link label github project_ link clicked.
+        /// </summary>
+        /// <param name="sender">
+        /// The sender.
+        /// </param>
+        /// <param name="e">
+        /// The e.
+        /// </param>
         private void linkLabelGithubProject_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            ProcessStartInfo sInfo = new ProcessStartInfo("https://github.com/AlFranco/C8POC");
+            var sInfo = new ProcessStartInfo("https://github.com/AlFranco/C8POC");
             Process.Start(sInfo);
         }
     }

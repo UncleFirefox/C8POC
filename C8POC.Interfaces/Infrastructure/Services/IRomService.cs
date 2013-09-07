@@ -7,8 +7,10 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace C8POC.Interfaces
+namespace C8POC.Interfaces.Infrastructure.Services
 {
+    using C8POC.Interfaces.Domain.Entities;
+
     /// <summary>
     /// The RomService interface.
     /// </summary>

@@ -7,10 +7,10 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace C8POC.Interfaces
+namespace C8POC.Interfaces.Infrastructure.Services
 {
     using System.Collections.Generic;
-    
+
     /// <summary>
     /// Configuration Service Interface
     /// </summary>

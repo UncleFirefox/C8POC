@@ -7,12 +7,15 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace C8POC
+namespace C8POC.Domain.Services
 {
     using System;
     using System.Diagnostics.CodeAnalysis;
 
+    using C8POC.Infrastructure;
     using C8POC.Interfaces;
+    using C8POC.Interfaces.Domain.Entities;
+    using C8POC.Interfaces.Domain.Services;
 
     /// <summary>
     /// Interprets instructions working with a given MachineState

@@ -1,4 +1,13 @@
-﻿namespace C8POC
+﻿// --------------------------------------------------------------------------------------------------------------------
+// <copyright file="C8Constants.cs" company="">
+//   
+// </copyright>
+// <summary>
+//   Class for constants
+// </summary>
+// --------------------------------------------------------------------------------------------------------------------
+
+namespace C8POC.Infrastructure
 {
     /// <summary>
     /// Class for constants
