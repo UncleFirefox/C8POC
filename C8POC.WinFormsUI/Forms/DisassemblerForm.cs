@@ -16,7 +16,7 @@ namespace C8POC.WinFormsUI.Forms
     using System.Linq;
     using System.Windows.Forms;
 
-    using C8POC.Infrastructure;
+    using C8POC.Core.Infrastructure;
     using C8POC.Interfaces;
     using C8POC.Interfaces.Domain.Entities;
     using C8POC.WinFormsUI.Disassembly;
@@ -105,7 +105,7 @@ namespace C8POC.WinFormsUI.Forms
         public int GetGridRowPositionFromProgramCounter(int programCounter)
         {
             // One opcode is 2 bytes of the memory
-            return (programCounter - C8Constants.StartRomAddress) / 2;
+            return (programCounter - C8Constants.StartRomAddress);
         }
 
         /// <summary>
@@ -346,7 +346,7 @@ namespace C8POC.WinFormsUI.Forms
             var result = new List<Tuple<string, string, string>>();
             var numberOfIterations = C8Constants.StartRomAddress + machineState.NumberOfOpcodeBytes;
 
-            for (var i = C8Constants.StartRomAddress; i < numberOfIterations; i += 2)
+            for (var i = C8Constants.StartRomAddress; i < numberOfIterations; i++)
             {
                 ushort opcode = machineState.Memory.ElementAt(i);
                 opcode <<= 8;
@@ -490,7 +490,7 @@ namespace C8POC.WinFormsUI.Forms
                     }
 
                 default:
-                    return "Uknown opcode";
+                    return "Unknown opcode";
             }
         }
 

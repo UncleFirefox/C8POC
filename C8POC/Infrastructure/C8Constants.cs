@@ -7,7 +7,7 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace C8POC.Infrastructure
+namespace C8POC.Core.Infrastructure
 {
     /// <summary>
     /// Class for constants

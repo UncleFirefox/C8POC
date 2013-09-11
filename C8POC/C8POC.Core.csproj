@@ -8,8 +8,8 @@
     <ProjectGuid>{13D18A20-EFB2-45F1-AFCE-5AB37A102E1C}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>C8POC</RootNamespace>
-    <AssemblyName>C8POC</AssemblyName>
+    <RootNamespace>C8POC.Core</RootNamespace>
+    <AssemblyName>C8POC.Core</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>

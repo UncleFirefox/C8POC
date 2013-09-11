@@ -35,9 +35,9 @@ namespace C8POC.WinFormsUI.Forms
         {
             this.InitializeComponent();
 
-            this.numericUpDownCyclesPerFrame.Value = C8POC.Properties.Settings.Default.CyclesPerFrame;
-            this.numericUpDownFramesPerSecond.Value = C8POC.Properties.Settings.Default.FramesPerSecond;
-            this.checkBoxDisassembler.Checked = C8POC.Properties.Settings.Default.DisassemblerEnabled;
+            this.numericUpDownCyclesPerFrame.Value = C8POC.Core.Properties.Settings.Default.CyclesPerFrame;
+            this.numericUpDownFramesPerSecond.Value = C8POC.Core.Properties.Settings.Default.FramesPerSecond;
+            this.checkBoxDisassembler.Checked = C8POC.Core.Properties.Settings.Default.DisassemblerEnabled;
         }
 
         /// <summary>
@@ -51,9 +51,9 @@ namespace C8POC.WinFormsUI.Forms
         /// </param>
         private void ButtonOkClick(object sender, EventArgs e)
         {
-            C8POC.Properties.Settings.Default.CyclesPerFrame = long.Parse(this.numericUpDownCyclesPerFrame.Text);
-            C8POC.Properties.Settings.Default.FramesPerSecond = long.Parse(this.numericUpDownFramesPerSecond.Text);
-            C8POC.Properties.Settings.Default.DisassemblerEnabled = this.checkBoxDisassembler.Checked;
+            C8POC.Core.Properties.Settings.Default.CyclesPerFrame = long.Parse(this.numericUpDownCyclesPerFrame.Text);
+            C8POC.Core.Properties.Settings.Default.FramesPerSecond = long.Parse(this.numericUpDownFramesPerSecond.Text);
+            C8POC.Core.Properties.Settings.Default.DisassemblerEnabled = this.checkBoxDisassembler.Checked;
 
             this.DialogResult = DialogResult.OK;
 

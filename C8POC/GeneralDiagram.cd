@@ -6,7 +6,7 @@
   <Comment CommentText="Starting alternative version of engines with separate engines and a mediator">
     <Position X="6.441" Y="8.567" Height="0.999" Width="1.273" />
   </Comment>
-  <Class Name="C8POC.Properties.Settings">
+  <Class Name="C8POC.Core.Properties.Settings">
     <Position X="11.5" Y="1.25" Width="2" />
     <Compartments>
       <Compartment Name="Fields" Collapsed="true" />

@@ -7,15 +7,14 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace C8POC.Domain.Entities
+namespace C8POC.Core.Domain.Entities
 {
     using System;
     using System.Collections;
     using System.Collections.Generic;
     using System.Linq;
 
-    using C8POC.Infrastructure;
-    using C8POC.Interfaces;
+    using C8POC.Core.Infrastructure;
     using C8POC.Interfaces.Domain.Entities;
 
     /// <summary>

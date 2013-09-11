@@ -7,13 +7,12 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace C8POC.Domain.Services
+namespace C8POC.Core.Domain.Services
 {
     using System;
     using System.Diagnostics.CodeAnalysis;
 
-    using C8POC.Infrastructure;
-    using C8POC.Interfaces;
+    using C8POC.Core.Infrastructure;
     using C8POC.Interfaces.Domain.Entities;
     using C8POC.Interfaces.Domain.Services;
 

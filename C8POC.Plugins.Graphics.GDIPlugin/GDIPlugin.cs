@@ -17,7 +17,7 @@ namespace C8POC.Plugins.Graphics.GDIPlugin
     using System.Linq;
     using System.Windows.Forms;
 
-    using C8POC.Infrastructure;
+    using C8POC.Core.Infrastructure;
     using C8POC.Interfaces.Domain.Plugins;
 
     /// <summary>

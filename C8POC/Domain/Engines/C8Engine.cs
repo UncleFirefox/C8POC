@@ -7,7 +7,7 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace C8POC.Domain.Engines
+namespace C8POC.Core.Domain.Engines
 {
     using System;
     using System.Collections;
@@ -20,12 +20,11 @@ namespace C8POC.Domain.Engines
     using System.Threading;
     using System.Threading.Tasks;
 
-    using C8POC.Interfaces;
+    using C8POC.Core.Properties;
     using C8POC.Interfaces.Domain.Entities;
     using C8POC.Interfaces.Domain.Plugins;
     using C8POC.Interfaces.Domain.Services;
     using C8POC.Interfaces.Infrastructure.Services;
-    using C8POC.Properties;
 
     /// <summary>
     /// Engine for emulator and central piece of this application

@@ -4,12 +4,11 @@
 // </copyright>
 // -----------------------------------------------------------------------
 
-namespace C8POC.Domain.Engines
+namespace C8POC.Core.Domain.Engines
 {
     using System.Collections;
     using System.Linq;
 
-    using C8POC.Interfaces;
     using C8POC.Interfaces.Domain.Engines;
     using C8POC.Interfaces.Domain.Plugins;
     using C8POC.Interfaces.Domain.Services;

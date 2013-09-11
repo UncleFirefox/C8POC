@@ -12,9 +12,9 @@ namespace C8POC.WinFormsUI.Container
     using Autofac;
     using Autofac.Extras.DynamicProxy2;
 
-    using C8POC.Domain.Engines;
-    using C8POC.Domain.Entities;
-    using C8POC.Domain.Services;
+    using C8POC.Core.Domain.Engines;
+    using C8POC.Core.Domain.Entities;
+    using C8POC.Core.Domain.Services;
     using C8POC.Interfaces.Domain.Engines;
     using C8POC.Interfaces.Domain.Entities;
     using C8POC.Interfaces.Domain.Services;

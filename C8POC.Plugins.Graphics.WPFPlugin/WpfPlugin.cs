@@ -17,7 +17,7 @@ namespace C8POC.Plugins.Graphics.WPFPlugin
     using System.Windows.Media;
     using System.Windows.Shapes;
 
-    using C8POC.Infrastructure;
+    using C8POC.Core.Infrastructure;
     using C8POC.Interfaces.Domain.Plugins;
 
     /// <summary>

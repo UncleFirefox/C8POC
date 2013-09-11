@@ -12,7 +12,7 @@ namespace C8POC.WinFormsUI.Services
     using System;
     using System.IO;
 
-    using C8POC.Infrastructure;
+    using C8POC.Core.Infrastructure;
     using C8POC.Interfaces.Domain.Entities;
     using C8POC.Interfaces.Infrastructure.Services;
 

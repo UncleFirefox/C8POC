@@ -7,7 +7,7 @@
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
 
-namespace C8POC.Domain.Engines
+namespace C8POC.Core.Domain.Engines
 {
     using System;
     using System.Collections.Generic;
@@ -15,10 +15,9 @@ namespace C8POC.Domain.Engines
     using System.Configuration;
     using System.Linq;
 
-    using C8POC.Interfaces;
+    using C8POC.Core.Properties;
     using C8POC.Interfaces.Domain.Engines;
     using C8POC.Interfaces.Infrastructure.Services;
-    using C8POC.Properties;
 
     /// <summary>
     /// The configuration engine.

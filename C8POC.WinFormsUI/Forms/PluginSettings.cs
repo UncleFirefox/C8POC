@@ -133,9 +133,9 @@ namespace C8POC.WinFormsUI.Forms
         /// </summary>
         private void BindAssembliesToComboBox()
         {
-            this.BindPluginsToComboBox(this.comboBoxSound, this.pluginService.GetPluginsOfType<ISoundPlugin>(), C8POC.Properties.Settings.Default.SelectedSoundPlugin);
-            this.BindPluginsToComboBox(this.comboBoxGraphics, this.pluginService.GetPluginsOfType<IGraphicsPlugin>(), C8POC.Properties.Settings.Default.SelectedGraphicsPlugin);
-            this.BindPluginsToComboBox(this.comboBoxKeyInput, this.pluginService.GetPluginsOfType<IKeyboardPlugin>(), C8POC.Properties.Settings.Default.SelectedKeyboardPlugin);
+            this.BindPluginsToComboBox(this.comboBoxSound, this.pluginService.GetPluginsOfType<ISoundPlugin>(), C8POC.Core.Properties.Settings.Default.SelectedSoundPlugin);
+            this.BindPluginsToComboBox(this.comboBoxGraphics, this.pluginService.GetPluginsOfType<IGraphicsPlugin>(), C8POC.Core.Properties.Settings.Default.SelectedGraphicsPlugin);
+            this.BindPluginsToComboBox(this.comboBoxKeyInput, this.pluginService.GetPluginsOfType<IKeyboardPlugin>(), C8POC.Core.Properties.Settings.Default.SelectedKeyboardPlugin);
         }
 
         /// <summary>
@@ -188,9 +188,9 @@ namespace C8POC.WinFormsUI.Forms
             if (this.saveChanges)
             {
                 // Do our stuff in here to save the selected plugins
-                C8POC.Properties.Settings.Default.SelectedGraphicsPlugin = this.GetSelectedPluginNameSpace<IGraphicsPlugin>();
-                C8POC.Properties.Settings.Default.SelectedSoundPlugin = this.GetSelectedPluginNameSpace<ISoundPlugin>();
-                C8POC.Properties.Settings.Default.SelectedKeyboardPlugin = this.GetSelectedPluginNameSpace<IKeyboardPlugin>();
+                C8POC.Core.Properties.Settings.Default.SelectedGraphicsPlugin = this.GetSelectedPluginNameSpace<IGraphicsPlugin>();
+                C8POC.Core.Properties.Settings.Default.SelectedSoundPlugin = this.GetSelectedPluginNameSpace<ISoundPlugin>();
+                C8POC.Core.Properties.Settings.Default.SelectedKeyboardPlugin = this.GetSelectedPluginNameSpace<IKeyboardPlugin>();
 
                 this.configurationService.SaveEngineConfiguration();
 
