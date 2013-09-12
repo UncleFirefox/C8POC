@@ -53,6 +53,7 @@
   </Choose>
   <ItemGroup>
     <Compile Include="Domain\Services\OpcodeProcessorTests.cs" />
+    <Compile Include="FixtureUtils.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -62,6 +63,10 @@
     <ProjectReference Include="..\C8POC.Core\C8POC.Core.csproj">
       <Project>{13d18a20-efb2-45f1-afce-5ab37a102e1c}</Project>
       <Name>C8POC.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\C8POC.Interfaces\C8POC.Interfaces.csproj">
+      <Project>{F466A5B5-172F-4AC8-8897-04E58813F510}</Project>
+      <Name>C8POC.Interfaces</Name>
     </ProjectReference>
   </ItemGroup>
   <Choose>
