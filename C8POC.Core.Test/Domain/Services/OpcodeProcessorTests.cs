@@ -22,7 +22,7 @@ namespace C8POC.Core.Test.Domain.Services
         /// <summary>
         /// Tests the ignored function
         /// </summary>
-        [Fact()]
+        [Fact]
         public void JumpToRoutineAtAdressTest()
         {
             // Arrange
@@ -36,7 +36,7 @@ namespace C8POC.Core.Test.Domain.Services
             Assert.True(!machineState.Stack.Any());
         }
 
-        [Fact()]
+        [Fact]
         public void ClearScreenTest()
         {
             // Arrange
@@ -50,7 +50,7 @@ namespace C8POC.Core.Test.Domain.Services
             Assert.True(!machineState.Graphics.Cast<bool>().Any(x => x));
         }
 
-        [Fact()]
+        [Fact]
         public void ReturnFromSubRoutineTest()
         {
             // Arrange
@@ -66,7 +66,7 @@ namespace C8POC.Core.Test.Domain.Services
             Assert.True(machineState.Stack.Count == 0);
         }
 
-        [Fact()]
+        [Fact]
         public void JumpTest()
         {
             // Arrange
@@ -81,7 +81,7 @@ namespace C8POC.Core.Test.Domain.Services
             Assert.Equal(machineState.ProgramCounter, 0x234);
         }
 
-        [Fact()]
+        [Fact]
         public void CallAtAdressTest()
         {
             // Arrange
@@ -98,7 +98,7 @@ namespace C8POC.Core.Test.Domain.Services
             Assert.Equal(machineState.Stack.Peek(), 0x555);
         }
 
-        [Fact()]
+        [Fact]
         public void SkipNextInstructionIfRegisterEqualsImmediateTest()
         {
             // Arrange
@@ -115,7 +115,7 @@ namespace C8POC.Core.Test.Domain.Services
             Assert.Equal(machineState.ProgramCounter, 0x502);
         }
 
-        [Fact()]
+        [Fact]
         public void SkipNextInstructionIfRegisterNotEqualsImmediateTest()
         {
             // Arrange
@@ -132,7 +132,7 @@ namespace C8POC.Core.Test.Domain.Services
             Assert.Equal(machineState.ProgramCounter, 0x502);
         }
 
-        [Fact()]
+        [Fact]
         public void SkipNextInstructionIfRegisterEqualsRegisterTest()
         {
             // Arrange
@@ -150,7 +150,7 @@ namespace C8POC.Core.Test.Domain.Services
             Assert.Equal(machineState.ProgramCounter, 0x502);
         }
 
-        [Fact()]
+        [Fact]
         public void LoadValueIntoRegisterTest()
         {
             // Arrange
@@ -166,7 +166,7 @@ namespace C8POC.Core.Test.Domain.Services
             Assert.Equal(machineState.VRegisters[4], 0x50);
         }
 
-        [Fact()]
+        [Fact]
         public void AddValueIntoRegisterTest()
         {
             // Arrange
@@ -182,7 +182,7 @@ namespace C8POC.Core.Test.Domain.Services
             Assert.Equal(machineState.VRegisters[6], 0x30 + 0x25);
         }
 
-        [Fact()]
+        [Fact]
         public void LoadRegisterIntoRegisterTest()
         {
             // Arrange
@@ -198,7 +198,7 @@ namespace C8POC.Core.Test.Domain.Services
             Assert.Equal(machineState.VRegisters[2], 0x80);
         }
 
-        [Fact()]
+        [Fact]
         public void OrRegistersIntoRegisterTest()
         {
             // Arrange
@@ -216,7 +216,7 @@ namespace C8POC.Core.Test.Domain.Services
             Assert.Equal(machineState.VRegisters[2], 0x82 | 0x85);
         }
 
-        [Fact()]
+        [Fact]
         public void AndRegistersIntoRegiterTest()
         {
             // Arrange
@@ -234,7 +234,7 @@ namespace C8POC.Core.Test.Domain.Services
             Assert.Equal(machineState.VRegisters[2], 0x82 & 0x85);
         }
 
-        [Fact()]
+        [Fact]
         public void ExclusiveOrIntoRegisterTest()
         {
             // Arrange
@@ -252,7 +252,7 @@ namespace C8POC.Core.Test.Domain.Services
             Assert.Equal(machineState.VRegisters[2], 0x82 ^ 0x85);
         }
 
-        [Fact()]
+        [Fact]
         public void AddRegistersIntoRegisterTest()
         {
             // Arrange
@@ -271,7 +271,7 @@ namespace C8POC.Core.Test.Domain.Services
             Assert.Equal(machineState.VRegisters[0xF], 0x1);
         }
 
-        [Fact()]
+        [Fact]
         public void SubstractRegistersTest()
         {
             // Arrange
@@ -290,7 +290,7 @@ namespace C8POC.Core.Test.Domain.Services
             Assert.Equal(machineState.VRegisters[0xF], 0x1);
         }
 
-        [Fact()]
+        [Fact]
         public void ShiftRegisterRightTest()
         {
             // Arrange
@@ -309,7 +309,7 @@ namespace C8POC.Core.Test.Domain.Services
             Assert.Equal(machineState.VRegisters[0xF], 0x1);
         }
 
-        [Fact()]
+        [Fact]
         public void SubstractRegistersReverseTest()
         {
             // Arrange
@@ -328,7 +328,7 @@ namespace C8POC.Core.Test.Domain.Services
             Assert.Equal(machineState.VRegisters[0xF], 0x1);
         }
 
-        [Fact()]
+        [Fact]
         public void ShiftRegisterLeftTest()
         {
             // Arrange
@@ -347,7 +347,7 @@ namespace C8POC.Core.Test.Domain.Services
             Assert.Equal(machineState.VRegisters[0xF], 0x1);
         }
 
-        [Fact()]
+        [Fact]
         public void SkipNextInstructionIfRegisterNotEqualsRegisterTest()
         {
             // Arrange
@@ -366,7 +366,7 @@ namespace C8POC.Core.Test.Domain.Services
             Assert.Equal(machineState.ProgramCounter, 0x302);
         }
 
-        [Fact()]
+        [Fact]
         public void LoadIntoIndexRegisterTest()
         {
             // Arrange
@@ -381,7 +381,7 @@ namespace C8POC.Core.Test.Domain.Services
             Assert.Equal(machineState.IndexRegister, 0x327);
         }
 
-        [Fact()]
+        [Fact]
         public void JumpToV0PlusImmediateTest()
         {
             // Arrange
@@ -397,7 +397,7 @@ namespace C8POC.Core.Test.Domain.Services
             Assert.Equal(machineState.ProgramCounter, 0x1111 + 0x0327);
         }
 
-        [Fact()]
+        [Fact]
         public void LoadRandomIntoRegisterTest()
         {
             // Arrange
@@ -413,73 +413,73 @@ namespace C8POC.Core.Test.Domain.Services
             Assert.NotEqual(machineState.VRegisters[3], 0x1111);
         }
 
-        [Fact()]
+        [Fact]
         public void DrawSpriteTest()
         {
             Assert.True(false, "not implemented yet");
         }
 
-        [Fact()]
+        [Fact]
         public void SkipNextInstructionIfRegisterEqualsKeyPressedTest()
         {
             Assert.True(false, "not implemented yet");
         }
 
-        [Fact()]
+        [Fact]
         public void SkipNextInstructionIfRegisterNotEqualsKeyPressedTest()
         {
             Assert.True(false, "not implemented yet");
         }
 
-        [Fact()]
+        [Fact]
         public void LoadTimerValueIntoRegisterTest()
         {
             Assert.True(false, "not implemented yet");
         }
 
-        [Fact()]
+        [Fact]
         public void LoadKeyIntoRegisterTest()
         {
             Assert.True(false, "not implemented yet");
         }
 
-        [Fact()]
+        [Fact]
         public void LoadRegisterIntoDelayTimerTest()
         {
             Assert.True(false, "not implemented yet");
         }
 
-        [Fact()]
+        [Fact]
         public void LoadRegisterIntoSoundTimerTest()
         {
             Assert.True(false, "not implemented yet");
         }
 
-        [Fact()]
+        [Fact]
         public void AddRegisterToIndexRegisterTest()
         {
             Assert.True(false, "not implemented yet");
         }
 
-        [Fact()]
+        [Fact]
         public void LoadFontSpriteLocationFromValueInRegisterTest()
         {
             Assert.True(false, "not implemented yet");
         }
 
-        [Fact()]
+        [Fact]
         public void LoadBcdRepresentationFromRegisterTest()
         {
             Assert.True(false, "not implemented yet");
         }
 
-        [Fact()]
+        [Fact]
         public void LoadAllRegistersFromValueInRegisterTest()
         {
             Assert.True(false, "not implemented yet");
         }
 
-        [Fact()]
+        [Fact]
         public void LoadFromValueInRegisterIntoAllRegistersTest()
         {
             Assert.True(false, "not implemented yet");
