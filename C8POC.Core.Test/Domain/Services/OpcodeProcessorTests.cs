@@ -255,55 +255,162 @@ namespace C8POC.Core.Test.Domain.Services
         [Fact()]
         public void AddRegistersIntoRegisterTest()
         {
-            Assert.True(false, "not implemented yet");
+            // Arrange
+            var sut = this.GetDefaultOpcodeProcessor();
+            var machineState = FixtureUtils.DefaultMachineState();
+            machineState.CurrentOpcode = 0x8234;
+
+            machineState.VRegisters[2] = 0xFF;
+            machineState.VRegisters[3] = 0xFF;
+
+            // Act
+            sut.AddRegistersIntoRegister(machineState);
+
+            // Assert
+            Assert.Equal(machineState.VRegisters[2], 0xFF + 0xFF);
+            Assert.Equal(machineState.VRegisters[0xF], 0x1);
         }
 
         [Fact()]
         public void SubstractRegistersTest()
         {
-            Assert.True(false, "not implemented yet");
+            // Arrange
+            var sut = this.GetDefaultOpcodeProcessor();
+            var machineState = FixtureUtils.DefaultMachineState();
+            machineState.CurrentOpcode = 0x8235;
+
+            machineState.VRegisters[2] = 0xE0;
+            machineState.VRegisters[3] = 0x10;
+
+            // Act
+            sut.SubstractRegisters(machineState);
+
+            // Assert
+            Assert.Equal(machineState.VRegisters[2], 0xE0 - 0x10);
+            Assert.Equal(machineState.VRegisters[0xF], 0x1);
         }
 
         [Fact()]
         public void ShiftRegisterRightTest()
         {
-            Assert.True(false, "not implemented yet");
+            // Arrange
+            var sut = this.GetDefaultOpcodeProcessor();
+            var machineState = FixtureUtils.DefaultMachineState();
+            machineState.CurrentOpcode = 0x8236;
+
+            machineState.VRegisters[2] = 0xE001;
+            machineState.VRegisters[3] = 0xF001;
+
+            // Act
+            sut.ShiftRegisterRight(machineState);
+
+            // Assert
+            Assert.Equal(machineState.VRegisters[2], 0xF001 / 2);
+            Assert.Equal(machineState.VRegisters[0xF], 0x1);
         }
 
         [Fact()]
         public void SubstractRegistersReverseTest()
         {
-            Assert.True(false, "not implemented yet");
+            // Arrange
+            var sut = this.GetDefaultOpcodeProcessor();
+            var machineState = FixtureUtils.DefaultMachineState();
+            machineState.CurrentOpcode = 0x8237;
+
+            machineState.VRegisters[2] = 0xE001;
+            machineState.VRegisters[3] = 0xFF01;
+
+            // Act
+            sut.SubstractRegistersReverse(machineState);
+
+            // Assert
+            Assert.Equal(machineState.VRegisters[2], 0xFF01 - 0xE001);
+            Assert.Equal(machineState.VRegisters[0xF], 0x1);
         }
 
         [Fact()]
         public void ShiftRegisterLeftTest()
         {
-            Assert.True(false, "not implemented yet");
+            // Arrange
+            var sut = this.GetDefaultOpcodeProcessor();
+            var machineState = FixtureUtils.DefaultMachineState();
+            machineState.CurrentOpcode = 0x823E;
+
+            machineState.VRegisters[2] = 0x8010;
+            machineState.VRegisters[3] = 0x80FF;
+
+            // Act
+            sut.ShiftRegisterLeft(machineState);
+
+            // Assert
+            Assert.Equal(machineState.VRegisters[2], 0x80FF >> 1);
+            Assert.Equal(machineState.VRegisters[0xF], 0x1);
         }
 
         [Fact()]
         public void SkipNextInstructionIfRegisterNotEqualsRegisterTest()
         {
-            Assert.True(false, "not implemented yet");
+            // Arrange
+            var sut = this.GetDefaultOpcodeProcessor();
+            var machineState = FixtureUtils.DefaultMachineState();
+            machineState.CurrentOpcode = 0x9238;
+            machineState.ProgramCounter = 0x300;
+
+            machineState.VRegisters[2] = 0x8010;
+            machineState.VRegisters[3] = 0x80FF;
+
+            // Act
+            sut.SkipNextInstructionIfRegisterNotEqualsRegister(machineState);
+
+            // Assert
+            Assert.Equal(machineState.ProgramCounter, 0x302);
         }
 
         [Fact()]
         public void LoadIntoIndexRegisterTest()
         {
-            Assert.True(false, "not implemented yet");
+            // Arrange
+            var sut = this.GetDefaultOpcodeProcessor();
+            var machineState = FixtureUtils.DefaultMachineState();
+            machineState.CurrentOpcode = 0xA327;
+
+            // Act
+            sut.LoadIntoIndexRegister(machineState);
+
+            // Assert
+            Assert.Equal(machineState.IndexRegister, 0x327);
         }
 
         [Fact()]
         public void JumpToV0PlusImmediateTest()
         {
-            Assert.True(false, "not implemented yet");
+            // Arrange
+            var sut = this.GetDefaultOpcodeProcessor();
+            var machineState = FixtureUtils.DefaultMachineState();
+            machineState.CurrentOpcode = 0xB327;
+            machineState.VRegisters[0x0] = 0x1111;
+
+            // Act
+            sut.JumpToV0PlusImmediate(machineState);
+
+            // Assert
+            Assert.Equal(machineState.ProgramCounter, 0x1111 + 0x0327);
         }
 
         [Fact()]
         public void LoadRandomIntoRegisterTest()
         {
-            Assert.True(false, "not implemented yet");
+            // Arrange
+            var sut = this.GetDefaultOpcodeProcessor();
+            var machineState = FixtureUtils.DefaultMachineState();
+            machineState.CurrentOpcode = 0xC320;
+            machineState.VRegisters[3] = 0x1111;
+
+            // Act
+            sut.LoadRandomIntoRegister(machineState);
+
+            // Assert
+            Assert.NotEqual(machineState.VRegisters[3], 0x1111);
         }
 
         [Fact()]

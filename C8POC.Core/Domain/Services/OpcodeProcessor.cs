@@ -289,15 +289,15 @@ namespace C8POC.Core.Domain.Services
 
         /// <summary>
         /// 8xy6 - SHR Vx {, Vy}
-        /// Set Vx = Vx SHR 1.
-        /// If the least-significant bit of Vx is 1, then VF is set to 1, otherwise 0. Then Vx is divided by 2.
+        /// Set Vx = Vy SHR 1.
+        /// If the least-significant bit of Vy is 1, then VF is set to 1, otherwise 0. Then Vx has the value of Vy divided by 2.
         /// </summary>
         /// <param name="machineState">
         /// The machine State.
         /// </param>
         public void ShiftRegisterRight(IMachineState machineState)
         {
-            if ((machineState.CurrentOpcode & 0x000F) == 1)
+            if ((machineState.VRegisters[machineState.YRegisterFromCurrentOpcode] & 0x0001) != 0x0)
             {
                 machineState.VRegisters[0xF] = 1;
             }
@@ -306,7 +306,7 @@ namespace C8POC.Core.Domain.Services
                 machineState.VRegisters[0xF] = 0;
             }
 
-            machineState.VRegisters[machineState.XRegisterFromCurrentOpcode] >>= 1;
+            machineState.VRegisters[machineState.XRegisterFromCurrentOpcode] = (ushort)(machineState.VRegisters[machineState.YRegisterFromCurrentOpcode] >> 1);
         }
 
         /// <summary>
@@ -337,15 +337,15 @@ namespace C8POC.Core.Domain.Services
 
         /// <summary>
         /// 8xyE - SHL Vx {, Vy}
-        /// Set Vx = Vx SHL 1.
-        /// If the most-significant bit of Vx is 1, then VF is set to 1, otherwise to 0. Then Vx is multiplied by 2.
+        /// Set Vx = Vy SHL 1.
+        /// If the most-significant bit of Vy is 1, then VF is set to 1, otherwise to 0. Then Vx has the value of Vy multiplied by 2.
         /// </summary>
         /// <param name="machineState">
         /// The machine State.
         /// </param>
         public void ShiftRegisterLeft(IMachineState machineState)
         {
-            if ((machineState.VRegisters[machineState.XRegisterFromCurrentOpcode] & 0xF000) == 0x1000)
+            if ((machineState.VRegisters[machineState.YRegisterFromCurrentOpcode] & 0x8000) != 0x0)
             {
                 machineState.VRegisters[0xF] = 1;
             }
@@ -354,7 +354,7 @@ namespace C8POC.Core.Domain.Services
                 machineState.VRegisters[0xF] = 0;
             }
 
-            machineState.VRegisters[machineState.XRegisterFromCurrentOpcode] <<= 1;
+            machineState.VRegisters[machineState.XRegisterFromCurrentOpcode] = (ushort)(machineState.VRegisters[machineState.YRegisterFromCurrentOpcode] >> 1);
         }
 
         /// <summary>
