@@ -422,25 +422,75 @@ namespace C8POC.Core.Test.Domain.Services
         [Fact]
         public void SkipNextInstructionIfRegisterEqualsKeyPressedTest()
         {
-            Assert.True(false, "not implemented yet");
+            // Arrange
+            var sut = this.GetDefaultOpcodeProcessor();
+            var machineState = FixtureUtils.DefaultMachineState();
+            machineState.CurrentOpcode = 0xE29E;
+            machineState.ProgramCounter = 0x300;
+
+            machineState.VRegisters[0x2] = 0x9;
+            machineState.Keys[0x9] = true;
+
+            // Act
+            sut.SkipNextInstructionIfRegisterEqualsKeyPressed(machineState);
+
+            // Assert
+            Assert.Equal(machineState.ProgramCounter, 0x302);
         }
 
         [Fact]
         public void SkipNextInstructionIfRegisterNotEqualsKeyPressedTest()
         {
-            Assert.True(false, "not implemented yet");
+            // Arrange
+            var sut = this.GetDefaultOpcodeProcessor();
+            var machineState = FixtureUtils.DefaultMachineState();
+            machineState.CurrentOpcode = 0xE2A1;
+            machineState.ProgramCounter = 0x300;
+
+            machineState.VRegisters[0x2] = 0x9;
+            machineState.Keys[0x9] = false;
+
+            // Act
+            sut.SkipNextInstructionIfRegisterNotEqualsKeyPressed(machineState);
+
+            // Assert
+            Assert.Equal(machineState.ProgramCounter, 0x302);
         }
 
         [Fact]
         public void LoadTimerValueIntoRegisterTest()
         {
-            Assert.True(false, "not implemented yet");
+            // Arrange
+            var sut = this.GetDefaultOpcodeProcessor();
+            var machineState = FixtureUtils.DefaultMachineState();
+            machineState.CurrentOpcode = 0xF407;
+
+            machineState.VRegisters[0x4] = 0x15;
+            machineState.DelayTimer = 0x40;
+
+            // Act
+            sut.LoadTimerValueIntoRegister(machineState);
+
+            // Assert
+            Assert.Equal(machineState.VRegisters[0x4], machineState.DelayTimer);
         }
 
         [Fact]
         public void LoadKeyIntoRegisterTest()
         {
-            Assert.True(false, "not implemented yet");
+            // Arrange
+            var sut = this.GetDefaultOpcodeProcessor();
+            var machineState = FixtureUtils.DefaultMachineState();
+            machineState.CurrentOpcode = 0xF407;
+
+            machineState.VRegisters[0x4] = 0x15;
+            machineState.DelayTimer = 0x40;
+
+            // Act
+            sut.LoadKeyIntoRegister(machineState);
+
+            // Assert
+            Assert.Equal(machineState.VRegisters[0x4], machineState.DelayTimer);
         }
 
         [Fact]
