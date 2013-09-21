@@ -481,58 +481,165 @@ namespace C8POC.Core.Test.Domain.Services
             // Arrange
             var sut = this.GetDefaultOpcodeProcessor();
             var machineState = FixtureUtils.DefaultMachineState();
-            machineState.CurrentOpcode = 0xF407;
-
-            machineState.VRegisters[0x4] = 0x15;
-            machineState.DelayTimer = 0x40;
+            machineState.ProgramCounter = 0x402;
+            machineState.CurrentOpcode = 0xF40A;
+            machineState.VRegisters[0x4] = 0x0;
+            machineState.Keys.SetAll(false);
 
             // Act
             sut.LoadKeyIntoRegister(machineState);
 
             // Assert
-            Assert.Equal(machineState.VRegisters[0x4], machineState.DelayTimer);
+            Assert.Equal(machineState.VRegisters[0x4], 0x0);
+            Assert.Equal(machineState.ProgramCounter, 0x400);
+
+            // Arrange 2nd time, simulate key pressed
+            machineState.Keys[0x3] = true;
+            machineState.ProgramCounter = 0x402;
+
+            // Act
+            sut.LoadKeyIntoRegister(machineState);
+
+            // Assert
+            Assert.Equal(machineState.VRegisters[0x4], 0x3);
+            Assert.Equal(machineState.ProgramCounter, 0x402);
         }
 
         [Fact]
         public void LoadRegisterIntoDelayTimerTest()
         {
-            Assert.True(false, "not implemented yet");
+            // Arrange
+            var sut = this.GetDefaultOpcodeProcessor();
+            var machineState = FixtureUtils.DefaultMachineState();
+            machineState.CurrentOpcode = 0xF415;
+
+            machineState.VRegisters[0x4] = 0x15;
+            machineState.DelayTimer = 0x40;
+
+            // Act
+            sut.LoadRegisterIntoDelayTimer(machineState);
+
+            // Assert
+            Assert.Equal(machineState.DelayTimer, machineState.VRegisters[0x4]);
         }
 
         [Fact]
         public void LoadRegisterIntoSoundTimerTest()
         {
-            Assert.True(false, "not implemented yet");
+            // Arrange
+            var sut = this.GetDefaultOpcodeProcessor();
+            var machineState = FixtureUtils.DefaultMachineState();
+            machineState.CurrentOpcode = 0xF418;
+
+            machineState.VRegisters[0x4] = 0x15;
+            machineState.SoundTimer = 0x40;
+
+            // Act
+            sut.LoadRegisterIntoSoundTimer(machineState);
+
+            // Assert
+            Assert.Equal(machineState.SoundTimer, machineState.VRegisters[0x4]);
         }
 
         [Fact]
         public void AddRegisterToIndexRegisterTest()
         {
-            Assert.True(false, "not implemented yet");
+            // Arrange
+            var sut = this.GetDefaultOpcodeProcessor();
+            var machineState = FixtureUtils.DefaultMachineState();
+            machineState.CurrentOpcode = 0xF41E;
+
+            machineState.VRegisters[0x4] = 0x15;
+            machineState.IndexRegister = 0x40;
+
+            // Act
+            sut.AddRegisterToIndexRegister(machineState);
+
+            // Assert
+            Assert.Equal(machineState.IndexRegister, 0x15 + 0x40);
         }
 
         [Fact]
         public void LoadFontSpriteLocationFromValueInRegisterTest()
         {
-            Assert.True(false, "not implemented yet");
+            // Arrange
+            var sut = this.GetDefaultOpcodeProcessor();
+            var machineState = FixtureUtils.DefaultMachineState();
+            machineState.CurrentOpcode = 0xF429;
+
+            machineState.VRegisters[0x4] = 0x7;
+
+            // Act
+            sut.LoadFontSpriteLocationFromValueInRegister(machineState);
+
+            // Assert
+            Assert.Equal(machineState.IndexRegister, 5 * 0x7);
         }
 
         [Fact]
         public void LoadBcdRepresentationFromRegisterTest()
         {
-            Assert.True(false, "not implemented yet");
+            // Arrange
+            var sut = this.GetDefaultOpcodeProcessor();
+            var machineState = FixtureUtils.DefaultMachineState();
+            machineState.CurrentOpcode = 0xF433;
+
+            machineState.VRegisters[0x4] = 125;
+
+            // Act
+            sut.LoadBcdRepresentationFromRegister(machineState);
+
+            // Assert
+            Assert.Equal(machineState.Memory[machineState.IndexRegister], 1);
+            Assert.Equal(machineState.Memory[machineState.IndexRegister + 1], 2);
+            Assert.Equal(machineState.Memory[machineState.IndexRegister + 2], 5);
         }
 
         [Fact]
         public void LoadAllRegistersFromValueInRegisterTest()
         {
-            Assert.True(false, "not implemented yet");
+            // Arrange
+            var sut = this.GetDefaultOpcodeProcessor();
+            var machineState = FixtureUtils.DefaultMachineState();
+            machineState.CurrentOpcode = 0xF455;
+
+            machineState.VRegisters[0x0] = 0x12;
+            machineState.VRegisters[0x1] = 0x13;
+            machineState.VRegisters[0x2] = 0x14;
+            machineState.VRegisters[0x3] = 0x15;
+            machineState.VRegisters[0x4] = 0x16;
+
+            // Act
+            sut.LoadAllRegistersFromValueInRegister(machineState);
+
+            // Assert
+            Assert.Equal(machineState.Memory[machineState.IndexRegister], 0x12);
+            Assert.Equal(machineState.Memory[machineState.IndexRegister + 1], 0x13);
+            Assert.Equal(machineState.Memory[machineState.IndexRegister + 2], 0x14);
+            Assert.Equal(machineState.Memory[machineState.IndexRegister + 3], 0x15);
+            Assert.Equal(machineState.Memory[machineState.IndexRegister + 4], 0x16);
         }
 
         [Fact]
         public void LoadFromValueInRegisterIntoAllRegistersTest()
         {
-            Assert.True(false, "not implemented yet");
+            // Arrange
+            var sut = this.GetDefaultOpcodeProcessor();
+            var machineState = FixtureUtils.DefaultMachineState();
+            machineState.CurrentOpcode = 0xF265;
+            machineState.IndexRegister = 0x204;
+
+            machineState.Memory[machineState.IndexRegister] = 0x10;
+            machineState.Memory[machineState.IndexRegister + 1] = 0x11;
+            machineState.Memory[machineState.IndexRegister + 2] = 0x12;
+
+            // Act
+            sut.LoadFromValueInRegisterIntoAllRegisters(machineState);
+
+            // Assert
+            Assert.Equal(machineState.Memory[machineState.IndexRegister], machineState.VRegisters[0]);
+            Assert.Equal(machineState.Memory[machineState.IndexRegister + 1], machineState.VRegisters[1]);
+            Assert.Equal(machineState.Memory[machineState.IndexRegister + 2], machineState.VRegisters[2]);
         }
 
         #region Helpers

@@ -11,6 +11,7 @@ namespace C8POC.Core.Domain.Services
 {
     using System;
     using System.Diagnostics.CodeAnalysis;
+    using System.Linq;
 
     using C8POC.Core.Infrastructure;
     using C8POC.Interfaces.Domain.Entities;
@@ -19,7 +20,8 @@ namespace C8POC.Core.Domain.Services
     /// <summary>
     /// Interprets instructions working with a given MachineState
     /// </summary>
-    [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly", Justification = "Mnemotechnical stuff is obviously not recognized by StyleCop")]
+    [SuppressMessage("StyleCop.CSharp.DocumentationRules", "SA1650:ElementDocumentationMustBeSpelledCorrectly",
+        Justification = "Mnemotechnical stuff is obviously not recognized by StyleCop")]
     public class OpcodeProcessor : IOpcodeProcessor
     {
         #region Instruction Set
@@ -108,8 +110,8 @@ namespace C8POC.Core.Domain.Services
         /// </param>
         public void SkipNextInstructionIfRegisterEqualsImmediate(IMachineState machineState)
         {
-            if (machineState.VRegisters[machineState.XRegisterFromCurrentOpcode] ==
-                (machineState.CurrentOpcode & 0x00FF))
+            if (machineState.VRegisters[machineState.XRegisterFromCurrentOpcode]
+                == (machineState.CurrentOpcode & 0x00FF))
             {
                 machineState.IncreaseProgramCounter();
             }
@@ -125,8 +127,8 @@ namespace C8POC.Core.Domain.Services
         /// </param>
         public void SkipNextInstructionIfRegisterNotEqualsImmediate(IMachineState machineState)
         {
-            if (machineState.VRegisters[machineState.XRegisterFromCurrentOpcode] !=
-                (machineState.CurrentOpcode & 0x00FF))
+            if (machineState.VRegisters[machineState.XRegisterFromCurrentOpcode]
+                != (machineState.CurrentOpcode & 0x00FF))
             {
                 machineState.IncreaseProgramCounter();
             }
@@ -142,8 +144,8 @@ namespace C8POC.Core.Domain.Services
         /// </param>
         public void SkipNextInstructionIfRegisterEqualsRegister(IMachineState machineState)
         {
-            if (machineState.VRegisters[machineState.XRegisterFromCurrentOpcode] ==
-                machineState.VRegisters[machineState.YRegisterFromCurrentOpcode])
+            if (machineState.VRegisters[machineState.XRegisterFromCurrentOpcode]
+                == machineState.VRegisters[machineState.YRegisterFromCurrentOpcode])
             {
                 machineState.IncreaseProgramCounter();
             }
@@ -273,8 +275,8 @@ namespace C8POC.Core.Domain.Services
         /// </param>
         public void SubstractRegisters(IMachineState machineState)
         {
-            if (machineState.VRegisters[machineState.XRegisterFromCurrentOpcode] >
-                machineState.VRegisters[machineState.YRegisterFromCurrentOpcode])
+            if (machineState.VRegisters[machineState.XRegisterFromCurrentOpcode]
+                > machineState.VRegisters[machineState.YRegisterFromCurrentOpcode])
             {
                 machineState.VRegisters[0xF] = 1;
             }
@@ -306,7 +308,8 @@ namespace C8POC.Core.Domain.Services
                 machineState.VRegisters[0xF] = 0;
             }
 
-            machineState.VRegisters[machineState.XRegisterFromCurrentOpcode] = (ushort)(machineState.VRegisters[machineState.YRegisterFromCurrentOpcode] >> 1);
+            machineState.VRegisters[machineState.XRegisterFromCurrentOpcode] =
+                (ushort)(machineState.VRegisters[machineState.YRegisterFromCurrentOpcode] >> 1);
         }
 
         /// <summary>
@@ -354,7 +357,8 @@ namespace C8POC.Core.Domain.Services
                 machineState.VRegisters[0xF] = 0;
             }
 
-            machineState.VRegisters[machineState.XRegisterFromCurrentOpcode] = (ushort)(machineState.VRegisters[machineState.YRegisterFromCurrentOpcode] >> 1);
+            machineState.VRegisters[machineState.XRegisterFromCurrentOpcode] =
+                (ushort)(machineState.VRegisters[machineState.YRegisterFromCurrentOpcode] >> 1);
         }
 
         /// <summary>
@@ -367,8 +371,8 @@ namespace C8POC.Core.Domain.Services
         /// </param>
         public void SkipNextInstructionIfRegisterNotEqualsRegister(IMachineState machineState)
         {
-            if (machineState.VRegisters[machineState.XRegisterFromCurrentOpcode] !=
-                machineState.VRegisters[machineState.YRegisterFromCurrentOpcode])
+            if (machineState.VRegisters[machineState.XRegisterFromCurrentOpcode]
+                != machineState.VRegisters[machineState.YRegisterFromCurrentOpcode])
             {
                 machineState.IncreaseProgramCounter();
             }
@@ -441,12 +445,12 @@ namespace C8POC.Core.Domain.Services
                 ushort currentpixel = machineState.Memory[machineState.IndexRegister + rowNum];
 
                 // We assume sprites are always 8 pixels wide
-                for (var colNum = 0; colNum < 8; colNum++) 
+                for (var colNum = 0; colNum < 8; colNum++)
                 {
                     if ((currentpixel & (0x80 >> colNum)) != 0)
                     {
-                        int positioninGraphics = (positionX + colNum +
-                                                  ((positionY + rowNum) * C8Constants.ResolutionWidth))
+                        int positioninGraphics = (positionX + colNum
+                                                  + ((positionY + rowNum) * C8Constants.ResolutionWidth))
                                                  % (C8Constants.ResolutionWidth * C8Constants.ResolutionHeight);
 
                         // Make sure we get a value inside boundaries
@@ -521,11 +525,20 @@ namespace C8POC.Core.Domain.Services
         /// </param>
         public void LoadKeyIntoRegister(IMachineState machineState)
         {
-            // TODO What do I do with this wait for key?
-            /*while (!machineState.Keys.OfType<bool>(IMachineState machineState).Any(x => x))
+            if (!machineState.Keys.OfType<bool>().Any(x => x))
             {
+                machineState.ProgramCounter -= 2;
+                return;
+            }
 
-            }*/
+            for (var i = 0; i < machineState.Keys.Count; i++)
+            {
+                if (machineState.Keys[i])
+                {
+                    machineState.VRegisters[machineState.XRegisterFromCurrentOpcode] = (ushort)i;
+                    return;
+                }
+            }
         }
 
         /// <summary>
