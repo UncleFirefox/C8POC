@@ -25,7 +25,7 @@ namespace C8POC.Interfaces.Domain.Engines
     /// <summary>
     /// Represents the engine in charge of input/output operations
     /// </summary>
-    public interface IInputOutputEngine
+    public interface IInputOutputEngine : IMediatedEngine
     {
         /// <summary>
         /// Event that will be raised every time that the screen needs to be refreshed
@@ -36,11 +36,6 @@ namespace C8POC.Interfaces.Domain.Engines
         /// Event that will be raised when a beep is generated
         /// </summary>
         event SoundGenerateEventHandler SoundGenerated;
-
-        /// <summary>
-        /// Gets or sets the mediator.
-        /// </summary>
-        IEngineMediator EngineMediator { get; set; }
 
         /// <summary>
         /// Gets or sets the plugin service.
@@ -61,14 +56,6 @@ namespace C8POC.Interfaces.Domain.Engines
         /// Gets or sets a loaded Keyboard plugin
         /// </summary>
         IKeyboardPlugin SelectedKeyboardPlugin { get; set; }
-
-        /// <summary>
-        /// Sets the mediator for the engine
-        /// </summary>
-        /// <param name="engineMediator">
-        /// The engine mediator.
-        /// </param>
-        void SetMediator(IEngineMediator engineMediator);
 
         /// <summary>
         /// Loads the plugins based on the configuration of the system

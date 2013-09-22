@@ -81,6 +81,7 @@ namespace C8POC.Core.Domain.Engines
         /// </summary>
         public void LoadPlugins()
         {
+            // In case there was a previous load, we unlink the already loaded plugins
             this.UnLinkPluginEvents();
 
             var graphicsNameSpaceSavedPlugin = this.EngineMediator.GetSavedPluginNameSpaceOfType<IGraphicsPlugin>();

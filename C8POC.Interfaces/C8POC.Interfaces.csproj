@@ -44,6 +44,7 @@
     <Compile Include="Domain\Engines\IEngineMediator.cs" />
     <Compile Include="Domain\Engines\IExecutionEngine.cs" />
     <Compile Include="Domain\Engines\IInputOutputEngine.cs" />
+    <Compile Include="Domain\Engines\IMediatedEngine.cs" />
     <Compile Include="Domain\Entities\IMachineState.cs" />
     <Compile Include="Domain\Plugins\IGraphicsPlugin.cs" />
     <Compile Include="Domain\Plugins\IKeyboardPlugin.cs" />

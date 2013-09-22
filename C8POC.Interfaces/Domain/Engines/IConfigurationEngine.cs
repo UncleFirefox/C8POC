@@ -14,25 +14,12 @@ namespace C8POC.Interfaces.Domain.Engines
     /// <summary>
     /// The Configuration Engine interface.
     /// </summary>
-    public interface IConfigurationEngine
+    public interface IConfigurationEngine : IMediatedEngine
     {
-        /// <summary>
-        /// Gets or sets the engine mediator.
-        /// </summary>
-        IEngineMediator EngineMediator { get; set; }
-
         /// <summary>
         /// Gets or sets the configuration service.
         /// </summary>
         IConfigurationService ConfigurationService { get; set; }
-
-        /// <summary>
-        /// The set mediator.
-        /// </summary>
-        /// <param name="engineMediator">
-        /// The engine mediator.
-        /// </param>
-        void SetMediator(IEngineMediator engineMediator);
 
         /// <summary>
         /// The get configuration key of type.

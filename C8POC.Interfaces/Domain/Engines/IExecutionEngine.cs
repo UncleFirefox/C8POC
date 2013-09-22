@@ -11,25 +11,12 @@ namespace C8POC.Interfaces.Domain.Engines
     /// <summary>
     /// Represents the engine in charge of the execution
     /// </summary>
-    public interface IExecutionEngine
+    public interface IExecutionEngine : IMediatedEngine
     {
-        /// <summary>
-        /// Gets or sets the mediator.
-        /// </summary>
-        IEngineMediator EngineMediator { get; set; }
-
         /// <summary>
         /// Gets or sets the opcode map service.
         /// </summary>
         IOpcodeMapService OpcodeMapService { get; set; }
-
-        /// <summary>
-        /// Sets the mediator for the engine
-        /// </summary>
-        /// <param name="engineMediator">
-        /// The engine mediator.
-        /// </param>
-        void SetMediator(IEngineMediator engineMediator);
 
         /// <summary>
         /// Starts the execution of the emulator
