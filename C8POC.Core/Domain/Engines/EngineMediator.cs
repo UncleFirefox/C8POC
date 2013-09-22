@@ -6,6 +6,8 @@
 
 namespace C8POC.Core.Domain.Engines
 {
+    using System.Threading.Tasks;
+
     using C8POC.Core.Infrastructure;
     using C8POC.Interfaces.Domain.Engines;
     using C8POC.Interfaces.Domain.Entities;
@@ -103,12 +105,27 @@ namespace C8POC.Core.Domain.Engines
         /// </summary>
         public void StartEmulation()
         {
+            // See first if a rom was loaded
             if (!this.MachineState.HasRomLoaded())
             {
                 return;
             }
 
-            this.ExecutionEngine.StartEmulatorExecution();
+            // Set the running flag to true
+            this.IsRunning = true;
+
+            // Start the plugins
+            // TODO: Make plugins run in separate threads
+            this.StartPluginsExecution();
+
+            // Run the execution loop with a task
+            var engineExecutionTask = new Task(this.ExecutionEngine.StartEmulatorExecution);
+
+            // Stop the plugins when the execution finishes
+            engineExecutionTask.ContinueWith(task => this.StopPluginsExecution());
+
+            // Fire the task
+            engineExecutionTask.Start();
         }
 
         /// <summary>

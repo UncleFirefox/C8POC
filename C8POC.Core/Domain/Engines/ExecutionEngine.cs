@@ -68,51 +68,41 @@ namespace C8POC.Core.Domain.Engines
         /// </summary>
         public void StartEmulatorExecution()
         {
-            if (!this.EngineMediator.MachineState.HasRomLoaded())
-            {
-                return;
-            }
-
-            this.EngineMediator.StartPluginsExecution();
-
-            var engineExecutionTask = new Task(this.EmulatorTask);
-            engineExecutionTask.ContinueWith(task => this.EngineMediator.StopPluginsExecution());
-            engineExecutionTask.Start();
+            this.ExecutionLoop();
         }
 
         /// <summary>
         /// The emulator task.
         /// </summary>
-        private void EmulatorTask()
+        private void ExecutionLoop()
         {
-            this.EngineMediator.IsRunning = true;
-
             var cycleStopWatch = new Stopwatch();
             var millisecondsperframe = 1.0 / Settings.Default.FramesPerSecond * 1000.0;
 
-            // Gets to the emulator loop
+            // Execution loop
             while (this.EngineMediator.IsRunning)
             {
                 cycleStopWatch.Restart();
 
-                this.EmulatorLoop();
+                this.EmulateFrame();
 
+                // Adjust the speed of the frame in case it goes too fast
                 Thread.Sleep((int)Math.Max(0.0, millisecondsperframe - cycleStopWatch.ElapsedMilliseconds));
             }
         }
 
         /// <summary>
-        /// This is where all the action happens its kind of similar to the GameLoop
+        /// Emulates a frame
         /// </summary>
-        private void EmulatorLoop()
+        private void EmulateFrame()
         {
             for (var cycleNum = 0; cycleNum < Settings.Default.CyclesPerFrame; cycleNum++)
             {
                 this.EmulateCycle();
 
+                // Check in the middle of the frame if we should stop
                 if (!this.EngineMediator.IsRunning)
                 {
-                    this.EngineMediator.StopEmulation();
                     return;
                 }
             }

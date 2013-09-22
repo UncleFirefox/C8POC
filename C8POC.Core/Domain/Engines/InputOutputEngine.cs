@@ -73,7 +73,6 @@ namespace C8POC.Core.Domain.Engines
         public void SetMediator(IEngineMediator engineMediator)
         {
             this.EngineMediator = engineMediator;
-            this.LoadPlugins();
         }
 
         /// <summary>
@@ -96,6 +95,7 @@ namespace C8POC.Core.Domain.Engines
             this.SelectedKeyboardPlugin =
                 !string.IsNullOrEmpty(keyboardNameSpaceSavedPlugin) ? this.PluginService.GetPluginByNameSpace<IKeyboardPlugin>(keyboardNameSpaceSavedPlugin) : null;
 
+            // Once the plugins are loaded we link its events
             this.LinkPluginEvents();
         }
 
@@ -144,6 +144,10 @@ namespace C8POC.Core.Domain.Engines
         /// </summary>
         public void StartPluginsExecution()
         {
+            // First, load the plugins based on the configuration
+            this.LoadPlugins();
+
+            // Enable plugins if they were found
             if (this.SelectedGraphicsPlugin != null)
             {
                 this.SelectedGraphicsPlugin.EnablePlugin(
