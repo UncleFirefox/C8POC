@@ -19,3 +19,5 @@ TODO:
 -Monitorize the real speed of the emulator (e.g. show FPS in the Graphics Plugin)
 
 -Unit testing (something left apart that should take relevance)
+
+-For SDL libraries, install the SDLDotNet SDK which can be found here: http://sourceforge.net/projects/cs-sdl/files/SDL.NET/6.1.1beta/sdldotnet-6.1.1beta-sdk-setup.exe/download
